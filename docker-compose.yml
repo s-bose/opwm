@@ -1,14 +1,33 @@
 
 version: '3.9'
 services:
+  db:
+    env_file: 
+      - ./backend/.env
+    image: postgres:latest
+    networks:
+      - default
+    ports:
+      - 5400:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+
+  
   server:
+    depends_on: 
+      - db
     build:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/:/backend/
-    command: uvicorn app.api.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     env_file:
       - ./backend/.env
     ports:
       - 8000:8000
+
+    
+volumes: 
+  postgres_data:
