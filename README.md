@@ -1,0 +1,1 @@
+# offline-password-manager
