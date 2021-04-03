@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter
 
 router = APIRouter()
 
