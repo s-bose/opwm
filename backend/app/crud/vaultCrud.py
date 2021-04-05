@@ -22,7 +22,7 @@ def get_pwd(
     """
     res = execute_query(db, query)
     credentials = Passwords(**res)
-    return res
+    return credentials
 
 
 def post_pwd(
@@ -44,4 +44,4 @@ def post_pwd(
     """
     res = execute_query(db, query)
     credentials = Passwords(**res)
-    return res
+    return credentials

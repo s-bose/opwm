@@ -3,6 +3,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
+from app.crud.usersCrud import get_active_user
 
 
 def get_db() -> Generator:
@@ -11,12 +12,3 @@ def get_db() -> Generator:
         yield db
     finally:
         db.close()
-
-
-def active_user(
-    db: Session = Depends(get_db),
-    *,
-    user_id: int
-):
-
-    pass

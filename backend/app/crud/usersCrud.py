@@ -6,6 +6,17 @@ from app.crud.crudBase import execute_query
 from app.models import User
 
 
+def get_active_user(
+    db: Session,
+    user_id: int
+):
+    query = f"""SELECT id FROM users WHERE id={user_id};"""
+    res = execute_query(db, query)
+    return {
+        "id": res[0]
+    }
+
+
 def get_user(
     db: Session,
     email: str,
