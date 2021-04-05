@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Depends, Request
 from pydantic import EmailStr
 
+from sqlalchemy.orm import Session
+
+from app.crud.usersCrud import get_user
+from app.api.dependency import get_db
+
 router = APIRouter()
 
 
@@ -18,13 +23,16 @@ def register(
 
 @router.get("/login")
 def login(
+    db: Session = Depends(get_db),
+    *,
     email: EmailStr,
     password: str
 ) -> None:
     """
     logs in
+    TODO needs oauth2 formdata impl here
     """
-    return None
+    return get_user(db, 'abc@abc.com', 'hello')
 
 
 @router.put("/user")
