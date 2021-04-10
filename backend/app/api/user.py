@@ -3,21 +3,15 @@ from fastapi import (
     Depends,
     HTTPException
 )
-
-from fastapi.security import (
-    OAuth2PasswordBearer,
-    OAuth2PasswordRequestForm
-)
-
-from pydantic import EmailStr
-
 from sqlalchemy.orm import Session
-
 from starlette import status
 
-from app.crud.usersCrud import get_user
+from app.security import get_hash
+
+from app.crud import crudUsers
 from app.api.dependency import get_db
 
+from app.schemas.user import UserModel
 router = APIRouter()
 
 
@@ -33,45 +27,43 @@ router = APIRouter()
 #     return None
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
 
-# # @router.post("/login")
-# # async def login(
-# #     db: Session = Depends(get_db),
-# #     form_data: OAuth2PasswordRequestForm = Depends()
-# # ) -> None:
-# #     """
-# #     logs in
-# #     """
-# #     user_email = form_data.username
-# #     user_pass = form_data.password
-# #     if (user := get_user(db, user_email, user_pass)) is None:
-# #         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-# #                             detail="wrong username/password")
-# #     return {'access-token': form_data.username}
+"""
+TODO 
+hash master password twice. once at the register phase. then at the db
+
+"""
 
 
-# @router.put("/user")
-# def user() -> None:
-#     return None
+@router.post("/register")
+def register(
+    cred: UserModel,
+    db: Session = Depends(get_db)
+):
+    pwd = get_hash(cred.master_pwd)       # hash once in the server
 
-@router.post('/login')
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    # user_dict = fake_users_db.get(form_data.username)
-    # if not user_dict:
-    #     raise HTTPException(status_code=400, detail="Incorrect username or password")
-    # user = UserInDB(**user_dict)
-    # hashed_password = fake_hash_password(form_data.password)
-    # if not hashed_password == user.hashed_password:
-    # raise HTTPException(status_code=400, detail="Incorrect username or password")
-    #
-    return {"access_token": form_data.username, "token_type": "bearer"}
+    # hash of the hash stored in db
+    _id = crudUsers.post_user(db, email=cred.email, password=pwd)
+
+    return {
+        "id": _id
+    }
 
 
-@router.get('/test')
-def test(token: str = Depends(oauth2_scheme)):
-    return {'token': token}
-# @router.post("/reset_pwd")
-# def reset_master_pwd() -> None:
-#     return None
+@router.post("/login")
+def login(
+    cred: UserModel,
+    db: Session = Depends(get_db)
+) -> None:
+    """
+    logs in
+    """
+    user_email = cred.email
+    user_pass = cred.master_pwd
+    if (user := crudUsers.get_user(db, user_email, user_pass)) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="wrong username/password")
+
+    return {'access-token': user.id, 'token_type': 'bearer'}

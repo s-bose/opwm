@@ -19,10 +19,11 @@ def get_pwd(
     WHERE 
         user_id={user_id} AND 
         site='{site}';
+    RETURNING site, username, pwd;
     """
-    res = execute_query(db, query)
-    credentials = Passwords(**res)
-    return credentials
+    res = db.execute(query).fetchone()[0]
+    db.commit()
+    return res
 
 
 def post_pwd(
@@ -40,8 +41,9 @@ def post_pwd(
         '{site}', 
         {user_id}, 
         '{username}', 
-        pgp_sym_encrypt('{password}', '{master_pwd}'));
+        pgp_sym_encrypt('{password}', '{master_pwd}'))
+    RETURNING id, site, username;
     """
-    res = execute_query(db, query)
-    credentials = Passwords(**res)
-    return credentials
+    res = db.execute(query).fetchone()[0]
+    db.commit()
+    return res

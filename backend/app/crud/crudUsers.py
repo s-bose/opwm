@@ -5,16 +5,7 @@ from sqlalchemy.orm import Session
 from app.crud.crudBase import execute_query
 from app.models import User
 
-
-def get_active_user(
-    db: Session,
-    user_id: int
-):
-    query = f"""SELECT id FROM users WHERE id={user_id};"""
-    res = execute_query(db, query)
-    return {
-        "id": res[0]
-    }
+from app.api.dependency import get_db
 
 
 def get_user(
@@ -29,12 +20,12 @@ def get_user(
         users 
     WHERE
         email='{email}' AND
-        master_pwd=crypt('{password}', master_pwd);
+        master_pwd=crypt('{password}', master_pwd)
+    RETURNING id, email;
     """
-    res = execute_query(db, query)
-    user = User(**res)
+    res = db.execute(query).fetchone()[0]
     db.commit()
-    return user
+    return res
 
 
 def post_user(
@@ -47,13 +38,13 @@ def post_user(
     INSERT INTO 
         users(email, master_pwd)
     VALUES 
-        ('{email}', crypt('{password}', gen_salt('md5')));
+        ('{email}', crypt('{password}', gen_salt('md5')))
+    RETURNING id;
     """
 
-    res = execute_query(db, query)
-    user = User(**res)
+    res = db.execute(query).fetchone()[0]
     db.commit()
-    return user
+    return res
 
 
 def put_user(

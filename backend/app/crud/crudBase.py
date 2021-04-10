@@ -4,10 +4,12 @@ from sqlalchemy.orm import Session
 def execute_query(
     db: Session,
     query: str
-) -> tuple:
+):
 
-    res = db.execute(query).fetchone()
+    res = db.execute(query)
     db.commit()
     return res
 
 # TODO exception handling
+
+

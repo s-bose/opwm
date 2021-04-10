@@ -1,5 +1,7 @@
-from typing import List
+from typing import Any, Dict
 from fastapi import APIRouter
+
+from app import utils
 
 router = APIRouter()
 
@@ -7,7 +9,7 @@ router = APIRouter()
 @router.get("/")
 def get_password(
     site: str
-) -> dict:
+) -> Dict[str, Any]:
     """
     retrieves the stored pwd for site for a given user
     (authenticated)
@@ -43,26 +45,32 @@ def change_password(
 
 @router.get("/generate")
 def generate_pwd(
-    site: str,
-    username: str
+    size: int = None,
+    urlsafe: bool = False
 ):
     """
     generates a random pwd and stores it wrt the username and site
     (authenticated)
     returns the random password
     """
-    return None
+
+    return {
+        "password": utils.gen_random_pwd(size, urlsafe)
+    }
 
 
-@router.get("/generate_kw")
+@router.post("/generate_kw")
 def generate_kw_pwd(
-    site: str,
-    username: str,
-    keywords: List[str]
+    size: int,
+    keyword: list,
+    include_char: list
 ):
     """
     generates a pwd based on the list of keywords specified
     everything else same as /generate
     (authenticated)
     """
-    return None
+
+    return {
+        "password": utils.gen_kw_pwd(keyword, size, include_char)
+    }

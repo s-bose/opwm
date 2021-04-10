@@ -1,21 +1,25 @@
 import string
 import secrets
 import random
-import tokenize
 from typing import List
 
-char_dump = string.ascii_letters + string.digits + string.punctuation
+__char_dump = string.ascii_letters + string.digits + string.punctuation
+
+__DEFAULT_PWD_SIZE = 16
 
 
-def gen_random_pwd(size: int = 20):
-
-    passwd = ''.join(secrets.choice(char_dump) for i in range(size))
-    print(passwd)
+def gen_random_pwd(
+    size: int = __DEFAULT_PWD_SIZE,
+    urlsafe: bool = False
+):
+    if not urlsafe:
+        return ''.join(secrets.choice(__char_dump) for i in range(size))
+    return secrets.token_urlsafe(size)
 
 
 def gen_kw_pwd(
     keywords: List[str],
-    size: int = 20,
+    size: int = __DEFAULT_PWD_SIZE,
     include_chars: List[str] = None
 ):
     kw_list = set()
@@ -25,6 +29,7 @@ def gen_kw_pwd(
     else:
         while (len(''.join(list(kw_list)) + (word := secrets.choice(keywords))) < size):
             kw_list.add(word)
+
     # adding one more keyword exhausts the password limit
     # therefore add ligatures
     rem_space = size - len(''.join(list(kw_list)))
@@ -41,12 +46,9 @@ def gen_kw_pwd(
                        for i in range(rem_space))
     kw_list.add(ligature)
 
-    # print(kw_list)
-    kw_list = list(kw_list)
-    # print(kw_list)
-    # random.shuffle(kw_list)
     passwd = ''.join(random.sample(kw_list, len(kw_list)))
-    print(passwd)
+    passwd = ''.join(secrets.choice([x.upper(), x]) for x in passwd)
+    return passwd
 
 
 def gen_pwd_from_phrase(
@@ -55,7 +57,7 @@ def gen_pwd_from_phrase(
     include_chars: List[str] = None
 ):
     keywords = phrase.split(' ')
-    gen_kw_pwd(keywords=keywords, size=size, include_chars=include_chars)
+    return gen_kw_pwd(keywords=keywords, size=size, include_chars=include_chars)
 
 
 # gen_kw_pwd(['hello', 'world'], 20, ['@', '?'])
@@ -65,6 +67,6 @@ def gen_pwd_from_phrase(
 
 # gen_kw_pwd(['obama', 'come', 'eat', 'my ass', '69'], 10)
 
-gen_pwd_from_phrase('I eat ass everyday', 20)
+print(gen_pwd_from_phrase('dc sucks balls', 10, ['@', '$']))
 # gen_random_pwd(12)
 #
