@@ -4,6 +4,6 @@ from sqlalchemy import Column, String, Integer
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)  # TODO - no autoincrement primary key
     email = Column(String, unique=True, nullable=False)
-    master_pwd = Column(String, unique=True, nullable=False)
+    master_pwd = Column(String, nullable=False)

@@ -1,3 +1,4 @@
+from app.models.user import User
 from datetime import timedelta
 from fastapi import (
     APIRouter,
@@ -60,7 +61,6 @@ def login(
     user_pass = cred.master_pwd
 
     pwd = get_hash(user_pass)
-    print(pwd)
     if (user_id := crudUsers.get_user_by_email(db, cred.email)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -86,7 +86,8 @@ def login(
 
     response = JSONResponse(content=payload)
     response.set_cookie(key="access_token",
-                        value=access_token)
+                        value=access_token,
+                        max_age=time_expires.total_seconds())
 
     return response
 
@@ -94,9 +95,10 @@ def login(
 @router.get("/user")
 def get_user_info(
     request: Request,
-    user: UserModel = Depends(auth_user),
+    user: User = Depends(auth_user),
     db: Session = Depends(get_db)
 ):
     return {
-        "user": user
+        "user_id": user.id,
+        "email": user.email
     }

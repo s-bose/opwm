@@ -1,4 +1,4 @@
-from app.schemas.user import UserModel
+from app.models.user import User
 from app.crud import crudUsers
 from app.core.config import ALGORITHM, SECRET_KEY
 from typing import Generator
@@ -39,5 +39,6 @@ def auth_user(
     except JWTError:
         raise credentials_exception
     if (user := crudUsers.get_user_by_id(db, user['id'])) is None:
-        raise HTTPException("user does not exist")
-    return user
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist")
+    return User(**user)

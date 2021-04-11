@@ -9,7 +9,7 @@ def get_user_by_id(
     id: int
 ):
     query = f"""
-    SELECT id, email FROM users WHERE id={id};
+    SELECT * FROM users WHERE id={id};
     """
     if (res := db.execute(query).fetchone()) is None:
         return None
