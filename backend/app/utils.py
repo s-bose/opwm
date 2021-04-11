@@ -67,6 +67,6 @@ def gen_pwd_from_phrase(
 
 # gen_kw_pwd(['obama', 'come', 'eat', 'my ass', '69'], 10)
 
-print(gen_pwd_from_phrase('dc sucks balls', 10, ['@', '$']))
+# print(gen_pwd_from_phrase('dc sucks balls', 10, ['@', '$']))
 # gen_random_pwd(12)
 #

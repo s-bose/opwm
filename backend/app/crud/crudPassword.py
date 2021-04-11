@@ -1,4 +1,3 @@
-from app.crud.crudBase import execute_query
 from sqlalchemy.orm import Session
 from app.models import Passwords
 

@@ -1,11 +1,33 @@
-
-
 from sqlalchemy.orm import Session
+from pydantic import EmailStr
 
-from app.crud.crudBase import execute_query
 from app.models import User
 
-from app.api.dependency import get_db
+
+def get_user_by_id(
+    db: Session,
+    id: int
+):
+    query = f"""
+    SELECT id, email FROM users WHERE id={id};
+    """
+    if (res := db.execute(query).fetchone()) is None:
+        return None
+    db.commit()
+    return res
+
+
+def get_user_by_email(
+    db: Session,
+    email: EmailStr
+):
+    query = f"""
+    SELECT id FROM users WHERE email='{email}';
+    """
+    if (id_ := db.execute(query).fetchone()) is None:
+        return None
+    db.commit()
+    return id_
 
 
 def get_user(
@@ -15,15 +37,15 @@ def get_user(
 ) -> User:
 
     query = f"""
-    SELECT * 
+    SELECT id, email
     FROM 
         users 
     WHERE
         email='{email}' AND
-        master_pwd=crypt('{password}', master_pwd)
-    RETURNING id, email;
+        master_pwd=crypt('{password}', master_pwd);
     """
-    res = db.execute(query).fetchone()[0]
+    if (res := db.execute(query).fetchone()) is None:
+        return None
     db.commit()
     return res
 
@@ -42,7 +64,7 @@ def post_user(
     RETURNING id;
     """
 
-    res = db.execute(query).fetchone()[0]
+    res = db.execute(query).fetchone()
     db.commit()
     return res
 
