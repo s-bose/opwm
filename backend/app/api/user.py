@@ -1,4 +1,3 @@
-from app.models.user import User
 from datetime import timedelta
 from fastapi import (
     APIRouter,
@@ -11,6 +10,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from starlette import status
 
+
+from app.models.user import User
 from app.security import create_access_token, get_hash
 
 from app.crud import crudUsers
@@ -18,13 +19,13 @@ from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
 
 from app.schemas.user import UserLogin, UserModel
+
 router = APIRouter()
 
 
 """
 TODO 
 implement a max no of login trials before login gets blocked
-
 """
 
 
@@ -33,21 +34,21 @@ def register(
     cred: UserLogin,
     db: Session = Depends(get_db)
 ):
-    pwd = get_hash(cred.master_pwd)       # hash once in the server
-    print(pwd)
+    """
+
+    """
+    pwd = get_hash(cred.master_pwd)         # hash once in the server
     # hash of the hash stored in db
     _id = crudUsers.post_user(db, email=cred.email, password=pwd)
 
-    return {
-        "id": _id
-    }
+    return _id
 
 
 @router.post("/login")
 def login(
     cred: UserLogin,
     db: Session = Depends(get_db)
-) -> None:
+):
     """
     post user credentials (email & master password) to log in.
     The master password is hashed once in the server using bcrypt
@@ -102,3 +103,10 @@ def get_user_info(
         "user_id": user.id,
         "email": user.email
     }
+
+
+@router.put("/reset_password")
+def reset_password(
+    db: Session = Depends(get_db)
+):
+    pass

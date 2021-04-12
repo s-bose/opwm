@@ -60,7 +60,7 @@ def post_user(
     INSERT INTO 
         users(email, master_pwd)
     VALUES 
-        ('{email}', crypt('{password}', gen_salt('md5')))
+        ('{email}', crypt('{password}', gen_salt('bf', 8)))
     RETURNING id;
     """
 
