@@ -1,6 +1,50 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.functions import user
-from app.models import Passwords
+
+
+def post_pwd(
+    db: Session,
+    site: str,
+    user_id: int,
+    username: str,
+    password: str,
+    master_pwd: str
+):
+    """
+    Inserts one `<username, password>` credential pair for a given `site`
+    against the logged in user.
+
+    Both the username and password is encrypted with `PGP_SYM_ENCRYPT`
+    using the stored hash of the user's master password
+
+    Parameters
+    ----------
+
+    site       : name of the site
+    user_id    : uuid of the logged in user
+    username   : username credentials
+    password   : password credentials
+    master_pwd : stored hash of the user's master password
+
+    Returns
+    -------
+
+    sqlalchemy Row object
+        `uuid` and `site` of inserted row
+    """
+
+    query = f"""
+    INSERT INTO
+        passwords(site, user_id, username, pwd) 
+    VALUES (
+        '{site}', 
+        '{user_id}', 
+        pgp_sym_encrypt('{username}', '{master_pwd}'),
+        pgp_sym_encrypt('{password}', '{master_pwd}'))
+    RETURNING id, site;
+    """
+    res = db.execute(query).fetchone()
+    db.commit()
+    return res
 
 
 def get_pwd_all(
@@ -8,6 +52,25 @@ def get_pwd_all(
     user_id: int,
     master_pwd: str
 ):
+    """
+    Retrieves all the stored credentials for the logged in user.
+
+    Parameters
+    ----------
+
+    user_id    : uuid of the logged in user
+    master_pwd : stored hash of the user's master password
+
+    Returns
+    -------
+
+    list
+        a list of dicts containing the following
+
+        site       : name of the site
+        username   : decrypted plaintext username
+        password   : decrypted plaintext username
+    """
     query = f"""
     SELECT
         site,
@@ -16,7 +79,7 @@ def get_pwd_all(
     FROM
         passwords
     WHERE
-        user_id={user_id};
+        user_id='{user_id}';
     """
     pwd_list = db.execute(query).fetchall()
     db.commit()
@@ -29,6 +92,28 @@ def get_pwd(
     user_id: int,
     master_pwd: str
 ):
+    """
+    Retrieves a single stored credential for a given `site` 
+    against the logged in user.
+
+    The stored encrypted username & password is decrypted
+    with `PGP_SYM_DECRYPT` using the hash of the user's master
+    password.
+
+    Parameters
+    ----------
+
+    site       : name of the site
+    user_id    : uuid of the logged in user
+    master_pwd : stored hash of the user's master password
+
+    Returns
+    -------
+
+    site       : name of the site
+    username   : decrypted plaintext username
+    password   : decrypted plaintext username
+    """
 
     query = f"""
     SELECT
@@ -38,31 +123,8 @@ def get_pwd(
     FROM 
         passwords 
     WHERE 
-        user_id={user_id} AND 
+        user_id='{user_id}' AND 
         site='{site}';
-    """
-    res = db.execute(query).fetchone()
-    db.commit()
-    return res
-
-
-def post_pwd(
-    db: Session,
-    site: str,
-    user_id: int,
-    username: str,
-    password: str,
-    master_pwd: str
-):
-    query = f"""
-    INSERT INTO
-        passwords(site, user_id, username, pwd) 
-    VALUES (
-        '{site}', 
-        '{user_id}', 
-        pgp_sym_encrypt('{username}', '{master_pwd}'),
-        pgp_sym_encrypt('{password}', '{master_pwd}'))
-    RETURNING id, site;
     """
     res = db.execute(query).fetchone()
     db.commit()

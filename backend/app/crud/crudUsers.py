@@ -6,7 +6,7 @@ from app.models import User
 
 def get_user_by_id(
     db: Session,
-    id: int
+    id: str
 ):
     query = f"""
     SELECT * FROM users WHERE id='{id}';

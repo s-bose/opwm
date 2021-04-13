@@ -18,7 +18,7 @@ from app.crud import crudUsers
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
 
-from app.schemas.user import UserLogin, UserModel
+from app.schemas.user import UserLogin
 
 router = APIRouter()
 
@@ -37,7 +37,8 @@ def register(
     """
 
     """
-    pwd = get_hash(cred.master_pwd)         # hash once in the server
+    pwd = get_hash(cred.master_pwd.get_secret_value()
+                   )         # hash once in the server
     # hash of the hash stored in db
     _id = crudUsers.post_user(db, email=cred.email, password=pwd)
 
@@ -59,7 +60,7 @@ def login(
 
     """
     user_email = cred.email
-    user_pass = cred.master_pwd
+    user_pass = cred.master_pwd.get_secret_value()
 
     pwd = get_hash(user_pass)
     if (user_id := crudUsers.get_user_by_email(db, cred.email)) is None:
@@ -83,7 +84,7 @@ def login(
         }
     }
 
-    access_token = create_access_token(                             # create a jwt access token
+    access_token = create_access_token(                          # create a jwt access token
         data=payload,
         expires_delta=time_expires
     )
