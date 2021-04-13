@@ -22,23 +22,29 @@ def auth_user(
     request: Request,
     db: Session = Depends(get_db),
 ):
+    """
+    Authenticates a user by verifying their access token
 
+    ## Dependency
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    if (access_token := request.cookies.get('access_token')) is None:
+    if (access_token := request.cookies.get("access_token")) is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="user not logged in")
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="user not logged in"
+        )
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
-        if (user := payload.get('user')) is None:
+        if (user := payload.get("user")) is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    if (user := crudUsers.get_user_by_id(db, user['id'])) is None:
+    if (user := crudUsers.get_user_by_id(db, user["id"])) is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist")
+            status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist"
+        )
     return User(**user)

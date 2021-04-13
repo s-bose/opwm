@@ -2,12 +2,7 @@ from sqlalchemy.orm import Session
 
 
 def post_pwd(
-    db: Session,
-    site: str,
-    user_id: int,
-    username: str,
-    password: str,
-    master_pwd: str
+    db: Session, site: str, user_id: int, username: str, password: str, master_pwd: str
 ):
     """
     Inserts one `<username, password>` credential pair for a given `site`
@@ -29,7 +24,7 @@ def post_pwd(
     -------
 
     sqlalchemy Row object
-        `uuid` and `site` of inserted row
+        <id, site>
     """
 
     query = f"""
@@ -47,11 +42,7 @@ def post_pwd(
     return res
 
 
-def get_pwd_all(
-    db: Session,
-    user_id: int,
-    master_pwd: str
-):
+def get_pwd_all(db: Session, user_id: int, master_pwd: str):
     """
     Retrieves all the stored credentials for the logged in user.
 
@@ -86,14 +77,9 @@ def get_pwd_all(
     return pwd_list
 
 
-def get_pwd(
-    db: Session,
-    site: str,
-    user_id: int,
-    master_pwd: str
-):
+def get_pwd(db: Session, site: str, user_id: int, master_pwd: str):
     """
-    Retrieves a single stored credential for a given `site` 
+    Retrieves a single stored credential for a given `site`
     against the logged in user.
 
     The stored encrypted username & password is decrypted

@@ -4,10 +4,25 @@ from pydantic import EmailStr
 from app.models import User
 
 
-def get_user_by_id(
-    db: Session,
-    id: str
-):
+def get_user_by_id(db: Session, id: str):
+    """
+    Fetches user information from the `User` table by
+    querying by their id (uuid primary key)
+
+    ### Only used internally via API dependencies
+
+    Parameters
+    ----------
+
+    id  : uuid primary key, represented as str
+
+    Returns
+    -------
+
+    sqlalchemy Row object
+        <id, email, master_pwd>
+    """
+
     query = f"""
     SELECT * FROM users WHERE id='{id}';
     """
@@ -17,10 +32,25 @@ def get_user_by_id(
     return res
 
 
-def get_user_by_email(
-    db: Session,
-    email: EmailStr
-):
+def get_user_by_email(db: Session, email: EmailStr):
+
+    """
+    Fetches user information from the `User` table by querying
+    by their registered email address.
+
+    ### Only used internally via API dependencies
+
+    Parameters
+    ----------
+
+    email   : email used when registering
+
+    Returns
+    -------
+
+    sqlalchemy Row object
+        <id>
+    """
     query = f"""
     SELECT id FROM users WHERE email='{email}';
     """
@@ -30,12 +60,31 @@ def get_user_by_email(
     return id_
 
 
-def get_user(
-    db: Session,
-    email: str,
-    password: str
-) -> User:
+def get_user(db: Session, email: str, password: str) -> User:
 
+    """
+    Fetches user information from the `User` table by querying
+    against email address and verifying the password.
+
+    postgres `crypt()` function is used to verify the plaintext
+    password with the stored hash.
+    Returns a valid Row object only if the passwords match.
+    otherwise returns None.
+
+    ### Used for authenticating a user's account
+
+    Parameters
+    ----------
+
+    email    : email credentials
+    password : password credentials
+
+    Returns
+    -------
+
+    sqlalchemy Row object
+        <id, email>
+    """
     query = f"""
     SELECT id, email
     FROM 
@@ -50,11 +99,30 @@ def get_user(
     return res
 
 
-def post_user(
-    db: Session,
-    email: str,
-    password: str
-) -> User:
+def post_user(db: Session, email: str, password: str) -> User:
+
+    """
+    Inserts a newly registered user's email and their hashed
+    master password in the `Users` table.
+
+    Uses the postgres `crypt()` function with salt to generate
+    and store hashes of passwords.
+    `Blowfish (bf)` hashing algorithm with 8 iterations is used here.
+
+    ### Used for securely registering a new user's account
+
+    Parameters
+    ----------
+
+    email    : email credentials
+    password : password credentials
+
+    Returns
+    -------
+
+    sqlalchemy Row object
+        <id>
+    """
 
     query = f"""
     INSERT INTO 
@@ -69,9 +137,5 @@ def post_user(
     return res
 
 
-def put_user(
-    db: Session,
-    email: str,
-    new_passwd: str
-):
+def put_user(db: Session, email: str, new_passwd: str):
     pass

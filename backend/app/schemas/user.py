@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr, SecretStr
-import uuid
 
 
 class UserLogin(BaseModel):
