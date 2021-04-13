@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import (
     Column,
     String,
@@ -5,14 +6,17 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint
 )
+from sqlalchemy.sql.expression import text
+from sqlalchemy_utils.types.uuid import UUIDType
 
 from app.db import Base
 
+
 class Passwords(Base):
     __tablename__ = "passwords"
-    id = Column(Integer, primary_key=True, autoincrement=True) # TODO - no autoincrement pk
+    id = Column(UUIDType, primary_key=True, unique=True,
+                server_default=text("gen_random_uuid()"))
     site = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(UUIDType, ForeignKey("users.id"))
     username = Column(String, nullable=False)
     pwd = Column(String, nullable=False, unique=True)
-    UniqueConstraint('site', 'user_id', name='uid_site_uniq')

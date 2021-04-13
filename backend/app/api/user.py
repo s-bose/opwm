@@ -77,7 +77,10 @@ def login(
     # token expires after X minutes
     time_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {
-        "user": UserModel(**user).dict()
+        "user": {
+            "id": str(user.id),
+            "email": user.email
+        }
     }
 
     access_token = create_access_token(                             # create a jwt access token

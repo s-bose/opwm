@@ -1,9 +1,14 @@
+import uuid
+from sqlalchemy import Column, String
+from sqlalchemy.sql.expression import text
+from sqlalchemy_utils.types.uuid import UUIDType
 from app.db import Base
-from sqlalchemy import Column, String, Integer
 
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, autoincrement=True)  # TODO - no autoincrement primary key
+    # TODO - no autoincrement primary key
+    id = Column(UUIDType, primary_key=True, unique=True,
+                server_default=text("gen_random_uuid()"))
     email = Column(String, unique=True, nullable=False)
     master_pwd = Column(String, nullable=False)

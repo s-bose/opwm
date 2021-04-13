@@ -1,8 +1,9 @@
 from pydantic import BaseModel, EmailStr, SecretStr
+import uuid
 
 
 class UserModel(BaseModel):
-    id: int
+    id: uuid.UUID
     email: EmailStr
 
 
