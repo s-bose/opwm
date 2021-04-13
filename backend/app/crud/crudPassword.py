@@ -59,7 +59,7 @@ def post_pwd(
         passwords(site, user_id, username, pwd) 
     VALUES (
         '{site}', 
-        {user_id}, 
+        '{user_id}', 
         pgp_sym_encrypt('{username}', '{master_pwd}'),
         pgp_sym_encrypt('{password}', '{master_pwd}'))
     RETURNING id, site;
