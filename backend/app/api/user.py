@@ -104,12 +104,16 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/user")
-def get_user_info(
-    request: Request, user: User = Depends(auth_user), db: Session = Depends(get_db)
-):
+def get_user_info(user: User = Depends(auth_user), db: Session = Depends(get_db)):
     return {"user_id": user.id, "email": user.email}
 
 
-@router.put("/reset_password")
-def reset_password(db: Session = Depends(get_db)):
-    pass
+@router.post("/reset_password")
+def reset_password(
+    user: User = Depends(auth_user),
+    db: Session = Depends(get_db),
+):
+
+    # check if user has any recovery email in their account
+    if user.recovery_email is None:
+        print("lol")
