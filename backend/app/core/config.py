@@ -11,10 +11,17 @@ POSTGRES_PORT = config("POSTGRES_PORT", cast=str, default="5432")
 POSTGRES_DB = config("POSTGRES_DB", cast=str)
 
 DATABASE_URL = config(
-    "DATABASE_URL", cast=str, default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    "DATABASE_URL",
+    cast=str,
+    default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",
 )
 
 SECRET_KEY = config("SECRET_KEY", cast=str)
 ALGORITHM = config("ALGORITHM", cast=str)
 ACCESS_TOKEN_EXPIRE_MINUTES = config(
-    "ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30)
+    "ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30
+)
+
+PWD_RESET_TOKEN_EXPIRE_MINUTES = config(
+    "PWD_RESET_TOKEN_EXPIRE_MINUTES", cast=int, default=10
+)

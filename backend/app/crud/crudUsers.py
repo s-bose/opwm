@@ -4,6 +4,8 @@ from pydantic import EmailStr
 
 from app.models import User
 
+import app.core.sql.users_sql as sql
+
 
 def get_user_by_id(db: Session, id: str):
     """
@@ -24,10 +26,8 @@ def get_user_by_id(db: Session, id: str):
         <id, email, master_pwd>
     """
 
-    query = f"""
-    SELECT * FROM users WHERE id='{id}';
-    """
-    if (res := db.execute(query).fetchone()) is None:
+    query = text(sql.get_user_by_id_sql)
+    if (res := db.execute(query, {"id": id}).fetchone()) is None:
         return None
     db.commit()
     return res
@@ -52,11 +52,7 @@ def get_user_by_email(db: Session, email: EmailStr):
     sqlalchemy Row object
         <id>
     """
-    query = text(
-        f"""
-        SELECT id FROM users WHERE email=:email;
-        """
-    )
+    query = text(sql.get_user_by_email_sql)
     if (id_ := db.execute(query, {"email": email}).fetchone()) is None:
         return None
     db.commit()
@@ -88,16 +84,7 @@ def get_user(db: Session, email: str, password: str) -> User:
     sqlalchemy Row object
         <id, email>
     """
-    query = text(
-        f"""
-        SELECT id, email
-        FROM 
-            users 
-        WHERE
-            email=:email AND
-            master_pwd=crypt(:password, master_pwd);
-    """
-    )
+    query = text(sql.get_user_auth_sql)
     if (
         res := db.execute(query, {"email": email, "password": password}).fetchone()
     ) is None:
@@ -131,20 +118,18 @@ def post_user(db: Session, email: str, password: str) -> User:
         <id>
     """
 
-    query = text(
-        f"""
-        INSERT INTO 
-            users(email, master_pwd)
-        VALUES 
-            (:email, crypt(:password, gen_salt('bf', 8)))
-        RETURNING id;
-        """
-    )
+    query = text(sql.post_user_sql)
 
     res = db.execute(query, {"email": email, "password": password}).fetchone()
     db.commit()
     return res
 
 
-def put_user(db: Session, email: str, new_passwd: str):
-    pass
+def update_user(db: Session, id: str, email: str, new_password: str):
+    query = text(sql.update_user_sql)
+
+    res = db.execute(
+        query, {"email": email, "new_password": new_password, "id": id}
+    ).fetchone()
+    db.commit()
+    return res

@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 
 from sqlalchemy.orm import Session
 from starlette import status
+from pydantic import EmailStr
 
 
 from app.models.user import User
@@ -11,7 +12,7 @@ from app.security import create_access_token, get_hash
 from app.crud import crudUsers
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
-from app.schemas.user import UserLogin
+from app.schemas.user import UserLogin, ResetPasswordForm
 
 router = APIRouter()
 
@@ -52,7 +53,7 @@ def register(cred: UserLogin, db: Session = Depends(get_db)):
 
     id
     """
-    pwd = get_hash(cred.master_pwd.get_secret_value())  # hash once in the server
+    pwd = get_hash(cred.master_pwd)  # hash once in the server
     # hash of the hash stored in db
     _id = crudUsers.post_user(db, email=cred.email, password=pwd)
 
@@ -74,7 +75,7 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
     """
     user_email = cred.email
-    user_pass = cred.master_pwd.get_secret_value()
+    user_pass = cred.master_pwd
 
     pwd = get_hash(user_pass)
     if (user_id := crudUsers.get_user_by_email(db, cred.email)) is None:
@@ -108,12 +109,20 @@ def get_user_info(user: User = Depends(auth_user), db: Session = Depends(get_db)
     return {"user_id": user.id, "email": user.email}
 
 
-@router.post("/reset_password")
-def reset_password(
-    user: User = Depends(auth_user),
+@router.post("/reset_password/")
+def reset_master_password(
+    credential: ResetPasswordForm,
     db: Session = Depends(get_db),
 ):
 
-    # check if user has any recovery email in their account
-    if user.recovery_email is None:
-        print("lol")
+    if (user := crudUsers.get_user_by_email(db, credential.email)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="user not found"
+        )
+
+    # get the old password from the id
+    user_info = crudUsers.get_user_by_id(db, user.id)
+    old_pwd_hash = user_info.master_pwd
+
+
+# 0037ae5f-5473-4acb-8f26-852ea312def3

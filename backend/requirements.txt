@@ -4,13 +4,18 @@ alembic==1.5.8
 async-timeout==3.0.1
 bcrypt==3.2.0
 blinker==1.4
+cachetools==4.2.1
 certifi==2020.12.5
 cffi==1.14.5
+chardet==4.0.0
 click==7.1.2
 cryptography==3.3.2
+cssselect==1.1.0
+cssutils==2.2.0
 dnspython==2.1.0
 ecdsa==0.14.1
 email-validator==1.1.2
+emails==0.6
 fakeredis==1.5.0
 fastapi==0.63.0
 fastapi-mail==0.3.5.0
@@ -19,11 +24,13 @@ h11==0.12.0
 hiredis==2.0.0
 httpcore==0.12.3
 httpx==0.17.1
-idna==3.1
+idna==2.10
 Jinja2==2.11.3
+lxml==4.6.3
 Mako==1.1.4
 MarkupSafe==1.1.1
 passlib==1.7.4
+premailer==3.8.0
 psycopg2-binary==2.8.6
 pyasn1==0.4.8
 pycparser==2.20
@@ -33,6 +40,7 @@ python-editor==1.0.4
 python-jose==3.2.0
 python-multipart==0.0.5
 redis==3.5.3
+requests==2.25.1
 rfc3986==1.4.0
 rsa==4.7.2
 six==1.15.0
@@ -42,4 +50,5 @@ SQLAlchemy==1.4.5
 SQLAlchemy-Utils==0.37.0
 starlette==0.13.6
 typing-extensions==3.7.4.3
+urllib3==1.26.4
 uvicorn==0.13.4

@@ -14,27 +14,18 @@ router = APIRouter()
 
 @router.get("/")
 def get_password(
-    site: str,
-    user: User = Depends(auth_user),
-    db: Session = Depends(get_db)
+    site: str, user: User = Depends(auth_user), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     """
     retrieves the stored pwd for site for a given user
     (authenticated)
     """
-    return get_pwd(
-        db,
-        site=site,
-        user_id=user.id,
-        master_pwd=user.master_pwd
-    )
+
+    return get_pwd(db, site=site, user_id=user.id, master_pwd=user.master_pwd)
 
 
 @router.get("/all")
-def get_all_password(
-    user: User = Depends(auth_user),
-    db: Session = Depends(get_db)
-):
+def get_all_password(user: User = Depends(auth_user), db: Session = Depends(get_db)):
     """
     retrieves all pwd for the logged in user
     """
@@ -46,7 +37,7 @@ def post_password(
     # form_data: PasswordInsert = Depends(),
     cred: PasswordInsert,
     user: User = Depends(auth_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> None:
     """
     stores a user-defined username/pwd for a site in vault
@@ -58,17 +49,14 @@ def post_password(
         site=cred.site,
         user_id=user.id,
         username=cred.username,
-        password=cred.password.get_secret_value(),
+        password=cred.password,
         master_pwd=user.master_pwd,
     )
 
 
 @router.put("/")
 def change_password(
-    site: str,
-    username: str,
-    new_pwd: str,
-    user: User = Depends(auth_user)
+    site: str, username: str, new_pwd: str, user: User = Depends(auth_user)
 ) -> None:
     """
     changes the pwd for a site
@@ -79,9 +67,7 @@ def change_password(
 
 @router.get("/generate")
 def generate_pwd(
-    size: int = None,
-    urlsafe: bool = False,
-    user: User = Depends(auth_user)
+    size: int = None, urlsafe: bool = False, user: User = Depends(auth_user)
 ):
     """
     generates a random pwd and stores it wrt the username and site
@@ -89,17 +75,12 @@ def generate_pwd(
     returns the random password
     """
 
-    return {
-        "password": utils.gen_random_pwd(size, urlsafe)
-    }
+    return {"password": utils.gen_random_pwd(size, urlsafe)}
 
 
 @router.post("/generate_kw")
 def generate_kw_pwd(
-    size: int,
-    keyword: list,
-    include_char: list,
-    user: User = Depends(auth_user)
+    size: int, keyword: list, include_char: list, user: User = Depends(auth_user)
 ):
     """
     generates a pwd based on the list of keywords specified
@@ -107,6 +88,4 @@ def generate_kw_pwd(
     (authenticated)
     """
 
-    return {
-        "password": utils.gen_kw_pwd(keyword, size, include_char)
-    }
+    return {"password": utils.gen_kw_pwd(keyword, size, include_char)}

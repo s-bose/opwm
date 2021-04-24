@@ -2,7 +2,7 @@ import string
 import secrets
 import random
 from typing import List
-
+from datetime import datetime, timedelta
 __char_dump = string.ascii_letters + string.digits + string.punctuation
 
 __DEFAULT_PWD_SIZE = 16
@@ -85,7 +85,7 @@ def gen_pwd_from_phrase(phrase: str, size: int, include_chars: List[str] = None)
     return gen_kw_pwd(keywords=keywords, size=size, include_chars=include_chars)
 
 
-# gen_kw_pwd(['hello', 'world'], 20, ['@', '?'])
+
 # gen_kw_pwd(['shiladitya', 'bose', '31' 'aug', 'kolkata'],
 #            20, ['@', '?', '!', '#'])
 # gen_kw_pwd(['here', 'comes', 'the', 'sun'], 20, ['@'])
@@ -95,3 +95,4 @@ def gen_pwd_from_phrase(phrase: str, size: int, include_chars: List[str] = None)
 # print(gen_pwd_from_phrase('dc sucks balls', 10, ['@', '$']))
 # gen_random_pwd(12)
 #
+
