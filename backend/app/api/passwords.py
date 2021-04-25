@@ -20,8 +20,7 @@ def get_password(
     retrieves the stored pwd for site for a given user
     (authenticated)
     """
-
-    return get_pwd(db, site=site, user_id=user.id, master_pwd=user.master_pwd)
+    return get_pwd(db, site=site, user_id=str(user.id), master_pwd=user.master_pwd)
 
 
 @router.get("/all")
@@ -29,7 +28,7 @@ def get_all_password(user: User = Depends(auth_user), db: Session = Depends(get_
     """
     retrieves all pwd for the logged in user
     """
-    return get_pwd_all(db, user_id=user.id, master_pwd=user.master_pwd)
+    return get_pwd_all(db, user_id=str(user.id), master_pwd=user.master_pwd)
 
 
 @router.post("/")
@@ -47,7 +46,7 @@ def post_password(
     return post_pwd(
         db,
         site=cred.site,
-        user_id=user.id,
+        user_id=str(user.id),
         username=cred.username,
         password=cred.password,
         master_pwd=user.master_pwd,

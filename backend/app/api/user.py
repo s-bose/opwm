@@ -9,7 +9,7 @@ from pydantic import EmailStr
 
 from app.models.user import User
 from app.security import create_access_token, get_hash
-from app.crud import crudUsers
+from app.crud import crudPassword, crudUsers
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
 from app.schemas.user import UserLogin, ResetPasswordForm
@@ -106,7 +106,7 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
 @router.get("/user")
 def get_user_info(user: User = Depends(auth_user), db: Session = Depends(get_db)):
-    return {"user_id": user.id, "email": user.email}
+    return {"user_id": str(user.id), "email": user.email}
 
 
 @router.post("/reset_password/")
@@ -121,8 +121,21 @@ def reset_master_password(
         )
 
     # get the old password from the id
-    user_info = crudUsers.get_user_by_id(db, user.id)
-    old_pwd_hash = user_info.master_pwd
+    user_info = crudUsers.get_user_by_id(db, str(user.id))
+    old_master_pwd = user_info.master_pwd
 
+    # update the master password entry
+    pwd = get_hash(credential.new_password)
+    updated_user = crudUsers.update_user(
+        db, id=str(user.id), email=user.email, new_password=pwd
+    )
 
-# 0037ae5f-5473-4acb-8f26-852ea312def3
+    new_master_pwd = updated_user.master_pwd
+
+    # update all stored passwords with the new encryption
+    return crudPassword.reset_pwd_all(
+        db,
+        old_master_pwd=old_master_pwd,
+        new_master_pwd=new_master_pwd,
+        user_id=str(user.id),
+    )

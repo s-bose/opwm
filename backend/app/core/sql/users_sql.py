@@ -3,7 +3,7 @@ SELECT * FROM users WHERE id::text=:id;
 """
 
 get_user_by_email_sql = """
-SELECT id FROM users WHERE email=:email;
+SELECT id, email FROM users WHERE email=:email;
 """
 
 get_user_auth_sql = """
@@ -29,5 +29,5 @@ SET
     email=:email,
     master_pwd=crypt(:new_password, gen_salt('bf', 8))
 WHERE id::text=:id
-RETURNING email;
+RETURNING id, email, master_pwd;
 """

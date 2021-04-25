@@ -34,3 +34,7 @@ class Passwords(Base):
     user_id = Column(UUIDType, ForeignKey("users.id"))
     username = Column(String, nullable=False)
     pwd = Column(String, nullable=False, unique=True)
+
+    @property
+    def pid(self):
+        return str(self.id)

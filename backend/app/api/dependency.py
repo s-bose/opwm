@@ -43,7 +43,7 @@ def auth_user(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    if (user := crudUsers.get_user_by_id(db, user["id"])) is None:
+    if (user := crudUsers.get_user_by_id(db, str(user["id"]))) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist"
         )

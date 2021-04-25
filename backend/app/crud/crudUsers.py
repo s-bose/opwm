@@ -53,10 +53,10 @@ def get_user_by_email(db: Session, email: EmailStr):
         <id>
     """
     query = text(sql.get_user_by_email_sql)
-    if (id_ := db.execute(query, {"email": email}).fetchone()) is None:
+    if (res := db.execute(query, {"email": email}).fetchone()) is None:
         return None
     db.commit()
-    return id_
+    return res
 
 
 def get_user(db: Session, email: str, password: str) -> User:

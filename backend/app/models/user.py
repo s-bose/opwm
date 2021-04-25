@@ -36,3 +36,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     master_pwd = Column(String, nullable=False)
     recovery_email = Column(String, unique=True, nullable=True)
+
+    @property
+    def uid(self):
+        return str(self.id)
