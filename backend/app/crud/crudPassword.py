@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
+from app.schemas.passwords import PasswordBase
+from app.crud.CRUDBase import query_execute
 import app.core.sql.passwords_sql as sql
 
 
-def get_pwd(db: Session, site: str, user_id: str, master_pwd: str):
+def get_pwd(db: Session, site: str, user_id: str, master_pwd: str) -> PasswordBase:
     """
     Retrieves a single stored credential for a given `site`
     against the logged in user.
@@ -23,21 +25,32 @@ def get_pwd(db: Session, site: str, user_id: str, master_pwd: str):
     Returns
     -------
 
+    PasswordBase model
+
+    id         : uuid primary key of the password record, as str
     site       : name of the site
     username   : decrypted plaintext username
     password   : decrypted plaintext username
     """
 
-    query = text(sql.get_pwd_sql)
-
-    res = db.execute(
-        query, {"site": site, "user_id": user_id, "master_pwd": master_pwd}
+    res = query_execute(
+        db,
+        query=sql.get_pwd_sql,
+        params={
+            "site": site, 
+            "user_id": user_id, 
+            "master_pwd": master_pwd
+        },
     ).fetchone()
-    db.commit()
+    
     return res
+    # if res is None:
+    #     return None
+    # return PasswordBase(id=res.pid, site=res.site, username=res.username, password=res.pwd)
 
 
-def get_pwd_all(db: Session, user_id: str, master_pwd: str):
+
+def get_pwd_all(db: Session, user_id: str, master_pwd: str) -> PasswordBase:
     """
     Retrieves all the stored credentials for the logged in user.
 
@@ -51,8 +64,9 @@ def get_pwd_all(db: Session, user_id: str, master_pwd: str):
     -------
 
     list
-        a list of dicts containing the following
+        a list of PasswordBase models
 
+        id         : uuid primary key, as str
         site       : name of the site
         username   : decrypted plaintext username
         password   : decrypted plaintext username
@@ -63,12 +77,17 @@ def get_pwd_all(db: Session, user_id: str, master_pwd: str):
         query, {"user_id": user_id, "master_pwd": master_pwd}
     ).fetchall()
     db.commit()
-    return pwd_list
+    return [
+        PasswordBase(
+            id=item.pid, site=item.site, username=item.username, password=item.pwd
+        )
+        for item in pwd_list
+    ]
 
 
 def post_pwd(
     db: Session, site: str, user_id: str, username: str, password: str, master_pwd: str
-):
+) -> str:
     """
     Inserts one `<username, password>` credential pair for a given `site`
     against the logged in user.
@@ -88,15 +107,16 @@ def post_pwd(
     Returns
     -------
 
-    sqlalchemy Row object
-        <id, site>
+    id   : uuid primary key of inserted row, as str
+
     """
 
     query = text(sql.post_pwd_sql)
 
-    res = db.execute(
-        query,
-        {
+    res = query_execute(
+        db,
+        query=sql.post_pwd_sql,
+        params={
             "site": site,
             "user_id": user_id,
             "username": username,
@@ -104,8 +124,7 @@ def post_pwd(
             "master_pwd": master_pwd,
         },
     ).fetchone()
-    db.commit()
-    return res
+    return str(res.pid)
 
 
 def update_pwd(
@@ -115,7 +134,7 @@ def update_pwd(
     new_username: str,
     new_password: str,
     master_pwd: str,
-):
+) -> PasswordBase:
 
     """
     updates a single username/password entry for a given `site`
@@ -135,14 +154,14 @@ def update_pwd(
         },
     ).fetchone()
     db.commit()
-    return res
+    return PasswordBase(id=res.pid, site=res.site)
 
 
 def reset_pwd_all(db: Session, old_master_pwd: str, new_master_pwd: str, user_id: str):
 
     query = text(sql.reset_pwd_all_sql)
 
-    res = db.execute(
+    res_list = db.execute(
         query,
         {
             "old_master_pwd": old_master_pwd,
@@ -151,4 +170,4 @@ def reset_pwd_all(db: Session, old_master_pwd: str, new_master_pwd: str, user_id
         },
     ).fetchall()
     db.commit()
-    return res
+    return [PasswordBase(id=item.pid, site=item.site) for item in res_list]

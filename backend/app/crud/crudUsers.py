@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 from pydantic import EmailStr
+from typing import Dict
 
-from app.models import User
+from app.schemas.user import UserBase
 
 import app.core.sql.users_sql as sql
 
 
-def get_user_by_id(db: Session, id: str):
+def get_user_by_id(db: Session, id: str) -> UserBase:
     """
     Fetches user information from the `User` table by
     querying by their id (uuid primary key)
@@ -22,18 +23,22 @@ def get_user_by_id(db: Session, id: str):
     Returns
     -------
 
-    sqlalchemy Row object
-        <id, email, master_pwd>
+    UserBase model
+
+    id         : uuid primary key, as str
+    email      : user email
+    master_pwd : master password (hash)
+
     """
 
     query = text(sql.get_user_by_id_sql)
     if (res := db.execute(query, {"id": id}).fetchone()) is None:
         return None
     db.commit()
-    return res
+    return UserBase(id=res.uid, email=res.email, master_pwd=res.master_pwd)
 
 
-def get_user_by_email(db: Session, email: EmailStr):
+def get_user_by_email(db: Session, email: EmailStr) -> str:
 
     """
     Fetches user information from the `User` table by querying
@@ -49,17 +54,17 @@ def get_user_by_email(db: Session, email: EmailStr):
     Returns
     -------
 
-    sqlalchemy Row object
-        <id>
+    id  : uuid primary key, as str
+
     """
     query = text(sql.get_user_by_email_sql)
     if (res := db.execute(query, {"email": email}).fetchone()) is None:
         return None
     db.commit()
-    return res
+    return str(res.uid)
 
 
-def get_user(db: Session, email: str, password: str) -> User:
+def get_user(db: Session, email: str, password: str) -> UserBase:
 
     """
     Fetches user information from the `User` table by querying
@@ -81,8 +86,11 @@ def get_user(db: Session, email: str, password: str) -> User:
     Returns
     -------
 
-    sqlalchemy Row object
-        <id, email>
+    UserBase model
+
+    id    : uuid primary key, as str
+    email : user email
+
     """
     query = text(sql.get_user_auth_sql)
     if (
@@ -90,10 +98,10 @@ def get_user(db: Session, email: str, password: str) -> User:
     ) is None:
         return None
     db.commit()
-    return res
+    return UserBase(id=res.uid, email=res.email)
 
 
-def post_user(db: Session, email: str, password: str) -> User:
+def post_user(db: Session, email: str, password: str) -> str:
 
     """
     Inserts a newly registered user's email and their hashed
@@ -114,22 +122,46 @@ def post_user(db: Session, email: str, password: str) -> User:
     Returns
     -------
 
-    sqlalchemy Row object
-        <id>
+    id : uuid primary key of inserted row, as str
     """
 
     query = text(sql.post_user_sql)
 
     res = db.execute(query, {"email": email, "password": password}).fetchone()
     db.commit()
-    return res
+    return str(res.uid)
 
 
-def update_user(db: Session, id: str, email: str, new_password: str):
+def update_user(db: Session, id: str, email: str, new_password: str) -> UserBase:
+
+    """
+    Updates an existing user's credentials by changing
+    the old master password hash with a new one.
+    ###
+    # This does not update the existing username/passwords
+    # stored in the `Passwords` table
+    # For that, an additional query on `Passwords` table
+    # needs to be applied.
+
+    Parameters
+    ----------
+
+    email        : user email
+    new_password : (plaintext) new master password
+
+    Returns
+    -------
+
+    UserBase model
+
+    id    : uuid primary key of the updated row, as str
+    email : user email
+
+    """
     query = text(sql.update_user_sql)
 
     res = db.execute(
         query, {"email": email, "new_password": new_password, "id": id}
     ).fetchone()
     db.commit()
-    return res
+    return UserBase(id=res.uid, email=res.email)

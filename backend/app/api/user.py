@@ -12,13 +12,13 @@ from app.security import create_access_token, get_hash
 from app.crud import crudPassword, crudUsers
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
-from app.schemas.user import UserLogin, ResetPasswordForm
+from app.schemas.user import UserBase, UserLogin, ResetPasswordForm
 
 router = APIRouter()
 
 
 """
-TODO 
+TODO
 implement a max no of login trials before login gets blocked
 """
 
@@ -55,9 +55,9 @@ def register(cred: UserLogin, db: Session = Depends(get_db)):
     """
     pwd = get_hash(cred.master_pwd)  # hash once in the server
     # hash of the hash stored in db
-    _id = crudUsers.post_user(db, email=cred.email, password=pwd)
+    user_id = crudUsers.post_user(db, email=cred.email, password=pwd)
 
-    return _id
+    return {"user_id": user_id}
 
 
 @router.post("/login")
@@ -77,20 +77,20 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
     user_email = cred.email
     user_pass = cred.master_pwd
 
-    pwd = get_hash(user_pass)
+    password = get_hash(user_pass)
     if (user_id := crudUsers.get_user_by_email(db, cred.email)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="email not found"
         )
 
-    if (user := crudUsers.get_user(db, user_email, pwd)) is None:
+    if (user := crudUsers.get_user(db, email=user_email, password=password)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="invalid email/password"
         )
 
     # token expires after X minutes
     time_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {"user": {"id": str(user.id), "email": user.email}}
+    payload = {"user_info": user.dict(exclude_unset=True)}
 
     access_token = create_access_token(  # create a jwt access token
         data=payload, expires_delta=time_expires
@@ -105,8 +105,8 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/user")
-def get_user_info(user: User = Depends(auth_user), db: Session = Depends(get_db)):
-    return {"user_id": str(user.id), "email": user.email}
+def get_user_info(user: UserBase = Depends(auth_user), db: Session = Depends(get_db)):
+    return {"id": user.id, "email": user.email}
 
 
 @router.post("/reset_password/")
@@ -121,7 +121,7 @@ def reset_master_password(
         )
 
     # get the old password from the id
-    user_info = crudUsers.get_user_by_id(db, str(user.id))
+    user_info = crudUsers.get_user_by_id(db, user.id)
     old_master_pwd = user_info.master_pwd
 
     # update the master password entry

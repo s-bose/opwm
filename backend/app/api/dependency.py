@@ -1,3 +1,4 @@
+from app.schemas.user import UserBase
 from app.models.user import User
 from app.crud import crudUsers
 from app.core.config import ALGORITHM, SECRET_KEY
@@ -21,7 +22,7 @@ def get_db() -> Generator:
 def auth_user(
     request: Request,
     db: Session = Depends(get_db),
-):
+) -> UserBase:
     """
     Authenticates a user by verifying their access token
 
@@ -39,12 +40,12 @@ def auth_user(
         )
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
-        if (user := payload.get("user")) is None:
+        if (user := payload.get("user_info")) is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    if (user := crudUsers.get_user_by_id(db, str(user["id"]))) is None:
+    if (user := crudUsers.get_user_by_id(db, user["id"])) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist"
         )
-    return User(**user)
+    return user

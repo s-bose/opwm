@@ -1,10 +1,18 @@
-from pydantic import BaseModel, EmailStr, SecretStr
+from typing import Optional
+from pydantic import BaseModel, EmailStr, validator
+from uuid import UUID
 
 
 class UserBase(BaseModel):
-    id: str
+    id: UUID
     email: EmailStr
-    master_pwd: str
+    master_pwd: Optional[str] = None
+
+    @validator("id")
+    def uuid_pk_validator(cls, v):
+        if v.version is None:
+            raise ValueError("Invalid UUID")
+        return str(v)
 
 
 class UserLogin(BaseModel):

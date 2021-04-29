@@ -27,7 +27,7 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id = Column(
+    uid = Column(
         UUIDType,
         primary_key=True,
         unique=True,
@@ -35,8 +35,3 @@ class User(Base):
     )
     email = Column(String, unique=True, nullable=False)
     master_pwd = Column(String, nullable=False)
-    recovery_email = Column(String, unique=True, nullable=True)
-
-    @property
-    def uid(self):
-        return str(self.id)

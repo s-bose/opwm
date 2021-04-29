@@ -5,6 +5,7 @@ from pydantic import SecretStr
 
 from app import utils
 from app.models import User
+from app.schemas.user import UserBase
 from app.api.dependency import auth_user, get_db
 from app.crud.crudPassword import post_pwd, get_pwd, get_pwd_all
 from app.schemas.passwords import PasswordInsert
@@ -14,7 +15,7 @@ router = APIRouter()
 
 @router.get("/")
 def get_password(
-    site: str, user: User = Depends(auth_user), db: Session = Depends(get_db)
+    site: str, user: UserBase = Depends(auth_user), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     """
     retrieves the stored pwd for site for a given user
