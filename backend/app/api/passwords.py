@@ -1,14 +1,13 @@
 from typing import Any, Dict
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from pydantic import SecretStr
 
 from app import utils
 from app.models import User
 from app.schemas.user import UserBase
 from app.api.dependency import auth_user, get_db
-from app.crud.crudPassword import post_pwd, get_pwd, get_pwd_all
 from app.schemas.passwords import PasswordInsert
+from app.crud import password
 
 router = APIRouter()
 
@@ -21,15 +20,15 @@ def get_password(
     retrieves the stored pwd for site for a given user
     (authenticated)
     """
-    return get_pwd(db, site=site, user_id=str(user.id), master_pwd=user.master_pwd)
+    return password.get_pwd(db, site=site, user_id=str(user.id), master_pwd=user.master_pwd)
 
 
 @router.get("/all")
-def get_all_password(user: User = Depends(auth_user), db: Session = Depends(get_db)):
+def get_all_password(user: UserBase = Depends(auth_user), db: Session = Depends(get_db)):
     """
     retrieves all pwd for the logged in user
     """
-    return get_pwd_all(db, user_id=str(user.id), master_pwd=user.master_pwd)
+    return password.get_pwd_all(db, user_id=str(user.id), master_pwd=user.master_pwd)
 
 
 @router.post("/")
@@ -44,7 +43,7 @@ def post_password(
     (authenticated)
     """
 
-    return post_pwd(
+    return password.post_pwd(
         db,
         site=cred.site,
         user_id=str(user.id),

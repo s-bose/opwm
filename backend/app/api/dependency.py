@@ -1,6 +1,4 @@
-from app.schemas.user import UserBase
-from app.models.user import User
-from app.crud import crudUsers
+
 from app.core.config import ALGORITHM, SECRET_KEY
 from typing import Generator
 from fastapi import HTTPException, Depends, Request
@@ -9,7 +7,8 @@ from starlette import status
 from jose import JWTError, jwt
 
 from app.db import SessionLocal
-
+from app.schemas.user import UserBase
+from app.crud import user as crud_user
 
 def get_db() -> Generator:
     try:
@@ -40,11 +39,12 @@ def auth_user(
         )
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
-        if (user := payload.get("user_info")) is None:
+        if (user_info := payload.get("user_info")) is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    if (user := crudUsers.get_user_by_id(db, user["id"])) is None:
+    
+    if (user := crud_user.get_user_by_id(db, user_info["uid"])) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist"
         )

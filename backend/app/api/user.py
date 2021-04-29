@@ -9,11 +9,11 @@ from pydantic import EmailStr
 
 from app.models.user import User
 from app.security import create_access_token, get_hash
-from app.crud import crudPassword, crudUsers
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
 from app.schemas.user import UserBase, UserLogin, ResetPasswordForm
-
+from app.crud import user as crud_user
+from app.crud import password as crud_password
 router = APIRouter()
 
 
@@ -55,9 +55,9 @@ def register(cred: UserLogin, db: Session = Depends(get_db)):
     """
     pwd = get_hash(cred.master_pwd)  # hash once in the server
     # hash of the hash stored in db
-    user_id = crudUsers.post_user(db, email=cred.email, password=pwd)
+    result = crud_user.post_user(db, email=cred.email, password=pwd)
+    return result.dict(exclude_unset=True)
 
-    return {"user_id": user_id}
 
 
 @router.post("/login")
@@ -78,12 +78,12 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
     user_pass = cred.master_pwd
 
     password = get_hash(user_pass)
-    if (user_id := crudUsers.get_user_by_email(db, cred.email)) is None:
+    if (res := crud_user.get_user_by_email(db, cred.email)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="email not found"
         )
 
-    if (user := crudUsers.get_user(db, email=user_email, password=password)) is None:
+    if (user := crud_user.get_user(db, email=user_email, password=password)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="invalid email/password"
         )
@@ -105,8 +105,9 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/user")
-def get_user_info(user: UserBase = Depends(auth_user), db: Session = Depends(get_db)):
-    return {"id": user.id, "email": user.email}
+def get_user_info(user = Depends(auth_user), db: Session = Depends(get_db)):
+    
+    return user.dict(exclude={'master_pwd'})
 
 
 @router.post("/reset_password/")
@@ -115,25 +116,25 @@ def reset_master_password(
     db: Session = Depends(get_db),
 ):
 
-    if (user := crudUsers.get_user_by_email(db, credential.email)) is None:
+    if (user := crud_user.get_user_by_email(db, credential.email)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="user not found"
         )
 
     # get the old password from the id
-    user_info = crudUsers.get_user_by_id(db, user.id)
+    user_info = crud_user.get_user_by_id(db, user.id)
     old_master_pwd = user_info.master_pwd
 
     # update the master password entry
     pwd = get_hash(credential.new_password)
-    updated_user = crudUsers.update_user(
+    updated_user = crud_user.update_user(
         db, id=str(user.id), email=user.email, new_password=pwd
     )
 
     new_master_pwd = updated_user.master_pwd
 
     # update all stored passwords with the new encryption
-    return crudPassword.reset_pwd_all(
+    return crud_password.reset_pwd_all(
         db,
         old_master_pwd=old_master_pwd,
         new_master_pwd=new_master_pwd,

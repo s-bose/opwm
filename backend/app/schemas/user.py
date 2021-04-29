@@ -4,11 +4,11 @@ from uuid import UUID
 
 
 class UserBase(BaseModel):
-    id: UUID
-    email: EmailStr
+    uid: UUID
+    email: Optional[EmailStr] = None
     master_pwd: Optional[str] = None
 
-    @validator("id")
+    @validator("uid")
     def uuid_pk_validator(cls, v):
         if v.version is None:
             raise ValueError("Invalid UUID")

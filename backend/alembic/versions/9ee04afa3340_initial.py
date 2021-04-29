@@ -1,8 +1,8 @@
-"""empty message
+"""initial
 
-Revision ID: 9c1bba1cd21b
+Revision ID: 9ee04afa3340
 Revises: 
-Create Date: 2021-04-29 16:35:49.106167
+Create Date: 2021-04-29 18:35:45.722674
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 import sqlalchemy_utils
 
 # revision identifiers, used by Alembic.
-revision = '9c1bba1cd21b'
+revision = '9ee04afa3340'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,11 +31,12 @@ def upgrade():
     sa.Column('site', sa.String(), nullable=False),
     sa.Column('user_id', sqlalchemy_utils.types.uuid.UUIDType(), nullable=True),
     sa.Column('username', sa.String(), nullable=False),
-    sa.Column('pwd', sa.String(), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.uid'], ),
     sa.PrimaryKeyConstraint('pid'),
+    sa.UniqueConstraint('password'),
     sa.UniqueConstraint('pid'),
-    sa.UniqueConstraint('pwd')
+    sa.UniqueConstraint('user_id', 'site', name='uniq_site_constraint')
     )
     # ### end Alembic commands ###
 

@@ -1,5 +1,4 @@
-import uuid
-from sqlalchemy import Column, String, Integer, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, String, ForeignKey, UniqueConstraint
 from sqlalchemy.sql.expression import text
 from sqlalchemy_utils.types.uuid import UUIDType
 
@@ -23,7 +22,7 @@ class Passwords(Base):
     """
 
     __tablename__ = "passwords"
-    __table_args__ = (UniqueConstraint('user_id', 'site', name='uniq_site_constraint'),)
+   
     pid = Column(
         UUIDType,
         primary_key=True,
@@ -33,5 +32,6 @@ class Passwords(Base):
     site = Column(String, nullable=False)
     user_id = Column(UUIDType, ForeignKey("users.uid"))
     username = Column(String, nullable=False)
-    pwd = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False, unique=True)
     
+    __table_args__ = (UniqueConstraint('user_id', 'site', name='uniq_site_constraint'),)
