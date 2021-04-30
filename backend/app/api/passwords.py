@@ -20,7 +20,7 @@ def get_password(
     retrieves the stored pwd for site for a given user
     (authenticated)
     """
-    return password.get_pwd(db, site=site, user_id=str(user.id), master_pwd=user.master_pwd)
+    return password.get_pwd(db, site=site, user_id=user.uid, master_pwd=user.master_pwd).dict(exclude_unset=True)
 
 
 @router.get("/all")
@@ -28,7 +28,8 @@ def get_all_password(user: UserBase = Depends(auth_user), db: Session = Depends(
     """
     retrieves all pwd for the logged in user
     """
-    return password.get_pwd_all(db, user_id=str(user.id), master_pwd=user.master_pwd)
+    res_list = password.get_pwd_all(db, user_id=user.uid, master_pwd=user.master_pwd)
+    return [item.dict(exclude_unset=True) for item in res_list]
 
 
 @router.post("/")
@@ -46,16 +47,16 @@ def post_password(
     return password.post_pwd(
         db,
         site=cred.site,
-        user_id=str(user.id),
+        user_id=user.uid,
         username=cred.username,
         password=cred.password,
         master_pwd=user.master_pwd,
-    )
+    ).dict(exclude_unset=True)
 
 
 @router.put("/")
 def change_password(
-    site: str, username: str, new_pwd: str, user: User = Depends(auth_user)
+    site: str, username: str, new_password: str, user: User = Depends(auth_user)
 ) -> None:
     """
     changes the pwd for a site
