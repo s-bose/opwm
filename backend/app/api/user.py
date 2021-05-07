@@ -106,7 +106,6 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
 @router.get("/user")
 def get_user_info(user = Depends(auth_user), db: Session = Depends(get_db)):
-    
     return user.dict(exclude={'master_pwd'})
 
 
