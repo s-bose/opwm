@@ -1,6 +1,8 @@
 from typing import Any, Dict
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+
 from sqlalchemy.orm import Session
+from starlette import status
 
 from app import utils
 from app.models import User
@@ -20,15 +22,33 @@ def get_password(
     retrieves the stored pwd for site for a given user
     (authenticated)
     """
-    return password.get_pwd(db, site=site, user_id=user.uid, master_pwd=user.master_pwd).dict(exclude_unset=True)
+    if (
+        res := password.get_pwd(
+            db, site=site, user_id=user.uid, master_pwd=user.master_pwd
+        )
+    ) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Password not found"
+        )
+
+    return res.dict(exclude_unset=True)
 
 
 @router.get("/all")
-def get_all_password(user: UserBase = Depends(auth_user), db: Session = Depends(get_db)):
+def get_all_password(
+    user: UserBase = Depends(auth_user), db: Session = Depends(get_db)
+):
     """
     retrieves all pwd for the logged in user
     """
-    res_list = password.get_pwd_all(db, user_id=user.uid, master_pwd=user.master_pwd)
+    if (
+        res_list := password.get_pwd_all(
+            db, user_id=user.uid, master_pwd=user.master_pwd
+        )
+    ) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Password not found"
+        )
     return [item.dict(exclude_unset=True) for item in res_list]
 
 
