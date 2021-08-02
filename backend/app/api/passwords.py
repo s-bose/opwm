@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.orm import Session
@@ -87,7 +87,7 @@ def change_password(
 
 @router.get("/generate")
 def generate_pwd(
-    size: int = None, urlsafe: bool = False, user: User = Depends(auth_user)
+    size: Optional[int] = None, urlsafe: bool = False, user: User = Depends(auth_user)
 ):
     """
     generates a random pwd and stores it wrt the username and site

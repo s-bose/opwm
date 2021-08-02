@@ -3,20 +3,22 @@ import secrets
 import random
 from typing import List
 from datetime import datetime, timedelta
+
 __char_dump = string.ascii_letters + string.digits + string.punctuation
 
-__DEFAULT_PWD_SIZE = 16
+__DEFAULT_PWD_SIZE = 20
 
 
-def gen_random_pwd(size: int = __DEFAULT_PWD_SIZE, urlsafe: bool = False):
+def gen_random_pwd(size_: int, urlsafe: bool = False):
     """
     Standard password generator function.
     Returns a combination of ascii characters for a given size.
     """
-
+    if not size_:
+        size_ = __DEFAULT_PWD_SIZE
     if not urlsafe:
-        return "".join(secrets.choice(__char_dump) for i in range(size))
-    return secrets.token_urlsafe(size)
+        return "".join(secrets.choice(__char_dump) for i in range(size_))
+    return secrets.token_urlsafe(size_)
 
 
 def gen_kw_pwd(
@@ -85,7 +87,6 @@ def gen_pwd_from_phrase(phrase: str, size: int, include_chars: List[str] = None)
     return gen_kw_pwd(keywords=keywords, size=size, include_chars=include_chars)
 
 
-
 # gen_kw_pwd(['shiladitya', 'bose', '31' 'aug', 'kolkata'],
 #            20, ['@', '?', '!', '#'])
 # gen_kw_pwd(['here', 'comes', 'the', 'sun'], 20, ['@'])
@@ -95,4 +96,3 @@ def gen_pwd_from_phrase(phrase: str, size: int, include_chars: List[str] = None)
 # print(gen_pwd_from_phrase('dc sucks balls', 10, ['@', '$']))
 # gen_random_pwd(12)
 #
-
