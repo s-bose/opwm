@@ -1,7 +1,66 @@
 <template>
-  <div class="home">
-      <div class="p-14 bg-black text-white">Tailwind works</div>
-  </div>
+<div class="body-bg min-h-screen py-24">
+  <div class="bg-white dark:bg-black w-10/12 sm:w-10/12 md:w-6/12 lg:w-4/12 pb-10 m-auto shadow-lg rounded-lg dark:text-white">
+    <div class="py-8 px-8 rounded-xl">
+        <h1 class="font-medium text-2xl mt-3 text-center">{{ isLogin ? "Login" : "Sign Up" }}</h1>
+        <form action="" class="mt-6">
+            <div class="my-7 text-sm">
+                <label for="email" class="block text-black">Email</label>
+                <input 
+                    type="text"
+                    id="email" 
+                    autofocus
+                    class="rounded-md px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" 
+                    placeholder="Email" 
+                    v-model="email"
+                />
+            </div>
+
+            <div class="my-7 text-sm">
+                <label for="password" class="block text-black">Master Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="rounded-md px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" 
+                    placeholder="Password" 
+                    v-model="masterPwd"
+                />
+                
+                <div class="flex justify-end mt-2 text-xs text-gray-600" v-if="isLogin">
+                    <a href="">Forgot Password?</a>
+                </div>
+            </div>
+                
+            <div class="my-7 text-sm pb-5" v-if="!isLogin">
+                <label for="confirm-password" class="block text-black">Confirm Master Password</label>
+                <input 
+                    type="password" 
+                    id="confirm-password" 
+                    class="rounded-md px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" 
+                    placeholder="Confirm password" 
+                    v-model="confirmMasterPwd"
+                />
+            </div>
+
+            <button 
+                class="block text-center text-white bg-gray-800 p-3 duration-300 rounded-md hover:bg-black w-full"
+            >
+                {{ isLogin ? "Login" : "Sign Up" }}
+            </button>
+        
+        </form>
+
+            <div class="flex md:justify-between justify-center items-center mt-10">
+            <div style="height: 1px;" class="bg-gray-300 md:block hidden w-4/12"></div>
+            <button class="md:mx-2 text-sm font-light hover:underline text-gray-400"
+            @click.prevent="onCreateAcc"
+            > {{ isLogin ? "Create an account" : "Login" }} </button> 
+            <div style="height: 1px;" class="bg-gray-300 md:block hidden w-4/12"></div>
+        </div>
+    </div>
+</div>
+</div>
+
 </template>
 
 <script>
@@ -11,6 +70,29 @@ export default {
   name: 'Home',
   components: {
     
+  },
+  data() {
+      return {
+          isLogin: true,
+          email: "",
+          masterPwd: "",
+          confirmMasterPwd: ""
+      }
+  },
+
+  methods: {
+      onCreateAcc() {
+          this.isLogin = !this.isLogin;
+          this.email = "";
+          this.masterPwd = "";
+          this.confirmMasterPwd = "";
+      }
   }
 }
 </script>
+
+<style scoped>
+.body-bg {
+  background: linear-gradient(180deg, #34e89e 0%,#0f3443 100% );
+}
+</style>
