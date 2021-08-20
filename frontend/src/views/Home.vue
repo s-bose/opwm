@@ -32,7 +32,7 @@
               :class="{ 'border-red-500': v$.email.$error }"
             />
 
-            <span v-if="v$.email.$error" class="error-span">
+            <span v-if="v$.email.$error" class="error-span text-red-500">
               Invalid email address !
             </span>
           </div>
@@ -56,8 +56,33 @@
               }"
             />
 
-            <span v-if="v$.password.password.$error" class="error-span">
+            <span
+              v-if="v$.password.password.$error"
+              class="error-span text-red-500"
+            >
               Password must be atleast 8 characters long !
+            </span>
+
+            <span
+              v-if="passwordStrength >= 0"
+              class="error-span"
+              :class="{
+                'text-red-500': passwordStrength == 0,
+                'text-yellow-500': passwordStrength == 1,
+                'text-blue-500': passwordStrength == 2,
+                'text-green-500': passwordStrength >= 3,
+              }"
+            >
+              Strength -
+              {{
+                passwordStrength == 0
+                  ? "weak"
+                  : passwordStrength == 1
+                  ? "medium"
+                  : passwordStrength == 2
+                  ? "strong"
+                  : "very strong"
+              }}
             </span>
 
             <div
@@ -80,7 +105,10 @@
               v-model="v$.password.confirm.$model"
             />
 
-            <span class="error-span" v-if="v$.password.confirm.$error">
+            <span
+              class="error-span text-red-500"
+              v-if="v$.password.confirm.$error"
+            >
               Passwords do not match !
             </span>
           </div>
@@ -169,6 +197,8 @@ export default {
       this.email = "";
       this.password.password = "";
       this.password.confirm = "";
+
+      this.v$.$reset();
     },
   },
 
@@ -204,7 +234,7 @@ export default {
         items-center
         font-medium
         tracking-wide
-        text-red-500 text-xs
+        text-xs
         mt-2
         ml-1;
 }
