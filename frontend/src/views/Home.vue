@@ -21,30 +21,20 @@
         </h1>
         <form action="" class="mt-6">
           <div class="my-7 text-sm">
-            <label
-              for="email"
-              class="block text-black"
-              :class="{ 'text-red-500': v$.email.$error }"
-              >Email</label
-            >
+            <label for="email" class="block text-black">Email</label>
             <input
               type="text"
               id="email"
               autofocus
-              class="
-                rounded-md
-                px-4
-                py-3
-                mt-3
-                focus:outline-none
-                bg-gray-100
-                w-full
-                border
-              "
+              class="form-input"
               placeholder="Email"
               v-model.trim="v$.email.$model"
               :class="{ 'border-red-500': v$.email.$error }"
             />
+
+            <span v-if="v$.email.$error" class="error-span">
+              Invalid email address !
+            </span>
           </div>
 
           <div class="my-7 text-sm">
@@ -54,18 +44,21 @@
             <input
               type="password"
               id="password"
-              class="
-                rounded-md
-                px-4
-                py-3
-                mt-3
-                focus:outline-none
-                bg-gray-100
-                w-full
-              "
+              class="form-input"
               placeholder="Password"
-              v-model="password.password"
+              v-model="v$.password.password.$model"
+              :class="{
+                'border-red-500':
+                  passwordStrength == 0 || v$.password.password.$error,
+                'border-yellow-500': passwordStrength == 1,
+                'border-blue-500': passwordStrength == 2,
+                'border-green-500': passwordStrength >= 3,
+              }"
             />
+
+            <span v-if="v$.password.password.$error" class="error-span">
+              Password must be atleast 8 characters long !
+            </span>
 
             <div
               class="flex justify-end mt-2 text-xs text-gray-600"
@@ -82,18 +75,14 @@
             <input
               type="password"
               id="confirm-password"
-              class="
-                rounded-md
-                px-4
-                py-3
-                mt-3
-                focus:outline-none
-                bg-gray-100
-                w-full
-              "
+              class="form-input"
               placeholder="Confirm password"
-              v-model="password.confirm"
+              v-model="v$.password.confirm.$model"
             />
+
+            <span class="error-span" v-if="v$.password.confirm.$error">
+              Passwords do not match !
+            </span>
           </div>
 
           <button
@@ -136,8 +125,10 @@
 <script>
 // @ is an alias to /src
 
+import zxcvbn from "zxcvbn";
+
 import useVuelidate from "@vuelidate/core";
-import { required, email } from "@vuelidate/validators";
+import { required, email, minLength, sameAs } from "@vuelidate/validators";
 
 export default {
   name: "Home",
@@ -153,23 +144,26 @@ export default {
         password: "",
         confirm: "",
       },
+      passwordStrength: -1,
     };
   },
   validations() {
     return {
       email: { required, email },
       password: {
-        password: "",
-        confirm: "",
+        password: { required, minLength: minLength(8) },
+        confirm: {
+          required,
+          minLength: minLength(8),
+          sameAsPassword: sameAs(this.password.password),
+        },
       },
     };
   },
 
   methods: {
     // onchange email and password validation, use vuelidate & zxcvbn
-    test() {
-      console.log(this.v$.email.$model);
-    },
+
     onCreateAcc() {
       this.isLogin = !this.isLogin;
       this.email = "";
@@ -179,18 +173,39 @@ export default {
   },
 
   updated() {
-    console.log(!this.v$.email.$error);
+    this.passwordStrength =
+      this.v$.password.password.$model !== ""
+        ? zxcvbn(this.v$.password.password.$model).score
+        : -1;
+
     this.v$.$validate;
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .body-bg {
   background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
 }
 
-.form-group--error {
-  border: 1px solid red;
+.form-input {
+  @apply rounded-md
+          px-4
+          py-3
+          mt-3
+          focus:outline-none
+          bg-gray-100
+          w-full
+          border;
+}
+
+.error-span {
+  @apply flex
+        items-center
+        font-medium
+        tracking-wide
+        text-red-500 text-xs
+        mt-2
+        ml-1;
 }
 </style>
