@@ -38,31 +38,52 @@
           </div>
 
           <div class="my-7 text-sm">
-            <label for="password" class="block text-black"
-              >Master Password</label
-            >
-            <input
-              type="password"
-              id="password"
-              class="form-input"
-              placeholder="Password"
-              v-model="v$.password.password.$model"
-              :class="[
-                !isLogin
-                  ? [
-                      passwordStrength == 0 || v$.password.password.$error
-                        ? 'border-red-500'
-                        : passwordStrength == 1
-                        ? 'border-yellow-500'
-                        : passwordStrength == 2
-                        ? 'border-blue-500'
-                        : passwordStrength >= 3
-                        ? 'border-green-500'
-                        : '',
-                    ]
-                  : '',
-              ]"
-            />
+            <label for="password" class="block text-black"> Master Password </label>
+            <div class="relative w-full">
+              <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                <button
+                  class="
+                    hover:bg-gray-200
+                    rounded
+                    px-1
+                    py-1
+                    mt-3
+                    text-sm text-gray-600
+                    hover:rounded-md
+                    cursor-pointer
+                  "
+                  id="toggle"
+                  type="button"
+                  @mouseup="showPass = !showPass"
+                  @mousedown="showPass = !showPass"
+                >
+                  {{ showPass ? "hide" : "show" }}
+                </button>
+              </div>
+
+              <input
+                :type="[showPass ? 'text' : 'password']"
+                id="password"
+                class="form-input"
+                placeholder="Password"
+                v-model="v$.password.password.$model"
+                :class="[
+                  !isLogin
+                    ? [
+                        passwordStrength == 0 || v$.password.password.$error
+                          ? 'border-red-500'
+                          : passwordStrength == 1
+                          ? 'border-yellow-500'
+                          : passwordStrength == 2
+                          ? 'border-blue-500'
+                          : passwordStrength >= 3
+                          ? 'border-green-500'
+                          : '',
+                      ]
+                    : '',
+                ]"
+              />
+            </div>
 
             <span
               v-if="v$.password.password.$error && !isLogin"
@@ -93,10 +114,7 @@
               }}
             </span>
 
-            <div
-              class="flex justify-end mt-2 text-xs text-gray-600"
-              v-if="isLogin"
-            >
+            <div class="flex justify-end mt-2 text-xs text-gray-600" v-if="isLogin">
               <a href="">Forgot Password?</a>
             </div>
           </div>
@@ -113,19 +131,12 @@
               v-model="v$.password.confirm.$model"
               :class="[
                 v$.password.confirm.$model !== ''
-                  ? [
-                      v$.password.confirm.$error
-                        ? 'border-red-500'
-                        : 'border-green-500',
-                    ]
+                  ? [v$.password.confirm.$error ? 'border-red-500' : 'border-green-500']
                   : '',
               ]"
             />
 
-            <span
-              class="error-span text-red-500"
-              v-if="v$.password.confirm.$error"
-            >
+            <span class="error-span text-red-500" v-if="v$.password.confirm.$error">
               Passwords do not match !
             </span>
           </div>
@@ -147,20 +158,14 @@
         </form>
 
         <div class="flex md:justify-between justify-center items-center mt-10">
-          <div
-            style="height: 1px"
-            class="bg-gray-300 md:block hidden w-4/12"
-          ></div>
+          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
           <button
             class="md:mx-2 text-sm font-light hover:underline text-gray-400"
-            @click.prevent="onCreateAcc"
+            @click.prevent="toggleSignup"
           >
             {{ isLogin ? "Create an account" : "Login" }}
           </button>
-          <div
-            style="height: 1px"
-            class="bg-gray-300 md:block hidden w-4/12"
-          ></div>
+          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
         </div>
       </div>
     </div>
@@ -189,6 +194,7 @@ export default {
         password: "",
         confirm: "",
       },
+      showPass: false,
       passwordStrength: -1,
     };
   },
@@ -196,7 +202,7 @@ export default {
     return {
       email: { required, email },
       password: {
-        password: { required, minLength: minLength(8) },
+        password: { required, minLength: minLength(8) }, // master pwd minimum 8 characters
         confirm: {
           required,
           minLength: minLength(8),
@@ -206,26 +212,26 @@ export default {
     };
   },
 
-  methods: {
-    // onchange email and password validation, use vuelidate & zxcvbn
-
-    onCreateAcc() {
-      this.isLogin = !this.isLogin;
-      this.email = "";
-      this.password.password = "";
-      this.password.confirm = "";
-
-      this.v$.$reset();
-    },
-  },
-
   updated() {
+    // hook to validate on every form update
     this.passwordStrength =
       this.v$.password.password.$model !== ""
         ? zxcvbn(this.v$.password.password.$model).score
         : -1;
 
     this.v$.$validate;
+  },
+
+  methods: {
+    toggleSignup() {
+      // login / signup toogle
+      this.isLogin = !this.isLogin;
+      this.email = "";
+      this.password.password = "";
+      this.password.confirm = "";
+
+      this.v$.$reset(); // reset form entries on toggle
+    },
   },
 };
 </script>
