@@ -47,24 +47,32 @@
               class="form-input"
               placeholder="Password"
               v-model="v$.password.password.$model"
-              :class="{
-                'border-red-500':
-                  passwordStrength == 0 || v$.password.password.$error,
-                'border-yellow-500': passwordStrength == 1,
-                'border-blue-500': passwordStrength == 2,
-                'border-green-500': passwordStrength >= 3,
-              }"
+              :class="[
+                !isLogin
+                  ? [
+                      passwordStrength == 0 || v$.password.password.$error
+                        ? 'border-red-500'
+                        : passwordStrength == 1
+                        ? 'border-yellow-500'
+                        : passwordStrength == 2
+                        ? 'border-blue-500'
+                        : passwordStrength >= 3
+                        ? 'border-green-500'
+                        : '',
+                    ]
+                  : '',
+              ]"
             />
 
             <span
-              v-if="v$.password.password.$error"
+              v-if="v$.password.password.$error && !isLogin"
               class="error-span text-red-500"
             >
               Password must be atleast 8 characters long !
             </span>
 
             <span
-              v-if="passwordStrength >= 0"
+              v-if="passwordStrength >= 0 && !isLogin"
               class="error-span"
               :class="{
                 'text-red-500': passwordStrength == 0,
@@ -103,6 +111,15 @@
               class="form-input"
               placeholder="Confirm password"
               v-model="v$.password.confirm.$model"
+              :class="[
+                v$.password.confirm.$model !== ''
+                  ? [
+                      v$.password.confirm.$error
+                        ? 'border-red-500'
+                        : 'border-green-500',
+                    ]
+                  : '',
+              ]"
             />
 
             <span
