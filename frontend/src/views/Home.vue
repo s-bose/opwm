@@ -38,7 +38,9 @@
           </div>
 
           <div class="my-7 text-sm">
-            <label for="password" class="block text-black"> Master Password </label>
+            <label for="password" class="block text-black">
+              Master Password
+            </label>
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
                 <button
@@ -114,7 +116,10 @@
               }}
             </span>
 
-            <div class="flex justify-end mt-2 text-xs text-gray-600" v-if="isLogin">
+            <div
+              class="flex justify-end mt-2 text-xs text-gray-600"
+              v-if="isLogin"
+            >
               <a href="">Forgot Password?</a>
             </div>
           </div>
@@ -131,12 +136,19 @@
               v-model="v$.password.confirm.$model"
               :class="[
                 v$.password.confirm.$model !== ''
-                  ? [v$.password.confirm.$error ? 'border-red-500' : 'border-green-500']
+                  ? [
+                      v$.password.confirm.$error
+                        ? 'border-red-500'
+                        : 'border-green-500',
+                    ]
                   : '',
               ]"
             />
 
-            <span class="error-span text-red-500" v-if="v$.password.confirm.$error">
+            <span
+              class="error-span text-red-500"
+              v-if="v$.password.confirm.$error"
+            >
               Passwords do not match !
             </span>
           </div>
@@ -158,14 +170,20 @@
         </form>
 
         <div class="flex md:justify-between justify-center items-center mt-10">
-          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
+          <div
+            style="height: 1px"
+            class="bg-gray-300 md:block hidden w-4/12"
+          ></div>
           <button
             class="md:mx-2 text-sm font-light hover:underline text-gray-400"
             @click.prevent="toggleSignup"
           >
             {{ isLogin ? "Create an account" : "Login" }}
           </button>
-          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
+          <div
+            style="height: 1px"
+            class="bg-gray-300 md:block hidden w-4/12"
+          ></div>
         </div>
       </div>
     </div>
