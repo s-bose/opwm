@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white lg:w-4/12 md:6/12 w-10/12 m-auto my-10 shadow-md">
+  <div class="container bg-white m-auto my-10 shadow-md">
     <div class="py-8 px-8 rounded-xl">
       <h1 class="font-medium text-2xl mt-3 antialiased">{{ site }}</h1>
       <div class="underline mt-2 text-gray-600 hover:text-gray-800">

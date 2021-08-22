@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Password from "./Password.vue";
+import Password from "../components/Password.vue";
 
 export default {
   name: "About",
