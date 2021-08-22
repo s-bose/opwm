@@ -12,13 +12,12 @@
             inset-0
             rounded-lg
             cursor-pointer
-            hover:shadow-xl
             delay-50
             text-center
             content-center
             flex
           "
-          v-show="!show"
+          v-if="!show"
         >
           <h1 class="font-large text-2xl m-auto antialiased">
             {{ site }}
@@ -121,22 +120,18 @@ export default {
     password: String,
   },
 
-  methods: {
-    // toggleCard() {
-    // }
-  },
+  methods: {},
 };
 </script>
 
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
-  transform: translateY(-50%);
   opacity: 0;
 }
 </style>
