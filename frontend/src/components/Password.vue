@@ -19,7 +19,7 @@
             flex
           "
           v-show="!toggleCard"
-          @click.stop.prevent="toggleCard = !toggleCard"
+          @click.stop.prevent="showCard"
         >
           <h1 class="font-large text-2xl m-auto antialiased">
             {{ site }}
@@ -105,6 +105,12 @@
 </template>
 
 <script>
+// import { reactive } from "vue";
+
+// const toggleCardMutex = reactive({
+//   message: 0,
+// });
+
 export default {
   name: "Password",
   components: {},
@@ -123,8 +129,9 @@ export default {
   },
 
   methods: {
-    // toggleCard() {
-    // }
+    showCard() {
+      this.toggleCard = !this.toggleCard;
+    },
   },
 };
 </script>
