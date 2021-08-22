@@ -3,7 +3,7 @@
     <div class="py-8 px-8 rounded-xl">
       <h1 class="font-medium text-2xl mt-3 antialiased">{{ site }}</h1>
       <div class="underline mt-2 text-gray-600 hover:text-gray-800">
-        <a :href="link">{{ link }}</a>
+        <a href="">{{ link }}</a>
       </div>
 
       <form action="" class="mt-6">
@@ -83,7 +83,7 @@
 
 <script>
 export default {
-  name: "Passwords",
+  name: "Password",
   components: {},
 
   props: {
