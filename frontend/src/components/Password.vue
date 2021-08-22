@@ -18,8 +18,7 @@
             content-center
             flex
           "
-          v-show="!toggleCard"
-          @click.stop.prevent="showCard"
+          v-show="!show"
         >
           <h1 class="font-large text-2xl m-auto antialiased">
             {{ site }}
@@ -38,7 +37,6 @@
             type="text"
             readonly
             autofocus
-            id="username"
             class="
               rounded-sm
               px-4
@@ -57,7 +55,6 @@
           <input
             type="password"
             readonly
-            id="password"
             class="
               rounded-sm
               px-4
@@ -105,12 +102,6 @@
 </template>
 
 <script>
-// import { reactive } from "vue";
-
-// const toggleCardMutex = reactive({
-//   message: 0,
-// });
-
 export default {
   name: "Password",
   components: {},
@@ -122,6 +113,8 @@ export default {
   },
 
   props: {
+    show: Boolean,
+
     site: String,
     link: String,
     username: String,
@@ -129,9 +122,8 @@ export default {
   },
 
   methods: {
-    showCard() {
-      this.toggleCard = !this.toggleCard;
-    },
+    // toggleCard() {
+    // }
   },
 };
 </script>
@@ -139,7 +131,7 @@ export default {
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in-out;
 }
 
 .fade-enter,

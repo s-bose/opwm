@@ -17,12 +17,14 @@
       "
     >
       <Password
-        v-for="entry in entries"
-        :key="entry.id"
+        v-for="(entry, index) in entries"
+        :key="index"
         :site="entry.site"
         :link="entry.link"
         :username="entry.username"
         :password="entry.password"
+        @click="toggleCard(index)"
+        :show="isActive === index"
       />
     </div>
   </div>
@@ -37,44 +39,39 @@ export default {
 
   data() {
     return {
+      isActive: null,
       entries: [
         {
-          id: 1,
           site: "Google",
           link: "http://www.google.com",
           username: "joe",
           password: "mamma",
         },
         {
-          id: 2,
           site: "Youtube",
           link: "http://www.youtube.com",
           username: "david32",
           password: "cumbucket69",
         },
         {
-          id: 3,
           site: "Facebook",
           link: "http://www.facebook.com",
           username: "nigga69420",
           password: "urmomEatsAss69",
         },
         {
-          id: 4,
           site: "Mega",
           link: "http://www.mega.nz",
           username: "dude_the_legend",
           password: "xxx_tentacion_xxx",
         },
         {
-          id: 5,
           site: "Twitter",
           link: "http://www.twitter.com",
           username: "donald_drump",
           password: "tronald_dump",
         },
         {
-          id: 6,
           site: "Reddit",
           link: "http://www.reddit.com",
           username: "cummy_bot",
@@ -82,6 +79,12 @@ export default {
         },
       ],
     };
+  },
+
+  methods: {
+    toggleCard(index) {
+      this.isActive = index;
+    },
   },
 };
 </script>
