@@ -1,6 +1,31 @@
 <template>
-  <div class="container bg-white m-auto my-10 shadow-md">
-    <div class="py-8 px-8 rounded-xl">
+  <div class="container bg-white m-auto my-10 shadow-md rounded-lg">
+    <div class="py-8 px-8 relative overflow-hidden">
+      <transition name="fade">
+        <div
+          class="
+            bg-gray-400
+            text-white
+            h-full
+            w-full
+            absolute
+            inset-0
+            rounded-lg
+            cursor-pointer
+            hover:shadow-xl
+            delay-50
+            text-center
+            content-center
+            flex
+          "
+          v-show="!toggleCard"
+          @click.stop.prevent="toggleCard = !toggleCard"
+        >
+          <h1 class="font-large text-2xl m-auto antialiased">
+            {{ site }}
+          </h1>
+        </div>
+      </transition>
       <h1 class="font-medium text-2xl mt-3 antialiased">{{ site }}</h1>
       <div class="underline mt-2 text-gray-600 hover:text-gray-800">
         <a href="">{{ link }}</a>
@@ -55,7 +80,6 @@
               duration-300
               hover:bg-green-900
               hover:text-white
-              rounded-sm
               w-2/4
             "
           >
@@ -69,7 +93,6 @@
               duration-300
               hover:bg-red-900
               hover:text-white
-              rounded-sm
               w-2/4
             "
           >
@@ -86,14 +109,35 @@ export default {
   name: "Password",
   components: {},
 
+  data() {
+    return {
+      toggleCard: false,
+    };
+  },
+
   props: {
     site: String,
     link: String,
     username: String,
     password: String,
   },
+
+  methods: {
+    // toggleCard() {
+    // }
+  },
 };
 </script>
 
 <style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.fade-enter,
+.fade-leave-to {
+  transform: translateY(-50%);
+  opacity: 0;
+}
 </style>

@@ -1,28 +1,30 @@
 <template>
-  <h1 class="font-medium text-5xl mt-3 antialiased">This is Home</h1>
-  <div
-    class="
-      container-fluid
-      items-center
-      mx-4
-      h-full
-      grid grid-cols-1
-      sm:grid-cols-2
-      md:grid-cols-2
-      lg:grid-cols-2
-      xl:grid-cols-3
-      transition
-      gap-4
-    "
-  >
-    <Password
-      v-for="entry in entries"
-      :key="entry.id"
-      :site="entry.site"
-      :link="entry.link"
-      :username="entry.username"
-      :password="entry.password"
-    />
+  <div class="container-fluid h-full bg-gray-300">
+    <h1 class="font-medium text-5xl mt-3 antialiased">This is Home</h1>
+    <div
+      class="
+        container-fluid
+        items-center
+        mx-4
+        h-full
+        grid grid-cols-1
+        sm:grid-cols-2
+        md:grid-cols-2
+        lg:grid-cols-2
+        xl:grid-cols-3
+        transition
+        gap-5
+      "
+    >
+      <Password
+        v-for="entry in entries"
+        :key="entry.id"
+        :site="entry.site"
+        :link="entry.link"
+        :username="entry.username"
+        :password="entry.password"
+      />
+    </div>
   </div>
 </template>
 
