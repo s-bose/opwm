@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid h-full bg-gray-300">
+  <div class="container-fluid h-full bg-gray-700">
     <h1 class="font-medium text-5xl mt-3 antialiased">This is Home</h1>
     <div
       class="
