@@ -12,6 +12,7 @@
         md:grid-cols-2
         lg:grid-cols-2
         xl:grid-cols-3
+        2xl:grid-cols-4
         transition
         gap-5
       "
@@ -90,4 +91,7 @@ export default {
 </script>
 
 <style>
+.bg-gradient {
+  background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
+}
 </style>

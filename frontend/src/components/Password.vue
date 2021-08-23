@@ -1,6 +1,6 @@
 <template>
   <div class="container bg-white m-auto my-10 shadow-2xl rounded-2xl">
-    <div class="py-8 px-8 relative h-5/12 overflow-hidden">
+    <div class="py-8 px-8 relative overflow-hidden">
       <transition name="fade">
         <div
           class="
@@ -31,9 +31,9 @@
 
       <form action="" class="mt-6">
         <div class="my-5 text-sm">
-          <label for="username" class="block text-black text-lg"
-            >Username</label
-          >
+          <label for="username" class="block text-black text-lg">
+            Username
+          </label>
           <input
             type="text"
             readonly
@@ -53,11 +53,35 @@
           />
         </div>
         <div class="my-5 text-sm">
-          <label for="password" class="block text-black text-lg"
-            >Password</label
-          >
+          <label for="password" class="block text-black text-lg">
+            Password
+          </label>
+
+          <div class="relative w-full" v-if="show">
+            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+              <button
+                class="
+                  hover:bg-gray-200
+                  rounded
+                  px-1
+                  py-1
+                  mt-12
+                  text-sm text-gray-600
+                  hover:rounded-md
+                  cursor-pointer
+                "
+                id="toggle"
+                type="button"
+                @mouseup="showPass = !showPass"
+                @mousedown="showPass = !showPass"
+              >
+                {{ showPass ? "hide" : "show" }}
+              </button>
+            </div>
+          </div>
+
           <input
-            type="password"
+            :type="[showPass ? 'text' : 'password']"
             readonly
             class="
               appearance-none
@@ -77,13 +101,14 @@
           <button
             class="
               text-center text-black
-              border-0 border-b-2
+              border-0
               p-3
               duration-300
               hover:bg-green-900
               hover:border-green-500
               hover:text-white
               rounded-full
+              shadow-xl
               w-2/4
             "
           >
@@ -92,13 +117,14 @@
           <button
             class="
               text-center text-black
-              border-0 border-b-2
+              border-0
               p-3
               duration-300
               hover:bg-red-900
               hover:text-white
               rounded-full
               w-2/4
+              shadow-xl
             "
           >
             Delete
@@ -118,6 +144,7 @@ export default {
     return {
       toggleCard: false,
       gradient: "",
+      showPass: false,
     };
   },
 
@@ -137,6 +164,8 @@ export default {
         "c",
         "d",
         "e",
+        "f",
+        "0",
         "1",
         "2",
         "3",
@@ -155,9 +184,12 @@ export default {
           return x1 + x2;
         })();
 
-        for (let i = 0; i < 3; i++) {
-          a += pair;
-        }
+        // for (let i = 0; i < 3; i++) {
+        //   a += pair;
+        // }
+        a += "50";
+        a += pair;
+        a += "89";
         return a;
       };
 
@@ -170,7 +202,7 @@ export default {
     },
   },
 
-  created() {
+  mounted() {
     this.gradient = this.generateGradBg();
   },
 };
