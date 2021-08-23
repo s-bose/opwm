@@ -1,6 +1,6 @@
 <template>
-  <div class="container bg-white m-auto my-10 shadow-md">
-    <div class="py-8 px-8 relative overflow-hidden">
+  <div class="container bg-white m-auto my-10 shadow-2xl rounded-2xl">
+    <div class="py-8 px-8 relative h-5/12 overflow-hidden">
       <transition name="fade">
         <div
           class="
@@ -14,6 +14,7 @@
             text-center
             content-center
             flex
+            rounded-2xl
           "
           :style="{ background: gradient }"
           v-if="!show"
@@ -40,7 +41,7 @@
             class="
               appearance-none
               bg-transparent
-              border-0 border-b-2 border-indigo-300
+              border-0 border-b-2 border-green-400
               px-4
               py-3
               mt-3
@@ -61,7 +62,7 @@
             class="
               appearance-none
               bg-transparent
-              border-0 border-b-2 border-indigo-300
+              border-0 border-b-2 border-green-400
               px-4
               py-3
               mt-3
@@ -82,6 +83,7 @@
               hover:bg-green-900
               hover:border-green-500
               hover:text-white
+              rounded-full
               w-2/4
             "
           >
@@ -95,6 +97,7 @@
               duration-300
               hover:bg-red-900
               hover:text-white
+              rounded-full
               w-2/4
             "
           >
@@ -134,8 +137,6 @@ export default {
         "c",
         "d",
         "e",
-        "f",
-        "0",
         "1",
         "2",
         "3",
@@ -148,19 +149,23 @@ export default {
       ];
 
       const populate = (a) => {
-        for (let i = 0; i < 6; i++) {
-          let x = Math.round(Math.random() * (hexCols.length - 1));
-          a += hexCols[x];
+        const pair = (() => {
+          let x1 = hexCols[Math.round(Math.random() * (hexCols.length - 1))];
+          let x2 = hexCols[Math.round(Math.random() * (hexCols.length - 1))];
+          return x1 + x2;
+        })();
+
+        for (let i = 0; i < 3; i++) {
+          a += pair;
         }
         return a;
       };
 
       let grad1 = populate("#");
       let grad2 = populate("#");
-      let angle = Math.round(Math.random() * 360);
 
       let gradient =
-        "linear-gradient(" + angle + "deg, " + grad1 + "," + grad2 + ")";
+        "linear-gradient(" + 180 + "deg, " + grad1 + "," + grad2 + ")";
       return gradient;
     },
   },
