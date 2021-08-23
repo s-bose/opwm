@@ -1,6 +1,41 @@
 <template>
   <div class="container-fluid h-full bg-white">
-    <h1 class="font-medium text-5xl mt-3 antialiased">This is Home</h1>
+    <div class="p-8">
+      <div class="bg-white flex items-center rounded-full shadow-xl">
+        <input
+          class="
+            rounded-l-full
+            w-full
+            py-4
+            px-6
+            text-gray-700
+            leading-tight
+            focus:outline-none
+          "
+          id="search"
+          type="text"
+          placeholder="Search"
+        />
+
+        <div class="p-4">
+          <button
+            class="
+              text-black
+              p-2
+              bg-none
+              focus:outline-none
+              w-auto
+              h-auto
+              flex
+              items-center
+              justify-center
+              shadow-xl
+            "
+          ></button>
+        </div>
+      </div>
+    </div>
+
     <div
       class="
         container-fluid
@@ -93,5 +128,25 @@ export default {
 <style>
 .bg-gradient {
   background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
+}
+
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #4691f6;
+}
+
+.svg-icon circle {
+  stroke: #4691f6;
+  stroke-width: 1;
 }
 </style>
