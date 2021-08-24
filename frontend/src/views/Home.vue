@@ -6,15 +6,16 @@
           class="
             rounded-l-full
             w-full
-            py-4
+            py-6
             px-6
-            text-gray-700
+            text-gray-500
             leading-tight
             focus:outline-none
           "
           id="search"
           type="text"
-          placeholder="Search"
+          placeholder="Search..."
+          v-model="searchItem"
         />
 
         <div class="p-4">
@@ -53,7 +54,7 @@
       "
     >
       <Password
-        v-for="(entry, index) in entries"
+        v-for="(entry, index) in matchSearchItem"
         :key="index"
         :site="entry.site"
         :link="entry.link"
@@ -76,6 +77,7 @@ export default {
   data() {
     return {
       isActive: null,
+      searchItem: "",
       entries: [
         {
           site: "Google",
@@ -122,11 +124,21 @@ export default {
       this.isActive = index;
     },
   },
+
+  computed: {
+    matchSearchItem() {
+      if (this.searchItem === "") {
+        return this.entries;
+      } else {
+        return this.entries.filter((entry) => entry.site === this.searchItem);
+      }
+    },
+  },
 };
 </script>
 
 <style>
-.bg-gradient {
+.body-bg {
   background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
 }
 

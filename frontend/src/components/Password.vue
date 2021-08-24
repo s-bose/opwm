@@ -4,6 +4,7 @@
       <transition name="fade">
         <div
           class="
+            bg-gradient
             text-white
             h-full
             w-full
@@ -15,8 +16,8 @@
             content-center
             flex
             rounded-2xl
+            z-10
           "
-          :style="{ background: gradient }"
           v-if="!show"
         >
           <h1 class="font-large text-2xl m-auto antialiased">
@@ -57,7 +58,7 @@
             Password
           </label>
 
-          <div class="relative w-full" v-if="show">
+          <div class="relative w-full">
             <div class="absolute inset-y-0 right-0 flex items-center px-2">
               <button
                 class="
@@ -70,7 +71,6 @@
                   hover:rounded-md
                   cursor-pointer
                 "
-                id="toggle"
                 type="button"
                 @mouseup="showPass = !showPass"
                 @mousedown="showPass = !showPass"
@@ -217,5 +217,9 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.bg-gradient {
+  background: linear-gradient(180deg, #f9fafb, #6b7280);
 }
 </style>
