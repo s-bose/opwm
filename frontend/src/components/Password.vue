@@ -35,6 +35,42 @@
           <label for="username" class="block text-black text-lg">
             Username
           </label>
+          <div class="relative w-full">
+            <div class="absolute inset-y-0 right-0 flex items-center px-2">
+              <button
+                class="
+                  hover:bg-gray-200
+                  rounded
+                  px-1
+                  py-1
+                  mt-12
+                  text-sm text-gray-600
+                  hover:rounded-md
+                  cursor-pointer
+                "
+                type="button"
+                @mouseup="showPass = !showPass"
+                @mousedown="showPass = !showPass"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#000000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                  ></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+              </button>
+            </div>
+          </div>
           <input
             type="text"
             readonly
@@ -64,7 +100,7 @@
                 class="
                   hover:bg-gray-200
                   rounded
-                  px-1
+                  px-2
                   py-1
                   mt-12
                   text-sm text-gray-600
@@ -75,7 +111,51 @@
                 @mouseup="showPass = !showPass"
                 @mousedown="showPass = !showPass"
               >
-                {{ showPass ? "hide" : "show" }}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#000000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+
+              <button
+                class="
+                  hover:bg-gray-200
+                  rounded
+                  px-2
+                  py-1
+                  mt-12
+                  text-sm text-gray-600
+                  hover:rounded-md
+                  cursor-pointer
+                "
+                type="button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#000000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                  ></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
               </button>
             </div>
           </div>
