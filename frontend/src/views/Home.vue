@@ -165,7 +165,9 @@ export default {
       if (this.searchItem === "") {
         return this.entries;
       } else {
-        return this.entries.filter((entry) => entry.site === this.searchItem);
+        return this.entries.filter((entry) =>
+          entry.site.toLowerCase().includes(this.searchItem.toLowerCase())
+        );
       }
     },
   },
@@ -175,25 +177,5 @@ export default {
 <style>
 .body-bg {
   background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
-}
-
-/* -----
-SVG Icons - svgicons.sparkk.fr
------ */
-
-.svg-icon {
-  width: 1em;
-  height: 1em;
-}
-
-.svg-icon path,
-.svg-icon polygon,
-.svg-icon rect {
-  fill: #4691f6;
-}
-
-.svg-icon circle {
-  stroke: #4691f6;
-  stroke-width: 1;
 }
 </style>
