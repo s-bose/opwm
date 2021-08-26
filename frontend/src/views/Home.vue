@@ -173,7 +173,7 @@ export default {
   mounted() {
     document.addEventListener("click", (e) => {
       e.preventDefault();
-      if (!this.pwds[this.isActive].$el.contains(e.target)) {
+      if (this.isActive && !this.pwds[this.isActive].$el.contains(e.target)) {
         this.isActive = null;
       }
     });

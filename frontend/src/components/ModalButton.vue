@@ -310,7 +310,9 @@ export default {
       showModal: false,
     };
   },
-
+  updated() {
+    console.log(this.link);
+  },
   methods: {
     submitForm() {
       this.showModal = !this.showModal;

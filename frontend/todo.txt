@@ -1,0 +1,4 @@
+1. reset modal on exit
+2. make updated() hook work 
+3. on updated(), modify site name to the SLD of link
+4. lock logo as heading for modal
