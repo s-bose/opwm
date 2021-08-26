@@ -1,0 +1,2 @@
+- make a confirm add / error adding pop up after addition
+- make the edit / delete buttons working

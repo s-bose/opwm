@@ -348,10 +348,15 @@
 <script>
 import useVuelidate from "@vuelidate/core";
 import { required, url } from "@vuelidate/validators";
+import { parse } from "tldts";
+
 export default {
   name: "ModalButton",
+
   components: {},
+
   emits: ["newPassword"],
+
   data() {
     return {
       v$: useVuelidate(),
@@ -366,6 +371,7 @@ export default {
       showModal: false,
     };
   },
+
   validations() {
     return {
       form: {
@@ -380,16 +386,16 @@ export default {
   methods: {
     submitForm() {
       if (this.v$.$validate()) {
-        if (this.form.site === "") {
-          let url = new URL(this.form.link);
-
-          this.form.site = url.hostname
-            .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
-            .split("/")[0]
-            .split(".")[0];
+        if (!this.form.site) {
+          const result = parse(this.form.link);
+          this.form.site = result.domainWithoutSuffix || result.domain;
         }
-
+        console.log(this.form);
         this.$emit("newPassword", { ...this.form });
+        // this.form.site = "";
+        // this.form.link = "";
+        // this.form.username = "";
+        // this.form.password = "";
         this.form = {};
 
         this.showModal = !this.showModal;
