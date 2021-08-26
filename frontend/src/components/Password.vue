@@ -27,7 +27,7 @@
       </transition>
       <h1 class="font-medium text-2xl mt-3 antialiased">{{ site }}</h1>
       <div class="underline mt-2 text-gray-600 hover:text-gray-800">
-        <a href="">{{ link }}</a>
+        <a :href="link" @click="redirectUrl">{{ link }}</a>
       </div>
 
       <form action="" class="mt-6">
@@ -279,6 +279,9 @@ export default {
       let gradient =
         "linear-gradient(" + 180 + "deg, " + grad1 + "," + grad2 + ")";
       return gradient;
+    },
+    redirectUrl() {
+      window.open(this.link);
     },
   },
 
