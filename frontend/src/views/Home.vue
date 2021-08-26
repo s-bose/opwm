@@ -100,6 +100,7 @@
         duration-200
         focus:outline-none
       "
+      @click.prevent="showModal = !showModal"
     >
       <svg
         viewBox="0 0 20 20"
@@ -115,7 +116,7 @@
       </svg>
     </button>
   </div>
-  <PasswordModal />
+  <PasswordModal :show="showModal" />
 </template>
 
 <script>
@@ -130,6 +131,7 @@ export default {
     return {
       isActive: null,
       searchItem: "",
+      showModal: false,
       entries: [
         {
           site: "Google",
