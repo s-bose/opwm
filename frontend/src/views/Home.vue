@@ -67,15 +67,22 @@
         transition
         gap-5
       "
+      ref="outer"
+      @click.prevent="clickOutside"
     >
       <Password
         v-for="(entry, index) in matchSearchItem"
+        :ref="
+          (el) => {
+            pwds[index] = el;
+          }
+        "
         :key="index"
         :site="entry.site"
         :link="entry.link"
         :username="entry.username"
         :password="entry.password"
-        @click="toggleCard(index)"
+        @click.prevent="toggleCard(index)"
         :show="isActive === index"
       />
     </div>
@@ -84,18 +91,24 @@
 </template>
 
 <script>
+import { ref } from "vue";
+
 import Password from "../components/Password.vue";
 import ModalButton from "../components/ModalButton.vue";
 
 export default {
   name: "Home",
   components: { Password, ModalButton },
-
+  setup() {
+    const pwds = ref([]);
+    return { pwds };
+  },
   data() {
     return {
       isActive: null,
       searchItem: "",
       showModal: false,
+
       entries: [
         {
           site: "Google",
@@ -156,6 +169,14 @@ export default {
         );
       }
     },
+  },
+  mounted() {
+    document.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!this.pwds[this.isActive].$el.contains(e.target)) {
+        this.isActive = null;
+      }
+    });
   },
 };
 </script>
