@@ -1,4 +1,40 @@
 <template>
+  <button
+    class="
+      fixed
+      z-20
+      bottom-10
+      right-10
+      p-0
+      w-16
+      h-16
+      bg-green-600
+      rounded-full
+      hover:bg-gray-800
+      shadow-lg
+      active:shadow-lg
+      mouse
+      shadow
+      transition
+      ease-in
+      duration-200
+      focus:outline-none
+    "
+    @click.prevent="showModal = !showModal"
+  >
+    <svg
+      viewBox="0 0 20 20"
+      enable-background="new 0 0 20 20"
+      class="w-6 h-6 inline-block"
+    >
+      <path
+        fill="#FFFFFF"
+        d="M16,10c0,0.553-0.048,1-0.601,1H11v4.399C11,15.951,10.553,16,10,16c-0.553,0-1-0.049-1-0.601V11H4.601
+                                    C4.049,11,4,10.553,4,10c0-0.553,0.049-1,0.601-1H9V4.601C9,4.048,9.447,4,10,4c0.553,0,1,0.048,1,0.601V9h4.399
+                                    C15.952,9,16,9.447,16,10z"
+      />
+    </svg>
+  </button>
   <transition name="fade-modal">
     <div
       class="
@@ -19,17 +55,21 @@
         focus:outline-none
         bg-no-repeat bg-center bg-cover
       "
-      v-show="show"
-      id="modal-id"
+      v-show="showModal"
+      id="modal-wrapper"
+      @click.stop=""
     >
-      <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
+      <div
+        class="absolute bg-black opacity-80 inset-0 z-0"
+        @click.prevent="showModal = !showModal"
+      ></div>
       <div
         class="
           w-full
           max-w-lg
           p-5
+          m-5
           relative
-          mx-auto
           my-auto
           rounded-xl
           shadow-lg
@@ -64,6 +104,7 @@
                 </label>
                 <div class="relative w-full"></div>
                 <input
+                  required
                   type="text"
                   autofocus
                   class="form-input"
@@ -228,6 +269,7 @@
                 w-auto
                 shadow-xl
               "
+              @click.prevent="submitForm"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -252,12 +294,12 @@
 </template>
 
 <script>
+// import PasswordModal from "./NewPasswordModal.vue";
+
 export default {
-  name: "PasswordModal",
+  name: "ModalButton",
   components: {},
-  props: {
-    show: Boolean,
-  },
+  emits: ["newPassword"],
   data() {
     return {
       site: "",
@@ -265,7 +307,24 @@ export default {
       username: "",
       password: "",
       showPass: false,
+      showModal: false,
     };
+  },
+
+  methods: {
+    submitForm() {
+      this.showModal = !this.showModal;
+      this.$emit("newPassword", {
+        site: this.site,
+        link: this.link,
+        username: this.username,
+        password: this.password,
+      });
+      this.site = "";
+      this.link = "";
+      this.username = "";
+      this.password = "";
+    },
   },
 };
 </script>
