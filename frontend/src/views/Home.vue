@@ -86,7 +86,8 @@
         :show="isActive === index"
       />
     </div>
-    <ModalButton @new-password="addNewPassword" />
+
+    <ModalButton @new-password="addNewPassword"></ModalButton>
   </div>
 </template>
 
@@ -185,5 +186,15 @@ export default {
 <style>
 .body-bg {
   background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
+}
+
+.fade-modal-enter-active,
+.fade-modal-leave-active {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.fade-modal-enter-from,
+.fade-modal-leave-to {
+  opacity: 0;
 }
 </style>
