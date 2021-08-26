@@ -3,15 +3,7 @@
     <div class="p-8">
       <div class="bg-white flex items-center rounded-full shadow-xl">
         <input
-          class="
-            rounded-l-full
-            w-full
-            py-6
-            px-6
-            text-gray-700
-            leading-tight
-            focus:outline-none
-          "
+          class="rounded-l-full w-full py-6 px-6 text-gray-700 leading-tight focus:outline-none"
           id="search"
           type="text"
           placeholder="Search..."
@@ -34,20 +26,7 @@
         </svg>
 
         <div class="p-4">
-          <button
-            class="
-              text-black
-              p-2
-              bg-none
-              focus:outline-none
-              w-auto
-              h-auto
-              flex
-              items-center
-              justify-center
-              shadow-xl
-            "
-          ></button>
+          <button class="text-black p-2 bg-none focus:outline-none w-auto h-auto flex items-center justify-center shadow-xl"></button>
         </div>
       </div>
     </div>
@@ -166,19 +145,14 @@ export default {
       if (this.searchItem === "") {
         return this.entries;
       } else {
-        return this.entries.filter((entry) =>
-          entry.site.toLowerCase().includes(this.searchItem.toLowerCase())
-        );
+        return this.entries.filter((entry) => entry.site.toLowerCase().includes(this.searchItem.toLowerCase()));
       }
     },
   },
   mounted() {
     document.addEventListener("click", (e) => {
       e.preventDefault();
-      if (
-        this.isActive !== null &&
-        !this.pwds[this.isActive].$el.contains(e.target)
-      ) {
+      if (this.isActive !== null && !this.pwds[this.isActive].$el.contains(e.target)) {
         this.isActive = null;
       }
     });
