@@ -301,7 +301,12 @@ export default {
           const result = parse(this.form.link);
           this.form.site = result.domainWithoutSuffix || result.domain;
         }
-        console.log(this.form);
+
+        this.$emit("newPassword", { ...this.form });
+
+        this.form = {};
+        this.showModal = !this.showModal;
+        this.v$.$reset();
       }
     },
   },

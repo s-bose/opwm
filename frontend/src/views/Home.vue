@@ -135,7 +135,6 @@ export default {
       this.isActive = index;
     },
     addNewPassword(e) {
-      console.log(e);
       this.entries.push(e);
     },
   },
