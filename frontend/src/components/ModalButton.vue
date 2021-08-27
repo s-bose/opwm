@@ -52,7 +52,7 @@
           focus:outline-none
           bg-no-repeat bg-center bg-cover
         "
-        v-show="showModal"
+        v-if="showModal"
         id="modal-wrapper"
       >
         <div class="absolute bg-black opacity-80 inset-0 z-0" @click.prevent="showModal = !showModal"></div>
@@ -99,7 +99,7 @@
                     Site
                   </label>
                   <div class="relative w-full"></div>
-                  <input required type="text" autofocus class="form-input" v-model="v$.form.site.$model" placeholder="ex: google" />
+                  <input required type="text" autofocus class="form-input" v-model="form.site" placeholder="ex: google" />
                 </div>
                 <div class="my-5 text-sm">
                   <label for="link" class="flex text-black text-lg">
@@ -286,7 +286,6 @@ export default {
   validations() {
     return {
       form: {
-        site: {},
         link: { required, url },
         username: { required },
         password: { required },
@@ -295,22 +294,14 @@ export default {
   },
 
   methods: {
-    submitForm() {
-      if (this.v$.$validate()) {
+    async submitForm() {
+      await this.v$.$validate();
+      if (!this.v$.$invalid) {
         if (!this.form.site) {
           const result = parse(this.form.link);
           this.form.site = result.domainWithoutSuffix || result.domain;
         }
         console.log(this.form);
-        this.$emit("newPassword", { ...this.form });
-        // this.form.site = "";
-        // this.form.link = "";
-        // this.form.username = "";
-        // this.form.password = "";
-        this.form = {};
-
-        this.showModal = !this.showModal;
-        this.v$.$reset();
       }
     },
   },

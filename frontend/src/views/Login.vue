@@ -1,20 +1,6 @@
 <template>
   <div class="body-bg min-h-screen py-24">
-    <div
-      class="
-        bg-white
-        dark:bg-black
-        w-10/12
-        sm:w-10/12
-        md:w-6/12
-        lg:w-4/12
-        pb-10
-        m-auto
-        shadow-lg
-        rounded-lg
-        dark:text-white
-      "
-    >
+    <div class="bg-white dark:bg-black w-10/12 sm:w-10/12 md:w-6/12 lg:w-4/12 pb-10 m-auto shadow-lg rounded-lg dark:text-white">
       <div class="py-8 px-8 rounded-xl">
         <h1 class="font-medium text-2xl mt-3 text-center">
           {{ isLogin ? "Login" : "Sign Up" }}
@@ -32,28 +18,15 @@
               :class="{ 'border-red-500': v$.email.$error }"
             />
 
-            <span v-if="v$.email.$error" class="error-span text-red-500">
-              Invalid email address !
-            </span>
+            <span v-if="v$.email.$error" class="error-span text-red-500"> Invalid email address ! </span>
           </div>
 
           <div class="my-7 text-sm">
-            <label for="password" class="block text-black">
-              Master Password
-            </label>
+            <label for="password" class="block text-black"> Master Password </label>
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
                 <button
-                  class="
-                    hover:bg-gray-200
-                    rounded
-                    px-1
-                    py-1
-                    mt-3
-                    text-sm text-gray-600
-                    hover:rounded-md
-                    cursor-pointer
-                  "
+                  class="hover:bg-gray-200 rounded px-1 py-1 mt-3 text-sm text-gray-600 hover:rounded-md cursor-pointer"
                   id="toggle"
                   type="button"
                   @mouseup="showPass = !showPass"
@@ -70,9 +43,7 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path
-                      d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                    ></path>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
                 </button>
@@ -102,12 +73,7 @@
               />
             </div>
 
-            <span
-              v-if="v$.password.password.$error && !isLogin"
-              class="error-span text-red-500"
-            >
-              Password must be atleast 8 characters long !
-            </span>
+            <span v-if="v$.password.password.$error && !isLogin" class="error-span text-red-500"> Password must be atleast 8 characters long ! </span>
 
             <span
               v-if="passwordStrength >= 0 && !isLogin"
@@ -120,85 +86,39 @@
               }"
             >
               Strength -
-              {{
-                passwordStrength == 0
-                  ? "weak"
-                  : passwordStrength == 1
-                  ? "medium"
-                  : passwordStrength == 2
-                  ? "strong"
-                  : "very strong"
-              }}
+              {{ passwordStrength == 0 ? "weak" : passwordStrength == 1 ? "medium" : passwordStrength == 2 ? "strong" : "very strong" }}
             </span>
 
-            <div
-              class="flex justify-end mt-2 text-xs text-gray-600"
-              v-if="isLogin"
-            >
+            <div class="flex justify-end mt-2 text-xs text-gray-600" v-if="isLogin">
               <a href="">Forgot Password?</a>
             </div>
           </div>
 
           <div class="my-7 text-sm pb-5" v-if="!isLogin">
-            <label for="confirm-password" class="block text-black"
-              >Confirm Master Password</label
-            >
+            <label for="confirm-password" class="block text-black">Confirm Master Password</label>
             <input
               type="password"
               id="confirm-password"
               class="form-input"
               placeholder="Confirm password"
               v-model="v$.password.confirm.$model"
-              :class="[
-                v$.password.confirm.$model !== ''
-                  ? [
-                      v$.password.confirm.$error
-                        ? 'border-red-500'
-                        : 'border-green-500',
-                    ]
-                  : '',
-              ]"
+              :class="[v$.password.confirm.$model !== '' ? [v$.password.confirm.$error ? 'border-red-500' : 'border-green-500'] : '']"
             />
 
-            <span
-              class="error-span text-red-500"
-              v-if="v$.password.confirm.$error"
-            >
-              Passwords do not match !
-            </span>
+            <span class="error-span text-red-500" v-if="v$.password.confirm.$error"> Passwords do not match ! </span>
           </div>
 
-          <button
-            class="
-              block
-              text-center text-white
-              bg-gray-800
-              p-3
-              duration-300
-              rounded-md
-              hover:bg-black
-              w-full
-            "
-          >
+          <button class="block text-center text-white bg-gray-800 p-3 duration-300 rounded-md hover:bg-black w-full">
             {{ isLogin ? "Login" : "Sign Up" }}
           </button>
         </form>
 
         <div class="flex md:justify-between justify-center items-center mt-10">
-          <div
-            style="height: 1px"
-            class="bg-gray-300 md:block hidden w-4/12"
-          ></div>
-          <button
-            class="md:mx-2 text-sm font-light hover:underline text-gray-400"
-            @click.prevent="toggleSignup"
-          >
+          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
+          <button class="md:mx-2 text-sm font-light hover:underline text-gray-400" @click.prevent="toggleSignup">
             {{ isLogin ? "Create an account" : "Login" }}
           </button>
-          <div
-            style="height: 1px"
-            class="bg-gray-300 md:block hidden w-4/12"
-          ></div>
+          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
         </div>
       </div>
     </div>
@@ -247,12 +167,9 @@ export default {
 
   updated() {
     // hook to validate on every form update
-    this.passwordStrength =
-      this.v$.password.password.$model !== ""
-        ? zxcvbn(this.v$.password.password.$model).score
-        : -1;
+    this.passwordStrength = this.v$.password.password.$model !== "" ? zxcvbn(this.v$.password.password.$model).score : -1;
 
-    this.v$.$validate;
+    // this.v$.$validate;   // NOTE: vuelidate model binding already does live validation, no need for this
   },
 
   methods: {
