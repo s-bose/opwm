@@ -1,5 +1,5 @@
 <template>
-  <div class="py-16">
+  <!-- <div class="py-16">
     <Switch
       v-model="enabled"
       :class="enabled ? 'bg-red-900' : 'bg-red-700'"
@@ -24,21 +24,38 @@
         s
       />
     </Switch>
+  </div> -->
+
+  <div class="container">
+    <button class="bg-red-700 text-white h-12 w-12" @click="showPop = !showPop">click me</button>
+    <ModalGeneric v-model="showPop" />
+
+    <!-- <ModalGeneric :modelValue="showPop" @update:modelValue="showPop = $event" /> -->
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
-import { Switch } from "@headlessui/vue";
-
+// import { ref } from "vue";
+// import { Switch } from "@headlessui/vue";
+import ModalGeneric from "../components/GenericModal.vue";
 export default {
   name: "About",
-  components: { Switch },
-
-  setup() {
-    const enabled = ref(true);
-    return { enabled };
+  components: { ModalGeneric },
+  data() {
+    return {
+      showPop: false,
+    };
   },
+
+  updated() {
+    console.log(this.showPop);
+  },
+  // components: { Switch },
+
+  // setup() {
+  //   const enabled = ref(true);
+  //   return { enabled };
+  // },
 };
 </script>
 
