@@ -73,7 +73,7 @@
 <script>
 import { ref } from "vue";
 
-import Password from "../components/Password.vue";
+import Password from "../components/PasswordComponent.vue";
 import ModalButton from "../components/ModalButton.vue";
 
 export default {

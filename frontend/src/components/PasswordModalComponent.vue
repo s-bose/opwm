@@ -19,16 +19,18 @@
         focus:outline-none
         bg-no-repeat bg-center bg-cover
       "
-      v-if="modelValue"
+      v-if="showModal"
       id="modal-wrapper"
     >
-      <div class="absolute bg-black opacity-80 inset-0 z-0" @click="$emit('update:modelValue', !modelValue)"></div>
+      <div class="absolute bg-black opacity-80 inset-0 z-0" @click="$emit('update:showModal', !showModal)"></div>
       <div class="w-full max-w-lg p-5 m-5 relative my-auto rounded-xl shadow-lg bg-white">
         <!--content-->
         <div class="content">
           <!--body-->
+
           <div class="p-5 flex-auto justify-center">
             <div class="text-center justify-center mb-12">
+              <!-- top icon (creation) -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="50"
@@ -201,6 +203,7 @@
               @click.prevent="submitForm"
             >
               <svg
+                v-if="!isEditorMode"
                 xmlns="http://www.w3.org/2000/svg"
                 width="40"
                 height="40"
@@ -213,6 +216,22 @@
               >
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#000000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M2.5 2v6h6M21.5 22v-6h-6" />
+                <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2" />
               </svg>
             </button>
           </div>
@@ -228,10 +247,15 @@ import { required, url } from "@vuelidate/validators";
 import { parse } from "tldts";
 
 export default {
-  name: "ModalGeneric",
+  name: "PasswordModal",
   components: {},
   props: {
-    modelValue: {
+    showModal: {
+      type: Boolean,
+      default: false,
+    },
+
+    isEditorMode: {
       type: Boolean,
       default: false,
     },
@@ -253,7 +277,7 @@ export default {
       default: "",
     },
   },
-  emits: ["update:modelValue"],
+  emits: ["update:showModal", "newPassword"],
 
   data() {
     return {
@@ -291,7 +315,7 @@ export default {
         this.$emit("newPassword", { ...this.form });
 
         this.form = {};
-        // this.showModal = !this.showModal;
+        this.$emit("update:showModal", !this.showModal);
         this.v$.$reset();
       }
     },

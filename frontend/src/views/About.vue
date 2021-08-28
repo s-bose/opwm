@@ -28,7 +28,16 @@
 
   <div class="container">
     <button class="bg-red-700 text-white h-12 w-12" @click="showPop = !showPop">click me</button>
-    <ModalGeneric v-model="showPop" />
+    <password-modal
+      :isEditorMode="false"
+      v-model:showModal="showPop"
+      site="Yandex"
+      link="http://www.yandex.ru"
+      username="cyka"
+      password="blyat"
+      @newPassword="showPassObj"
+    />
+    <!-- <password-modal :isEditorMode="false" v-model:showModal="showPop" @newPassword="showPassObj" /> -->
 
     <!-- <ModalGeneric :modelValue="showPop" @update:modelValue="showPop = $event" /> -->
   </div>
@@ -37,10 +46,10 @@
 <script>
 // import { ref } from "vue";
 // import { Switch } from "@headlessui/vue";
-import ModalGeneric from "../components/GenericModal.vue";
+import PasswordModal from "../components/PasswordModalComponent.vue";
 export default {
   name: "About",
-  components: { ModalGeneric },
+  components: { PasswordModal },
   data() {
     return {
       showPop: false,
@@ -48,7 +57,7 @@ export default {
   },
 
   updated() {
-    console.log(this.showPop);
+    // console.log(this.showPop);
   },
   // components: { Switch },
 
@@ -56,6 +65,11 @@ export default {
   //   const enabled = ref(true);
   //   return { enabled };
   // },
+  methods: {
+    showPassObj(e) {
+      console.log(e);
+    },
+  },
 };
 </script>
 
