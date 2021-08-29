@@ -3,7 +3,25 @@
     <div class="py-8 px-8 relative overflow-hidden">
       <transition name="fade">
         <div
-          class="bg-dark-primary text-white h-full w-full absolute inset-0 cursor-pointer delay-50 text-center content-center flex rounded-2xl z-10"
+          class="
+            bg-dark-primary
+            text-white
+            h-full
+            w-full
+            absolute
+            inset-0
+            cursor-pointer
+            text-center
+            content-center
+            flex
+            rounded-2xl
+            z-10
+            transition
+            duration-300
+            ease-in-out
+            transform
+            hover:-translate-y-5
+          "
           v-if="!show"
         >
           <h1 class="font-large text-2xl m-auto antialiased">
