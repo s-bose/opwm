@@ -28,15 +28,7 @@
 
   <div class="container">
     <button class="bg-red-700 text-white h-12 w-12" @click="showPop = !showPop">click me</button>
-    <password-modal
-      :isEditorMode="false"
-      v-model:showModal="showPop"
-      site="Yandex"
-      link="http://www.yandex.ru"
-      username="cyka"
-      password="blyat"
-      @newPassword="showPassObj"
-    />
+    <delete-modal v-model:showModal="showPop" site="Google" />
     <!-- <password-modal :isEditorMode="false" v-model:showModal="showPop" @newPassword="showPassObj" /> -->
 
     <!-- <ModalGeneric :modelValue="showPop" @update:modelValue="showPop = $event" /> -->
@@ -46,10 +38,10 @@
 <script>
 // import { ref } from "vue";
 // import { Switch } from "@headlessui/vue";
-import PasswordModal from "../components/PasswordModalComponent.vue";
+import DeleteModal from "../components/DeleteModalComponent.vue";
 export default {
   name: "About",
-  components: { PasswordModal },
+  components: { DeleteModal },
   data() {
     return {
       showPop: false,

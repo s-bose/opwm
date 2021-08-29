@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid relative h-full bg-dark-primary">
+  <div class="container-fluid relative h-full">
     <div class="p-8">
       <div class="bg-dark-secondary flex items-center rounded-full shadow-xl">
         <input
@@ -25,10 +25,6 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-
-        <!-- <div class="p-4">
-          <button class="text-black p-2 bg-none focus:outline-none w-auto h-auto flex items-center justify-center shadow-xl"></button>
-        </div> -->
       </div>
     </div>
 

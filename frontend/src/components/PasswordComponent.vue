@@ -51,7 +51,7 @@
               type="text"
               readonly
               autofocus
-              class="appearance-none bg-transparent border-0 border-b-2 border-green-400 px-4 py-3 mt-3 focus:outline-none w-full leading-tight"
+              class="appearance-none bg-transparent border-0 border-b-2 border-dark-accent px-4 py-3 mt-3 focus:outline-none w-full leading-tight"
               :value="username"
             />
           </div>
@@ -104,7 +104,7 @@
             <input
               :type="[showPass ? 'text' : 'password']"
               readonly
-              class="appearance-none bg-transparent border-0 border-b-2 border-green-400 px-4 py-3 mt-3 focus:outline-none w-full leading-tight"
+              class="appearance-none bg-transparent border-0 border-b-2 border-dark-accent px-4 py-3 mt-3 focus:outline-none w-full leading-tight"
               :value="password"
             />
           </div>

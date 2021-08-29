@@ -22,8 +22,8 @@
       v-if="showModal"
       id="modal-wrapper"
     >
-      <div class="absolute bg-black opacity-80 inset-0 z-0" @click="$emit('update:showModal', !showModal)"></div>
-      <div class="w-full max-w-lg p-5 m-5 relative my-auto rounded-xl shadow-lg bg-white">
+      <div class="absolute bg-black opacity-80 inset-0 z-0" @click="emitCloseInternal"></div>
+      <div class="w-full max-w-lg p-5 m-5 relative my-auto rounded-xl shadow-lg bg-dark-secondary text-white">
         <!--content-->
         <div class="content">
           <!--body-->
@@ -37,7 +37,7 @@
                 height="50"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#000000"
+                stroke="#FFFFFF"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -50,14 +50,14 @@
 
             <form action="" class="mt-6">
               <div class="my-5 text-sm">
-                <label for="site" class="flex text-black text-lg"
+                <label for="site" class="flex text-lg"
                   ><svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#000000"
+                    stroke="#FFFFFF"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -71,14 +71,14 @@
                 <input required type="text" autofocus class="form-input" v-model="form.site" placeholder="ex: google" />
               </div>
               <div class="my-5 text-sm">
-                <label for="link" class="flex text-black text-lg">
+                <label for="link" class="flex text-lg">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#000000"
+                    stroke="#FFFFFF"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -96,7 +96,7 @@
                   autofocus
                   class="form-input"
                   v-model="v$.form.link.$model"
-                  :class="{ 'border-red-500': v$.form.link.$error }"
+                  :class="{ 'border border-red-500': v$.form.link.$error }"
                   placeholder="www.example.com"
                 />
                 <span class="error-span text-red-500" v-for="error in v$.form.link.$errors" :key="error">
@@ -105,14 +105,14 @@
               </div>
 
               <div class="my-5 text-sm">
-                <label for="username" class="flex text-black text-lg">
+                <label for="username" class="flex text-lg">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#000000"
+                    stroke="#FFFFFF"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -130,7 +130,7 @@
                   autofocus
                   class="form-input"
                   v-model="v$.form.username.$model"
-                  :class="{ 'border-red-500': v$.form.username.$error }"
+                  :class="{ 'border border-red-500': v$.form.username.$error }"
                   placeholder="john_doe"
                 />
                 <span class="error-span text-red-500" v-for="error in v$.form.username.$errors" :key="error">
@@ -138,14 +138,14 @@
                 </span>
               </div>
               <div class="my-5 text-sm">
-                <label for="password" class="flex text-black text-lg">
+                <label for="password" class="flex text-lg">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#000000"
+                    stroke="#FFFFFF"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -188,7 +188,7 @@
                   :type="[showPass ? 'text' : 'password']"
                   class="form-input"
                   v-model="v$.form.password.$model"
-                  :class="{ 'border-red-500': v$.form.password.$error }"
+                  :class="{ 'border border-red-500': v$.form.password.$error }"
                 />
                 <span class="error-span text-red-500" v-for="error in v$.form.password.$errors" :key="error">
                   {{ error.$message }}
@@ -209,7 +209,7 @@
                 height="40"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#000000"
+                stroke="#FFFFFF"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -319,6 +319,11 @@ export default {
         this.v$.$reset();
       }
     },
+
+    emitCloseInternal() {
+      this.v$.$reset();
+      this.$emit("update:showModal", !this.showModal);
+    },
   },
 };
 </script>
@@ -332,7 +337,7 @@ export default {
           focus:outline-none
           bg-gray-100
           w-full
-          border;
+          bg-dark-primary;
 }
 
 .error-span {
