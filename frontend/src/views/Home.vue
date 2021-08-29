@@ -1,9 +1,9 @@
 <template>
-  <div class="container-fluid relative h-full bg-white">
+  <div class="container-fluid relative h-full bg-dark-primary">
     <div class="p-8">
-      <div class="bg-white flex items-center rounded-full shadow-xl">
+      <div class="bg-dark-secondary flex items-center rounded-full shadow-xl">
         <input
-          class="rounded-l-full w-full py-6 px-6 text-gray-700 leading-tight focus:outline-none"
+          class="rounded-l-full w-full bg-dark-secondary py-6 px-6 text-white leading-tight focus:outline-none"
           id="search"
           type="text"
           placeholder="Search..."
@@ -16,18 +16,19 @@
           height="24"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#000000"
+          stroke="#FFFFFF"
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          class="mr-5"
         >
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
 
-        <div class="p-4">
+        <!-- <div class="p-4">
           <button class="text-black p-2 bg-none focus:outline-none w-auto h-auto flex items-center justify-center shadow-xl"></button>
-        </div>
+        </div> -->
       </div>
     </div>
 
