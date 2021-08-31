@@ -1,6 +1,6 @@
 <template>
   <transition name="fade-pop">
-    <div class="absolute bottom-5 left-5" v-show="showToast">
+    <div class="fixed bottom-5 left-5 z-20" v-if="showToast">
       <div class="mb-5">
         <div class="flex w-full max-w-sm mx-auto overflow-hidden bg-dark-secondary rounded-lg shadow-md text-white">
           <div class="flex items-center justify-center w-12 bg-green-700">
@@ -28,17 +28,24 @@ export default {
   props: {
     showToast: Boolean,
   },
+  emits: ["update:showToast"],
+
   methods: {
     toastHandler() {
-      this.showToast = !this.showToast;
-
-      setTimeout(() => {
-        this.showToast = false;
-      }, 1000);
+      this.$emit("update:showToast", !this.showToast);
     },
   },
 };
 </script>
 
 <style>
+.fade-pop-enter-active,
+.fade-pop-leave-active {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.fade-pop-enter-from,
+.fade-pop-leave-to {
+  opacity: 0;
+}
 </style>
