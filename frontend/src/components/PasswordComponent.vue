@@ -49,7 +49,7 @@
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -74,7 +74,7 @@
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
                 <button
-                  class="hover:bg-gray-700 rounded px-2 py-1 mt-12 text-sm text-gray-600 hover:rounded-md cursor-pointer"
+                  class="hover:bg-gray-700 rounded px-2 py-1 mt-12 text-sm hover:rounded-md cursor-pointer"
                   type="button"
                   @mouseup="showPass = !showPass"
                   @mousedown="showPass = !showPass"
@@ -85,7 +85,7 @@
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -95,14 +95,14 @@
                   </svg>
                 </button>
 
-                <button class="hover:bg-gray-700 rounded px-2 py-1 mt-12 text-sm text-gray-600 hover:rounded-md cursor-pointer" type="button">
+                <button class="hover:bg-gray-700 rounded px-2 py-1 mt-12 text-sm hover:rounded-md cursor-pointer" type="button">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -122,10 +122,15 @@
             />
           </div>
           <div class="grid md:grid-cols-2 gap-10 mt-12 justify-items-center">
-            <button class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-2/4">
+            <button
+              class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-2/4"
+              @click.prevent="openEditModal"
+            >
               Edit
             </button>
-            <button class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full w-2/4 shadow-xl">Delete</button>
+            <button class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full w-2/4 shadow-xl" @click.prevent="openDelModal">
+              Delete
+            </button>
           </div>
         </form>
       </div>
@@ -136,13 +141,15 @@
 <script>
 export default {
   name: "Password",
-  components: {},
 
+  emits: ["currentEditPassword", "CurrentDelPassword"],
   data() {
     return {
       toggleCard: false,
       gradient: "",
       showPass: false,
+
+      showEditorModal: false,
     };
   },
 
@@ -158,6 +165,14 @@ export default {
     redirectUrl() {
       window.open(this.link);
     },
+
+    openEditModal() {
+      this.$emit("currentEditPassword", this.$props);
+    },
+
+    openDelModal() {
+      this.$emit("CurrentDelPassword", this.$props);
+    },
   },
 };
 </script>
@@ -171,9 +186,5 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.bg-gradient {
-  background: linear-gradient(180deg, #f9fafb, #6b7280);
 }
 </style>

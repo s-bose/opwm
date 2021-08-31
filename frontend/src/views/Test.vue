@@ -28,7 +28,7 @@
 
   <div class="container">
     <button class="bg-red-700 text-white h-12 w-12" @click="showPop = !showPop">click me</button>
-    <delete-modal v-model:showModal="showPop" site="Google" />
+    <delete-modal v-model:showDelModal="showPop" site="Google" />
     <!-- <password-modal :isEditorMode="false" v-model:showModal="showPop" @newPassword="showPassObj" /> -->
 
     <!-- <ModalGeneric :modelValue="showPop" @update:modelValue="showPop = $event" /> -->

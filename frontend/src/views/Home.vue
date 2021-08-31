@@ -59,6 +59,8 @@
         :username="entry.username"
         :password="entry.password"
         @click.prevent="toggleCard(index)"
+        @currentEditPassword="showEditModal"
+        @CurrentDelPassword="showDeleteModal"
         :show="isActive === index"
       />
     </div>
@@ -85,7 +87,7 @@
           duration-200
           focus:outline-none
         "
-        @click.prevent="showModal = !showModal"
+        @click.prevent="showNewModal"
       >
         <svg viewBox="0 0 20 20" enable-background="new 0 0 20 20" class="w-6 h-6 inline-block">
           <path
@@ -97,7 +99,17 @@
         </svg>
       </button>
 
-      <password-modal v-model:showModal="showModal" @newPassword="addNewPassword" />
+      <password-modal
+        v-model:showModal="showModal"
+        @newPassword="addNewPassword"
+        :isEditorMode="isEdit"
+        :site="currentEdit.site"
+        :link="currentEdit.link"
+        :username="currentEdit.username"
+        :password="currentEdit.password"
+      />
+
+      <delete-modal />
     </div>
   </div>
 </template>
@@ -107,9 +119,10 @@ import { ref } from "vue";
 
 import Password from "../components/PasswordComponent.vue";
 import PasswordModal from "../components/PasswordModalComponent.vue";
+import DeleteModal from "../components/DeleteModalComponent.vue";
 export default {
   name: "Home",
-  components: { Password, PasswordModal },
+  components: { Password, PasswordModal, DeleteModal },
   setup() {
     const pwds = ref([]);
     return { pwds };
@@ -119,7 +132,7 @@ export default {
       isActive: null,
       searchItem: "",
       showModal: false,
-
+      isEdit: false,
       entries: [
         {
           site: "Google",
@@ -158,6 +171,13 @@ export default {
           password: "real_cummy_bot_65",
         },
       ],
+
+      currentEdit: {
+        site: "",
+        link: "",
+        username: "",
+        password: "",
+      },
     };
   },
 
@@ -166,7 +186,31 @@ export default {
       this.isActive = index;
     },
     addNewPassword(e) {
+      const passwordObj = Object.assign({}, e);
+      passwordObj["update"] = this.isEdit ? true : false;
+      console.log(passwordObj);
+
       this.entries.push(e);
+    },
+
+    showEditModal(e) {
+      this.isEdit = true;
+      this.currentEdit.site = e.site;
+      this.currentEdit.link = e.link;
+      this.currentEdit.username = e.username;
+      this.currentEdit.password = e.password;
+
+      this.showModal = !this.showModal;
+    },
+
+    showNewModal() {
+      this.isEdit = false;
+      this.currentEdit = {};
+      this.showModal = !this.showModal;
+    },
+
+    showDeleteModal(e) {
+      console.log(e);
     },
   },
 

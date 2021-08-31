@@ -29,15 +29,32 @@
           <!--body-->
 
           <div class="p-5 flex-auto justify-center">
-            <div class="text-center justify-center mb-12">
+            <div class="text-center justify-center mb-12" :class="[isEditorMode ? 'text-white' : 'text-green-500']">
               <!-- top icon (creation) -->
+              <svg
+                v-if="!isEditorMode"
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="m-auto p-auto mb-2"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="50"
                 height="50"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#FFFFFF"
+                stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -57,7 +74,7 @@
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -78,7 +95,7 @@
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -112,7 +129,7 @@
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -145,7 +162,7 @@
                     height="26"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -161,7 +178,7 @@
                 <div class="relative w-full">
                   <div class="absolute inset-y-0 right-0 flex items-center px-1 py-3">
                     <button
-                      class="hover:bg-gray-200 rounded px-2 py-1 mt-12 text-sm text-gray-600 hover:rounded-md cursor-pointer"
+                      class="rounded px-2 py-1 mt-11 text-sm hover:rounded-md cursor-pointer"
                       type="button"
                       @mouseup="showPass = !showPass"
                       @mousedown="showPass = !showPass"
@@ -172,7 +189,7 @@
                         height="24"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#000000"
+                        stroke="currentColor"
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -198,10 +215,7 @@
           </div>
           <!--footer-->
           <div class="p-3 mt-2 text-center space-x-4 md:block">
-            <button
-              class="text-center text-black border-0 p-3 duration-300 hover:bg-green-500 hover:text-white rounded-full w-auto shadow-xl"
-              @click.prevent="submitForm"
-            >
+            <button class="text-center border-0 p-3 duration-300 hover:bg-green-500 hover:text-white rounded-full w-auto shadow-xl" @click.prevent="submitForm">
               <svg
                 v-if="!isEditorMode"
                 xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +223,7 @@
                 height="40"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#FFFFFF"
+                stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -225,7 +239,7 @@
                 height="40"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#000000"
+                stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -324,6 +338,12 @@ export default {
       this.v$.$reset();
       this.$emit("update:showModal", !this.showModal);
     },
+  },
+  updated() {
+    this.form.site = this.site;
+    this.form.link = this.link;
+    this.form.username = this.username;
+    this.form.password = this.password;
   },
 };
 </script>

@@ -9,7 +9,7 @@
             height="50"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#FFFFFF"
+            stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -24,7 +24,7 @@
             height="50"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#FFFFFF"
+            stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -58,7 +58,7 @@
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
                 <button
-                  class="hover:bg-gray-500 rounded px-1 py-1 mt-3 text-sm text-gray-600 hover:rounded-md cursor-pointer"
+                  class="hover:bg-gray-500 rounded px-1 py-1 mt-3 text-sm hover:rounded-md cursor-pointer"
                   id="toggle"
                   type="button"
                   @mouseup="showPass = !showPass"
@@ -70,7 +70,7 @@
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#FFFFFF"
+                    stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"

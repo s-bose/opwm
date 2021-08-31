@@ -19,7 +19,7 @@
         focus:outline-none
         bg-no-repeat bg-center bg-cover
       "
-      v-if="showModal"
+      v-if="showDelModal"
       id="modal-wrapper"
     >
       <div class="absolute bg-black opacity-80 inset-0 z-0" @click="emitCloseInternal"></div>
@@ -29,7 +29,7 @@
           <!--body-->
 
           <div class="p-5 flex-auto justify-center">
-            <div class="text-center justify-center mb-12">
+            <div class="text-center justify-center mb-12 text-red-700">
               <!-- top icon (deletion) -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@
                 height="50"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#EF4444"
+                stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -77,28 +77,30 @@ export default {
   name: "DeleteModal",
   components: {},
   props: {
-    showModal: {
+    showDelModal: {
       type: Boolean,
       default: false,
     },
-    site: {
-      type: String,
-      default: "",
-    },
-    link: {
-      type: String,
-      default: "",
-    },
-    username: {
-      type: String,
-      default: "",
-    },
-    password: {
-      type: String,
-      default: "",
+    values: {
+      site: {
+        type: String,
+        default: "",
+      },
+      link: {
+        type: String,
+        default: "",
+      },
+      username: {
+        type: String,
+        default: "",
+      },
+      password: {
+        type: String,
+        default: "",
+      },
     },
   },
-  emits: ["update:showModal"],
+  emits: ["update:showDelModal"],
 
   data() {
     return {};
@@ -106,10 +108,10 @@ export default {
 
   methods: {
     emitCloseInternal() {
-      this.$emit("update:showModal", !this.showModal);
+      this.$emit("update:showDelModal", !this.showDelModal);
     },
     cancelDelete() {
-      this.$emit("update:showModal", !this.showModal);
+      this.$emit("update:showDelModal", !this.showDelModal);
     },
   },
 };
