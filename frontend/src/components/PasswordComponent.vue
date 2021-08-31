@@ -142,7 +142,7 @@
 export default {
   name: "Password",
 
-  emits: ["currentEditPassword", "CurrentDelPassword"],
+  emits: ["OnEditPassword", "OnDelPassword"],
   data() {
     return {
       toggleCard: false,
@@ -167,11 +167,11 @@ export default {
     },
 
     openEditModal() {
-      this.$emit("currentEditPassword", this.$props);
+      this.$emit("OnEditPassword", this.$props);
     },
 
     openDelModal() {
-      this.$emit("CurrentDelPassword", this.$props);
+      this.$emit("OnDelPassword", this.$props);
     },
   },
 };

@@ -59,10 +59,16 @@
           </div>
           <!--footer-->
           <div class="grid md:grid-cols-2 gap-10 mt-12 justify-items-center pb-5">
-            <button class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-2/4">
+            <button
+              class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-2/4"
+              @click.prevent="$emit('DeletePassword')"
+            >
               Confirm
             </button>
-            <button class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full w-2/4 shadow-xl" @click.prevent="cancelDelete">
+            <button
+              class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full w-2/4 shadow-xl"
+              @click.prevent="emitCloseInternal"
+            >
               Cancel
             </button>
           </div>
@@ -81,26 +87,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    values: {
-      site: {
-        type: String,
-        default: "",
-      },
-      link: {
-        type: String,
-        default: "",
-      },
-      username: {
-        type: String,
-        default: "",
-      },
-      password: {
-        type: String,
-        default: "",
-      },
+
+    site: {
+      type: String,
+      default: "",
     },
   },
-  emits: ["update:showDelModal"],
+  emits: ["update:showDelModal", "DeletePass"],
 
   data() {
     return {};
@@ -108,9 +101,6 @@ export default {
 
   methods: {
     emitCloseInternal() {
-      this.$emit("update:showDelModal", !this.showDelModal);
-    },
-    cancelDelete() {
       this.$emit("update:showDelModal", !this.showDelModal);
     },
   },
