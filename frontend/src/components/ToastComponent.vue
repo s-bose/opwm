@@ -20,20 +20,14 @@
       </div>
     </div>
   </transition>
-
-  <button class="bg-black text-white h-12 w-12" @click.prevent="toastHandler">Click me</button>
 </template>
 
 <script>
 export default {
-  components: {},
-  name: "About",
-  data() {
-    return {
-      showToast: false,
-    };
+  name: "Toast",
+  props: {
+    showToast: Boolean,
   },
-
   methods: {
     toastHandler() {
       this.showToast = !this.showToast;
@@ -47,13 +41,4 @@ export default {
 </script>
 
 <style>
-.fade-pop-enter-active,
-.fade-pop-leave-active {
-  transition: opacity 0.4s ease-in-out;
-}
-
-.fade-pop-enter-from,
-.fade-pop-leave-to {
-  opacity: 0;
-}
 </style>
