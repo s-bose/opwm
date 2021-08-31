@@ -42,12 +42,7 @@
             <label for="username" class="block text-lg"> Username </label>
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
-                <button
-                  class="hover:bg-gray-700 rounded px-1 py-1 mt-12 text-sm hover:rounded-md cursor-pointer"
-                  type="button"
-                  @mouseup="showPass = !showPass"
-                  @mousedown="showPass = !showPass"
-                >
+                <button class="hover:bg-gray-700 rounded px-1 py-1 mt-12 text-sm hover:rounded-md cursor-pointer" type="button">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

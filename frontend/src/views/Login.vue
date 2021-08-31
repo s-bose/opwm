@@ -1,13 +1,45 @@
 <template>
-  <div class="body-bg min-h-screen py-24">
-    <div class="bg-white dark:bg-black w-10/12 sm:w-10/12 md:w-6/12 lg:w-4/12 pb-10 m-auto shadow-lg rounded-lg dark:text-white">
+  <div class="min-h-screen py-24">
+    <div class="bg-dark-secondary w-10/12 sm:w-10/12 md:w-6/12 lg:w-4/12 pb-10 m-auto shadow-lg rounded-2xl text-white">
       <div class="py-8 px-8 rounded-xl">
         <h1 class="font-medium text-2xl mt-3 text-center">
-          {{ isLogin ? "Login" : "Sign Up" }}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="m-auto p-auto"
+            v-if="isLogin"
+          >
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="m-auto p-auto"
+            v-else
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
         </h1>
         <form action="" class="mt-6">
           <div class="my-7 text-sm">
-            <label for="email" class="block text-black">Email</label>
+            <label for="email" class="block text-lg">Email</label>
             <input
               type="text"
               id="email"
@@ -15,18 +47,18 @@
               class="form-input"
               placeholder="Email"
               v-model.trim="v$.email.$model"
-              :class="{ 'border-red-500': v$.email.$error }"
+              :class="{ 'border border-red-500': v$.email.$error }"
             />
 
             <span v-if="v$.email.$error" class="error-span text-red-500"> Invalid email address ! </span>
           </div>
 
           <div class="my-7 text-sm">
-            <label for="password" class="block text-black"> Master Password </label>
+            <label for="password" class="block text-lg"> Master Password </label>
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
                 <button
-                  class="hover:bg-gray-200 rounded px-1 py-1 mt-3 text-sm text-gray-600 hover:rounded-md cursor-pointer"
+                  class="hover:bg-gray-500 rounded px-1 py-1 mt-3 text-sm text-gray-600 hover:rounded-md cursor-pointer"
                   id="toggle"
                   type="button"
                   @mouseup="showPass = !showPass"
@@ -38,7 +70,7 @@
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#000000"
+                    stroke="#FFFFFF"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -59,13 +91,13 @@
                   !isLogin
                     ? [
                         passwordStrength == 0 || v$.password.password.$error
-                          ? 'border-red-500'
+                          ? 'border border-red-500'
                           : passwordStrength == 1
-                          ? 'border-yellow-500'
+                          ? 'border border-yellow-500'
                           : passwordStrength == 2
-                          ? 'border-blue-500'
+                          ? 'border border-blue-500'
                           : passwordStrength >= 3
-                          ? 'border-green-500'
+                          ? 'border border-green-500'
                           : '',
                       ]
                     : '',
@@ -90,35 +122,35 @@
             </span>
 
             <div class="flex justify-end mt-2 text-xs text-gray-600" v-if="isLogin">
-              <a href="">Forgot Password?</a>
+              <a href="" class="hover:underline">Forgot Password?</a>
             </div>
           </div>
 
           <div class="my-7 text-sm pb-5" v-if="!isLogin">
-            <label for="confirm-password" class="block text-black">Confirm Master Password</label>
+            <label for="confirm-password" class="block text-lg">Confirm Master Password</label>
             <input
               type="password"
               id="confirm-password"
               class="form-input"
               placeholder="Confirm password"
               v-model="v$.password.confirm.$model"
-              :class="[v$.password.confirm.$model !== '' ? [v$.password.confirm.$error ? 'border-red-500' : 'border-green-500'] : '']"
+              :class="[v$.password.confirm.$model !== '' ? [v$.password.confirm.$error ? 'border border-red-500' : 'border border-green-500'] : '']"
             />
 
             <span class="error-span text-red-500" v-if="v$.password.confirm.$error"> Passwords do not match ! </span>
           </div>
 
-          <button class="block text-center text-white bg-gray-800 p-3 duration-300 rounded-md hover:bg-black w-full">
+          <button class="block text-center text-gray-200 bg-gray-600 p-3 duration-300 rounded-md hover:bg-black w-full">
             {{ isLogin ? "Login" : "Sign Up" }}
           </button>
         </form>
 
         <div class="flex md:justify-between justify-center items-center mt-10">
-          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
+          <div style="height: 1px" class="bg-gray-700 md:block hidden w-4/12"></div>
           <button class="md:mx-2 text-sm font-light hover:underline text-gray-400" @click.prevent="toggleSignup">
             {{ isLogin ? "Create an account" : "Login" }}
           </button>
-          <div style="height: 1px" class="bg-gray-300 md:block hidden w-4/12"></div>
+          <div style="height: 1px" class="bg-gray-700 md:block hidden w-4/12"></div>
         </div>
       </div>
     </div>
@@ -187,10 +219,6 @@ export default {
 </script>
 
 <style scoped lang="postcss">
-.body-bg {
-  background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
-}
-
 .form-input {
   @apply rounded-md
           px-4
@@ -199,7 +227,7 @@ export default {
           focus:outline-none
           bg-gray-100
           w-full
-          border;
+          bg-dark-primary;
 }
 
 .error-span {
