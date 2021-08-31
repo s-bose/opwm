@@ -103,13 +103,13 @@
         v-model:showModal="showModal"
         @newPassword="addNewPassword"
         :isEditorMode="isEdit"
-        :site="currentEdit.site"
-        :link="currentEdit.link"
-        :username="currentEdit.username"
-        :password="currentEdit.password"
+        :site="current.site"
+        :link="current.link"
+        :username="current.username"
+        :password="current.password"
       />
 
-      <delete-modal v-model:showDelModal="showDelModal" />
+      <delete-modal v-model:showDelModal="showDelModal" :site="current.site" :link="current.link" :username="current.username" :password="current.password" />
     </div>
   </div>
 </template>
@@ -173,7 +173,7 @@ export default {
         },
       ],
 
-      currentEdit: {
+      current: {
         site: "",
         link: "",
         username: "",
@@ -196,23 +196,21 @@ export default {
 
     showEditModal(e) {
       this.isEdit = true;
-      this.currentEdit.site = e.site;
-      this.currentEdit.link = e.link;
-      this.currentEdit.username = e.username;
-      this.currentEdit.password = e.password;
+      this.current = (({ site, link, username, password }) => ({ site, link, username, password }))(e);
 
       this.showModal = !this.showModal;
     },
 
     showNewModal() {
+      this.current = {};
       this.isEdit = false;
-      this.currentEdit = {};
       this.showModal = !this.showModal;
     },
 
     showDeleteModal(e) {
+      this.current = (({ site, link, username, password }) => ({ site, link, username, password }))(e);
+
       this.showDelModal = !this.showDelModal;
-      console.log(e);
     },
   },
 
@@ -237,10 +235,6 @@ export default {
 </script>
 
 <style>
-.body-bg {
-  background: linear-gradient(180deg, #34e89e 0%, #0f3443 100%);
-}
-
 .fade-modal-enter-active,
 .fade-modal-leave-active {
   transition: opacity 0.4s ease-in-out;

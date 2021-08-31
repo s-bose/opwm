@@ -61,7 +61,7 @@
           <div class="grid md:grid-cols-2 gap-10 mt-12 justify-items-center pb-5">
             <button
               class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-2/4"
-              @click.prevent="$emit('DeletePassword')"
+              @click.prevent="submitDelete"
             >
               Confirm
             </button>
@@ -92,8 +92,20 @@ export default {
       type: String,
       default: "",
     },
+    link: {
+      type: String,
+      default: "",
+    },
+    username: {
+      type: String,
+      default: "",
+    },
+    password: {
+      type: String,
+      default: "",
+    },
   },
-  emits: ["update:showDelModal", "DeletePass"],
+  emits: ["update:showDelModal"],
 
   data() {
     return {};
@@ -102,6 +114,15 @@ export default {
   methods: {
     emitCloseInternal() {
       this.$emit("update:showDelModal", !this.showDelModal);
+    },
+
+    submitDelete() {
+      const delObj = Object.assign({}, this.$props);
+      delete delObj.showDelModal;
+
+      console.log(delObj);
+
+      // send axios post containing the delObj to delete api
     },
   },
 };

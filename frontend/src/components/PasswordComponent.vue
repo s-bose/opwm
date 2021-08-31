@@ -42,7 +42,11 @@
             <label for="username" class="block text-lg"> Username </label>
             <div class="relative w-full">
               <div class="absolute inset-y-0 right-0 flex items-center px-2">
-                <button class="hover:bg-gray-700 rounded px-1 py-1 mt-12 text-sm hover:rounded-md cursor-pointer" type="button">
+                <button
+                  class="hover:bg-gray-700 rounded px-1 py-1 mt-12 text-sm hover:rounded-md cursor-pointer"
+                  type="button"
+                  @click.prevent="copyClipboard(username)"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -95,7 +99,11 @@
                   </svg>
                 </button>
 
-                <button class="hover:bg-gray-700 rounded px-2 py-1 mt-12 text-sm hover:rounded-md cursor-pointer" type="button">
+                <button
+                  class="hover:bg-gray-700 rounded px-2 py-1 mt-12 text-sm hover:rounded-md cursor-pointer"
+                  type="button"
+                  @click.prevent="copyClipboard(password)"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -123,12 +131,12 @@
           </div>
           <div class="grid md:grid-cols-2 gap-10 mt-12 justify-items-center">
             <button
-              class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-2/4"
+              class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:border-green-500 hover:text-white rounded-full shadow-xl w-3/4"
               @click.prevent="openEditModal"
             >
               Edit
             </button>
-            <button class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full w-2/4 shadow-xl" @click.prevent="openDelModal">
+            <button class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full w-3/4 shadow-xl" @click.prevent="openDelModal">
               Delete
             </button>
           </div>
@@ -172,6 +180,10 @@ export default {
 
     openDelModal() {
       this.$emit("OnDelPassword", this.$props);
+    },
+
+    async copyClipboard(value) {
+      await navigator.clipboard.writeText(value);
     },
   },
 };

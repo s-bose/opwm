@@ -2,6 +2,9 @@ module.exports = {
   purge: { content: ["./public/**/*.html", "./src/**/*.vue"] },
   darkMode: "class", // or 'media' or 'class'
   theme: {
+    fontFamily: {
+      rubik: ["Rubik", "sans-serif"],
+    },
     extend: {
       colors: {
         "dark-primary": "#3C424B",
@@ -10,7 +13,7 @@ module.exports = {
 
         "light-primary": "#FFFFFF",
         "light-secondary": "#F5F8FB",
-        "light-accent": "#F5F8FB",
+        "light-accent": "#00FFE3",
       },
     },
   },
