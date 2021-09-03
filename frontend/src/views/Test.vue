@@ -26,22 +26,24 @@
     </Switch>
   </div> -->
 
-  <div class="container">
+  <!-- <div class="container">
     <button class="bg-red-700 text-white h-12 w-12" @click="showPop = !showPop">click me</button>
-    <delete-modal v-model:showDelModal="showPop" site="Google" @DeletePass="deletePass" />
-    <!-- <password-modal :isEditorMode="false" v-model:showModal="showPop" @newPassword="showPassObj" /> -->
+    <delete-modal v-model:showDelModal="showPop" site="Google" @DeletePass="deletePass" /> -->
+  <!-- <password-modal :isEditorMode="false" v-model:showModal="showPop" @newPassword="showPassObj" /> -->
 
-    <!-- <ModalGeneric :modelValue="showPop" @update:modelValue="showPop = $event" /> -->
-  </div>
+  <!-- <ModalGeneric :modelValue="showPop" @update:modelValue="showPop = $event" /> -->
+  <!-- </div> -->
+  <login-component :isLogin="true" />
 </template>
 
 <script>
 // import { ref } from "vue";
 // import { Switch } from "@headlessui/vue";
-import DeleteModal from "../components/DeleteModalComponent.vue";
+// import DeleteModal from "../components/DeleteModalComponent.vue";
+import LoginComponent from "@/components/LoginComponent.vue";
 export default {
   name: "Test",
-  components: { DeleteModal },
+  components: { LoginComponent },
   data() {
     return {
       showPop: false,

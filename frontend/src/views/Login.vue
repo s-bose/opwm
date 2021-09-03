@@ -14,27 +14,8 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             class="m-auto p-auto"
-            v-if="isLogin"
           >
             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
-          </svg>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="50"
-            height="50"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="m-auto p-auto"
-            v-else
-          >
-            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="8.5" cy="7" r="4"></circle>
-            <line x1="20" y1="8" x2="20" y2="14"></line>
-            <line x1="23" y1="11" x2="17" y2="11"></line>
           </svg>
         </h1>
         <form action="" class="mt-6">
@@ -86,70 +67,27 @@
                 id="password"
                 class="form-input"
                 placeholder="Password"
-                v-model="v$.password.password.$model"
-                :class="[
-                  !isLogin
-                    ? [
-                        passwordStrength == 0 || v$.password.password.$error
-                          ? 'border border-red-500'
-                          : passwordStrength == 1
-                          ? 'border border-yellow-500'
-                          : passwordStrength == 2
-                          ? 'border border-blue-500'
-                          : passwordStrength >= 3
-                          ? 'border border-green-500'
-                          : '',
-                      ]
-                    : '',
-                ]"
+                v-model="v$.password.$model"
+                :class="{ 'border border-red-500': v$.password.$error }"
               />
             </div>
-
-            <span v-if="v$.password.password.$error && !isLogin" class="error-span text-red-500"> Password must be atleast 8 characters long ! </span>
-
-            <span
-              v-if="passwordStrength >= 0 && !isLogin"
-              class="error-span"
-              :class="{
-                'text-red-500': passwordStrength == 0,
-                'text-yellow-500': passwordStrength == 1,
-                'text-blue-500': passwordStrength == 2,
-                'text-green-500': passwordStrength >= 3,
-              }"
-            >
-              Strength -
-              {{ passwordStrength == 0 ? "weak" : passwordStrength == 1 ? "medium" : passwordStrength == 2 ? "strong" : "very strong" }}
+            <span class="error-span text-red-500" v-for="error in v$.password.$errors" :key="error">
+              {{ error.$message }}
             </span>
 
-            <div class="flex justify-end mt-2 text-xs text-gray-600" v-if="isLogin">
+            <div class="flex justify-end mt-2 text-xs text-gray-600">
               <a href="" class="hover:underline">Forgot Password?</a>
             </div>
           </div>
 
-          <div class="my-7 text-sm pb-5" v-if="!isLogin">
-            <label for="confirm-password" class="block text-lg">Confirm Master Password</label>
-            <input
-              type="password"
-              id="confirm-password"
-              class="form-input"
-              placeholder="Confirm password"
-              v-model="v$.password.confirm.$model"
-              :class="[v$.password.confirm.$model !== '' ? [v$.password.confirm.$error ? 'border border-red-500' : 'border border-green-500'] : '']"
-            />
-
-            <span class="error-span text-red-500" v-if="v$.password.confirm.$error"> Passwords do not match ! </span>
-          </div>
-
-          <button class="block text-center text-gray-200 bg-gray-600 p-3 duration-300 rounded-md hover:bg-black w-full">
-            {{ isLogin ? "Login" : "Sign Up" }}
+          <button class="block text-center text-gray-200 bg-gray-600 p-3 duration-300 rounded-md hover:bg-black w-full" @click.prevent="submitLogin">
+            Login
           </button>
         </form>
 
         <div class="flex md:justify-between justify-center items-center mt-10">
           <div style="height: 1px" class="bg-gray-700 md:block hidden w-4/12"></div>
-          <button class="md:mx-2 text-sm font-light hover:underline text-gray-400" @click.prevent="toggleSignup">
-            {{ isLogin ? "Create an account" : "Login" }}
-          </button>
+          <button class="md:mx-2 text-sm font-light hover:underline text-gray-400" @click.prevent="$router.push('/signup')">Sign Up</button>
           <div style="height: 1px" class="bg-gray-700 md:block hidden w-4/12"></div>
         </div>
       </div>
@@ -158,61 +96,34 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
-import zxcvbn from "zxcvbn";
-
 import useVuelidate from "@vuelidate/core";
-import { required, email, minLength, sameAs } from "@vuelidate/validators";
+import { required, email } from "@vuelidate/validators";
 
 export default {
-  name: "Home",
+  name: "Login",
   components: {},
 
   data() {
     return {
       v$: useVuelidate(), // vuelidate obj
 
-      isLogin: true,
       email: "",
-      password: {
-        password: "",
-        confirm: "",
-      },
+      password: "",
       showPass: false,
-      passwordStrength: -1,
     };
   },
   validations() {
     return {
       email: { required, email },
-      password: {
-        password: { required, minLength: minLength(8) }, // master pwd minimum 8 characters
-        confirm: {
-          required,
-          minLength: minLength(8),
-          sameAsPassword: sameAs(this.password.password),
-        },
-      },
+      password: { required },
     };
   },
-
-  updated() {
-    // hook to validate on every form update
-    this.passwordStrength = this.v$.password.password.$model !== "" ? zxcvbn(this.v$.password.password.$model).score : -1;
-
-    // this.v$.$validate;   // NOTE: vuelidate model binding already does live validation, no need for this
-  },
-
   methods: {
-    toggleSignup() {
-      // login / signup toogle
-      this.isLogin = !this.isLogin;
-      this.email = "";
-      this.password.password = "";
-      this.password.confirm = "";
-
-      this.v$.$reset(); // reset form entries on toggle
+    async submitLogin() {
+      await this.v$.$validate();
+      if (this.v$.$invalid) {
+        console.log(this.v$.$errors);
+      }
     },
   },
 };
