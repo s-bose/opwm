@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 from sqlalchemy.orm import Session
@@ -7,13 +7,13 @@ from starlette import status
 from pydantic import EmailStr
 
 
-from app.models.user import User
 from app.security import create_access_token, get_hash
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.dependency import get_db, auth_user
-from app.schemas.user import UserBase, UserLogin, ResetPasswordForm
+from app.schemas.user import UserLogin, ResetPasswordForm
 from app.crud import user as crud_user
 from app.crud import password as crud_password
+
 router = APIRouter()
 
 
@@ -59,7 +59,6 @@ def register(cred: UserLogin, db: Session = Depends(get_db)):
     return result.dict(exclude_unset=True)
 
 
-
 @router.post("/login")
 def login(cred: UserLogin, db: Session = Depends(get_db)):
 
@@ -98,15 +97,18 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
     response = JSONResponse(content=payload)
     response.set_cookie(
-        key="access_token", value=access_token, max_age=time_expires.total_seconds()
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        max_age=time_expires.total_seconds(),
     )
 
     return response
 
 
 @router.get("/user")
-def get_user_info(user = Depends(auth_user), db: Session = Depends(get_db)):
-    return user.dict(exclude={'master_pwd'})
+def get_user_info(user=Depends(auth_user), db: Session = Depends(get_db)):
+    return user.dict(exclude={"master_pwd"})
 
 
 @router.post("/reset_password/")

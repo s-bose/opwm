@@ -87,7 +87,7 @@ def gen_pwd_from_phrase(phrase: str, size: int, include_chars: List[str] = None)
     return gen_kw_pwd(keywords=keywords, size=size, include_chars=include_chars)
 
 
-# gen_kw_pwd(['shiladitya', 'bose', '31' 'aug', 'kolkata'],
+print(gen_kw_pwd(["neel", "zig", "298"], size=15))
 #            20, ['@', '?', '!', '#'])
 # gen_kw_pwd(['here', 'comes', 'the', 'sun'], 20, ['@'])
 

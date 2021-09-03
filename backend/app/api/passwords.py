@@ -54,7 +54,6 @@ def get_all_password(
 
 @router.post("/")
 def post_password(
-    # form_data: PasswordInsert = Depends(),
     cred: PasswordInsert,
     user: User = Depends(auth_user),
     db: Session = Depends(get_db),
