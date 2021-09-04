@@ -40,10 +40,10 @@
 // import { ref } from "vue";
 // import { Switch } from "@headlessui/vue";
 // import DeleteModal from "../components/DeleteModalComponent.vue";
-import LoginComponent from "@/components/LoginComponent.vue";
+
 export default {
   name: "Test",
-  components: { LoginComponent },
+  components: {},
   data() {
     return {
       showPop: false,

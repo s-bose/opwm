@@ -83,9 +83,41 @@
                     <circle cx="12" cy="12" r="10"></circle>
                   </svg>
                   Site
+                  <span class="text-red-500 mx-1">*</span>
                 </label>
-                <div class="relative w-full"></div>
-                <input required type="text" autofocus class="form-input" v-model="form.site" placeholder="ex: google" />
+                <div class="relative w-full">
+                  <div class="absolute inset-y-0 right-0 flex items-center px-1 py-3">
+                    <button class="rounded px-2 py-1 mt-11 text-sm hover:rounded-md cursor-pointer" type="button" @click.prevent="autoFillSite">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="26"
+                        height="26"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M2.5 2v6h6M21.5 22v-6h-6" />
+                        <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2" />
+                        <title>autofill site</title>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <input
+                  required
+                  type="text"
+                  autofocus
+                  class="form-input"
+                  v-model="form.site"
+                  placeholder="ex: google"
+                  :class="{ 'border border-red-500': v$.form.site.$error }"
+                />
+                <span class="error-span text-red-500" v-for="error in v$.form.site.$errors" :key="error">
+                  {{ error.$message }}
+                </span>
               </div>
               <div class="my-5 text-sm">
                 <label for="link" class="flex text-lg">
@@ -196,6 +228,7 @@
                       >
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
+                        <title>show/hide password</title>
                       </svg>
                     </button>
                   </div>
@@ -310,6 +343,7 @@ export default {
   validations() {
     return {
       form: {
+        site: { required },
         link: { required, url },
         username: { required },
         password: { required },
@@ -321,17 +355,17 @@ export default {
     async submitForm() {
       await this.v$.$validate();
       if (!this.v$.$invalid) {
-        if (!this.form.site) {
-          const result = parse(this.form.link);
-          this.form.site = result.domainWithoutSuffix || result.domain;
-        }
-
         this.$emit("newPassword", { ...this.form });
 
         this.form = {};
         this.$emit("update:showModal", !this.showModal);
         this.v$.$reset();
       }
+    },
+
+    autoFillSite() {
+      const result = parse(this.form.link);
+      this.form.site = result.domainWithoutSuffix || result.domain;
     },
 
     emitCloseInternal() {
