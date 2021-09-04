@@ -22,7 +22,7 @@ class Passwords(Base):
     """
 
     __tablename__ = "passwords"
-   
+
     pid = Column(
         UUIDType,
         primary_key=True,
@@ -30,8 +30,11 @@ class Passwords(Base):
         server_default=text("gen_random_uuid()"),
     )
     site = Column(String, nullable=False)
+    link = Column(String, nullable=False)
     user_id = Column(UUIDType, ForeignKey("users.uid"))
     username = Column(String, nullable=False)
     password = Column(String, nullable=False, unique=True)
-    
-    __table_args__ = (UniqueConstraint('user_id', 'site', name='uniq_site_constraint'),)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "site", "username", name="uniq_site_username"),
+    )
