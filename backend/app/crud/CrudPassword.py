@@ -4,9 +4,11 @@ from app.schemas.passwords import PasswordBase
 import app.core.sql.passwords_sql as sql
 from app.crud.CrudBase import CRUDBase
 
-class CRUDPassword(CRUDBase[PasswordBase]):
 
-    def get_pwd(self, db: Session, site: str, user_id: str, master_pwd: str) -> PasswordBase:
+class CRUDPassword(CRUDBase[PasswordBase]):
+    def get_pwd(
+        self, db: Session, site: str, user_id: str, master_pwd: str
+    ) -> PasswordBase:
         """
         Retrieves a single stored credential for a given `site`
         against the logged in user.
@@ -18,17 +20,18 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         Parameters
         ----------
 
-        site       : name of the site
-        user_id    : uuid of the logged in user
-        master_pwd : stored hash of the user's master password
+        site       : sitename
+        user_id    : userid
+        master_pwd : master pwd hash
 
         Returns
         -------
 
         PasswordBase model
 
-        id         : uuid primary key of the password record, as str
-        site       : name of the site
+        id         : uuid primary key
+        site       : sitename
+        link       : link
         username   : decrypted plaintext username
         password   : decrypted plaintext username
         """
@@ -36,11 +39,7 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         res = self.query_execute(
             db,
             query=sql.get_pwd_sql,
-            params={
-                "site": site, 
-                "user_id": user_id, 
-                "master_pwd": master_pwd
-            },
+            params={"site": site, "user_id": user_id, "master_pwd": master_pwd},
         )
 
         return res
@@ -52,8 +51,8 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         Parameters
         ----------
 
-        user_id    : uuid of the logged in user
-        master_pwd : stored hash of the user's master password
+        user_id    : userid
+        master_pwd : master pwd hash
 
         Returns
         -------
@@ -61,8 +60,9 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         list
             a list of PasswordBase models
 
-            id         : uuid primary key, as str
-            site       : name of the site
+            id         : uuid primary key
+            site       : sitename
+            link       : link
             username   : decrypted plaintext username
             password   : decrypted plaintext username
         """
@@ -70,17 +70,22 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         res = self.query_execute_all(
             db,
             query=sql.get_pwd_all_sql,
-            params={
-                "user_id": user_id,
-                "master_pwd": master_pwd
-            }
+            params={"user_id": user_id, "master_pwd": master_pwd},
         )
 
         return res
 
     def post_pwd(
-        self, db: Session, site: str, user_id: str, username: str, password: str, master_pwd: str
+        self,
+        db: Session,
+        site: str,
+        link: str,
+        user_id: str,
+        username: str,
+        password: str,
+        master_pwd: str,
     ) -> PasswordBase:
+
         """
         Inserts one `<username, password>` credential pair for a given `site`
         against the logged in user.
@@ -108,16 +113,15 @@ class CRUDPassword(CRUDBase[PasswordBase]):
             query=sql.post_pwd_sql,
             params={
                 "site": site,
-                "user_id": user_id,
+                "link": link,
                 "username": username,
                 "password": password,
+                "user_id": user_id,
                 "master_pwd": master_pwd,
-            }
+            },
         )
 
         return res
-        
-
 
     def update_pwd(
         self,
@@ -142,15 +146,15 @@ class CRUDPassword(CRUDBase[PasswordBase]):
                 "username": new_username,
                 "password": new_password,
                 "master_pwd": master_pwd,
-            }
+            },
         )
-        
+
         return res
 
+    def reset_pwd_all(
+        self, db: Session, old_master_pwd: str, new_master_pwd: str, user_id: str
+    ):
 
-
-    def reset_pwd_all(self, db: Session, old_master_pwd: str, new_master_pwd: str, user_id: str):
-        
         res = self.query_execute_all(
             db,
             query=sql.reset_pwd_all_sql,
@@ -158,10 +162,10 @@ class CRUDPassword(CRUDBase[PasswordBase]):
                 "old_master_pwd": old_master_pwd,
                 "new_master_pwd": new_master_pwd,
                 "user_id": user_id,
-            }
+            },
         )
-        
+
         return res
-        
+
 
 password = CRUDPassword(PasswordBase)

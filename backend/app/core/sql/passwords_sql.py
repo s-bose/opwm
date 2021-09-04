@@ -2,7 +2,8 @@ get_pwd_sql = """
 SELECT
     pid,
     site,
-    pgp_sym_decrypt(username::bytea, :master_pwd) as username, 
+    link,
+    username, 
     pgp_sym_decrypt(password::bytea, :master_pwd) as password
 FROM 
     passwords 
@@ -15,8 +16,9 @@ get_pwd_all_sql = """
 SELECT
     pid,
     site,
+    link,
     user_id,
-    pgp_sym_decrypt(username::bytea, :master_pwd) as username, 
+    username, 
     pgp_sym_decrypt(password::bytea, :master_pwd) as password
 FROM
     passwords
@@ -26,34 +28,35 @@ WHERE
 
 post_pwd_sql = """
 INSERT INTO
-    passwords(site, user_id, username, password) 
+    passwords(site, link, user_id, username, password) 
 VALUES (
-    :site, 
+    :site,
+    :link, 
     :user_id, 
-    pgp_sym_encrypt(:username, :master_pwd),
+    :username,
     pgp_sym_encrypt(:password, :master_pwd))
-RETURNING pid;
+RETURNING 
+    pid,
+    site,
+    link,
+    username, 
+    pgp_sym_decrypt(password::bytea, :master_pwd) as password;
 """
 
 update_pwd_sql = """
 UPDATE passwords
 SET 
-    username = pgp_sym_encrypt(:username, :master_pwd),
+    username = :username,
     password = pgp_sym_encrypt(:password, :master_pwd)
 WHERE 
     user_id::text = :user_id,
     site = :site
-RETURNING pid, site;
-"""
-
-update_pwd_all_sql = """
-UPDATE passwords
-SET 
-    site=:site,
-    username = pgp_sym_encrypt(:username, :master_pwd),
-    password = pgp_sym_encrypt(:password, :master_pwd)
-WHERE user_id::text = :user_id;
-RETURNING pid, site;
+RETURNING 
+    pid, 
+    site,
+    link,
+    username,
+    pgp_sym_decrypt(password::bytea, :master_pwd) as password;
 """
 
 

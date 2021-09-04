@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, EmailStr, Field, validator
 from uuid import UUID
 
 
@@ -17,7 +17,7 @@ class UserBase(BaseModel):
 
 class UserLogin(BaseModel):
     email: EmailStr
-    master_pwd: str
+    master_pwd: str = Field(..., min_length=1)
 
 
 class ResetPasswordForm(BaseModel):

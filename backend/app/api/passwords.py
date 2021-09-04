@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.orm import Session
@@ -37,7 +37,7 @@ def get_password(
 @router.get("/all")
 def get_all_password(
     user: UserBase = Depends(auth_user), db: Session = Depends(get_db)
-):
+) -> List[Dict[str, Any]]:
     """
     retrieves all pwd for the logged in user
     """
@@ -62,26 +62,26 @@ def post_password(
     stores a user-defined username/pwd for a site in vault
     (authenticated)
     """
+    pwd_insert = cred.dict(exclude_unset=True)
 
     return password.post_pwd(
-        db,
-        site=cred.site,
-        user_id=user.uid,
-        username=cred.username,
-        password=cred.password,
-        master_pwd=user.master_pwd,
+        db, user_id=user.uid, master_pwd=user.master_pwd, **pwd_insert
     ).dict(exclude_unset=True)
 
 
 @router.put("/")
-def change_password(
-    site: str, username: str, new_password: str, user: User = Depends(auth_user)
+def update_password(
+    cred: PasswordInsert, user: User = Depends(auth_user), db: Session = Depends(get_db)
 ) -> None:
     """
     changes the pwd for a site
     (authenticated)
     """
-    return None
+
+    pass
+    # pwd_update = cred.dict(exclude_unset=True)
+
+    # return None
 
 
 @router.get("/generate")
