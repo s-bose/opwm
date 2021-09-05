@@ -126,11 +126,13 @@ class CRUDPassword(CRUDBase[PasswordBase]):
     def update_pwd(
         self,
         db: Session,
-        site: str,
         user_id: str,
+        pid: str,
+        master_pwd: str,
+        new_site: str,
+        new_link: str,
         new_username: str,
         new_password: str,
-        master_pwd: str,
     ) -> PasswordBase:
 
         """
@@ -141,11 +143,13 @@ class CRUDPassword(CRUDBase[PasswordBase]):
             db,
             query=sql.update_pwd_sql,
             params={
-                "site": site,
                 "user_id": user_id,
-                "username": new_username,
-                "password": new_password,
+                "pid": pid,
                 "master_pwd": master_pwd,
+                "new_site": new_site,
+                "new_link": new_link,
+                "new_username": new_username,
+                "new_password": new_password,
             },
         )
 

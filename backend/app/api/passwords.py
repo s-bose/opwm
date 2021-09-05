@@ -8,7 +8,7 @@ from app import utils
 from app.models import User
 from app.schemas.user import UserBase
 from app.api.dependency import auth_user, get_db
-from app.schemas.passwords import PasswordInsert
+from app.schemas.passwords import PasswordInsert, PasswordUpdate
 from app.crud import password
 
 router = APIRouter()
@@ -62,26 +62,26 @@ def post_password(
     stores a user-defined username/pwd for a site in vault
     (authenticated)
     """
-    pwd_insert = cred.dict(exclude_unset=True)
 
     return password.post_pwd(
-        db, user_id=user.uid, master_pwd=user.master_pwd, **pwd_insert
+        db, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict()
     ).dict(exclude_unset=True)
 
 
 @router.put("/")
 def update_password(
-    cred: PasswordInsert, user: User = Depends(auth_user), db: Session = Depends(get_db)
+    cred: PasswordUpdate,
+    user: User = Depends(auth_user),
+    db: Session = Depends(get_db),
 ) -> None:
     """
     changes the pwd for a site
     (authenticated)
     """
 
-    pass
-    # pwd_update = cred.dict(exclude_unset=True)
-
-    # return None
+    return password.update_pwd(
+        db, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict()
+    ).dict(exclude_unset=True)
 
 
 @router.get("/generate")

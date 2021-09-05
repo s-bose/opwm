@@ -46,11 +46,13 @@ RETURNING
 update_pwd_sql = """
 UPDATE passwords
 SET 
-    username = :username,
-    password = pgp_sym_encrypt(:password, :master_pwd)
+    site = COALESCE(:new_site, site),
+    link = COALESCE(:new_link, link),
+    username = COALESCE(:new_username, username),
+    password = COALESCE(pgp_sym_encrypt(:new_password, :master_pwd), password::bytea)
 WHERE 
-    user_id::text = :user_id,
-    site = :site
+    user_id::text = :user_id AND
+    pid::text = :pid
 RETURNING 
     pid, 
     site,
