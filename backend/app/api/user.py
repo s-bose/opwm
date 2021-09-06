@@ -1,10 +1,12 @@
+from typing import Any, Dict
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from psycopg2.errors import UniqueViolation
+from sqlalchemy.exc import IntegrityError
 
 from sqlalchemy.orm import Session
 from starlette import status
-from pydantic import EmailStr
 
 
 from app.security import create_access_token, get_hash
@@ -24,7 +26,10 @@ implement a max no of login trials before login gets blocked
 
 
 @router.post("/register")
-def register(cred: UserLogin, db: Session = Depends(get_db)):
+def register(
+    cred: UserLogin, 
+    db: Session = Depends(get_db)
+)-> Dict[str, Any]:
 
     """
     ## API Register
@@ -55,7 +60,12 @@ def register(cred: UserLogin, db: Session = Depends(get_db)):
     """
     pwd = get_hash(cred.master_pwd)  # hash once in the server
     # hash of the hash stored in db
-    result = crud_user.post_user(db, email=cred.email, password=pwd)
+    try:
+        result = crud_user.post_user(db, email=cred.email, password=pwd)
+    except IntegrityError as e:
+        if (isinstance(e.orig, UniqueViolation)):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email already exists")
+
     return result.dict(exclude_unset=True)
 
 
@@ -89,11 +99,9 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
     # token expires after X minutes
     time_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {"user_info": user.dict(exclude_unset=True)}
+    payload = { "user_info": user.dict(exclude_unset=True) }
 
-    access_token = create_access_token(  # create a jwt access token
-        data=payload, expires_delta=time_expires
-    )
+    access_token = create_access_token(data=payload, expires_delta=time_expires)
 
     response = JSONResponse(content=payload)
     response.set_cookie(
@@ -107,37 +115,42 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/user")
-def get_user_info(user=Depends(auth_user), db: Session = Depends(get_db)):
+def get_user_info(
+    user=Depends(auth_user), 
+    db: Session = Depends(get_db)
+)-> Dict[str, Any]:
     return user.dict(exclude={"master_pwd"})
 
 
-@router.post("/reset_password/")
-def reset_master_password(
-    credential: ResetPasswordForm,
-    db: Session = Depends(get_db),
-):
 
-    if (user := crud_user.get_user_by_email(db, credential.email)) is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="user not found"
-        )
 
-    # get the old password from the id
-    user_info = crud_user.get_user_by_id(db, user.id)
-    old_master_pwd = user_info.master_pwd
+# @router.post("/reset_password")
+# def reset_master_password(
+#     credential: ResetPasswordForm,
+#     db: Session = Depends(get_db),
+# ):
 
-    # update the master password entry
-    pwd = get_hash(credential.new_password)
-    updated_user = crud_user.update_user(
-        db, id=str(user.id), email=user.email, new_password=pwd
-    )
+#     if (user := crud_user.get_user_by_email(db, credential.email)) is None:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND, detail="email not found"
+#         )
 
-    new_master_pwd = updated_user.master_pwd
+#     # get the old password from the id
+#     user_info = crud_user.get_user_by_id(db, user.id)
+#     old_master_pwd = user_info.master_pwd
 
-    # update all stored passwords with the new encryption
-    return crud_password.reset_pwd_all(
-        db,
-        old_master_pwd=old_master_pwd,
-        new_master_pwd=new_master_pwd,
-        user_id=str(user.id),
-    )
+#     # update the master password entry
+#     pwd = get_hash(credential.new_password)
+#     updated_user = crud_user.update_user(
+#         db, id=str(user.id), email=user.email, new_password=pwd
+#     )
+
+#     new_master_pwd = updated_user.master_pwd
+
+#     # update all stored passwords with the new encryption
+#     return crud_password.reset_pwd_all(
+#         db,
+#         old_master_pwd=old_master_pwd,
+#         new_master_pwd=new_master_pwd,
+#         user_id=str(user.id),
+#     )

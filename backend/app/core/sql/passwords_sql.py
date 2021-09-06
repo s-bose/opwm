@@ -61,6 +61,15 @@ RETURNING
     pgp_sym_decrypt(password::bytea, :master_pwd) as password;
 """
 
+delete_pwd_sql = """
+DELETE FROM passwords
+WHERE 
+    user_id::text = :user_id AND
+    pid::text = :pid
+RETURNING
+    pid;
+"""
+
 
 reset_pwd_all_sql = """
 UPDATE passwords
@@ -71,6 +80,6 @@ FROM
 	pgp_sym_decrypt(username::bytea, :old_master_pwd) as username,
 	pgp_sym_decrypt(password::bytea, :old_master_pwd) as password
 FROM passwords
-WHERE user_id = :user_id) t
+WHERE user_id = :user_id)
 RETURNING pid, site;
 """

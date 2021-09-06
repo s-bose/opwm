@@ -248,7 +248,11 @@
           </div>
           <!--footer-->
           <div class="p-3 mt-2 text-center space-x-4 md:block">
-            <button class="text-center border-0 p-3 duration-300 hover:bg-green-500 hover:text-white rounded-full w-auto shadow-xl" @click.prevent="submitForm">
+            <button
+              class="text-center border-0 p-3 duration-300 hover:bg-green-500 hover:text-white rounded-full w-auto shadow-xl"
+              :title="[isEditorMode ? 'Update' : 'Create']"
+              @click.prevent="submitForm"
+            >
               <svg
                 v-if="!isEditorMode"
                 xmlns="http://www.w3.org/2000/svg"

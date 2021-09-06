@@ -33,7 +33,7 @@ class Passwords(Base):
     link = Column(String, nullable=False)
     user_id = Column(UUIDType, ForeignKey("users.uid"))
     username = Column(String, nullable=False)
-    password = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
 
     __table_args__ = (
         UniqueConstraint("user_id", "site", "username", name="uniq_site_username"),

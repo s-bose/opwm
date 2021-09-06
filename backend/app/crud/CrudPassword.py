@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 
 from app.schemas.passwords import PasswordBase
@@ -44,7 +45,9 @@ class CRUDPassword(CRUDBase[PasswordBase]):
 
         return res
 
-    def get_pwd_all(self, db: Session, user_id: str, master_pwd: str) -> PasswordBase:
+    def get_pwd_all(
+        self, db: Session, user_id: str, master_pwd: str
+    ) -> List[PasswordBase]:
         """
         Retrieves all the stored credentials for the logged in user.
 
@@ -155,21 +158,29 @@ class CRUDPassword(CRUDBase[PasswordBase]):
 
         return res
 
-    def reset_pwd_all(
-        self, db: Session, old_master_pwd: str, new_master_pwd: str, user_id: str
-    ):
+    def delete_pwd(self, db: Session, user_id: str, pwd_id: str):
 
-        res = self.query_execute_all(
-            db,
-            query=sql.reset_pwd_all_sql,
-            params={
-                "old_master_pwd": old_master_pwd,
-                "new_master_pwd": new_master_pwd,
-                "user_id": user_id,
-            },
+        res = self.query_execute(
+            db, query=sql.delete_pwd_sql, params={"user_id": user_id, "pid": pwd_id}
         )
 
         return res
+
+    # def reset_pwd_all(
+    #     self, db: Session, old_master_pwd: str, new_master_pwd: str, user_id: str
+    # ):
+
+    #     res = self.query_execute_all(
+    #         db,
+    #         query=sql.reset_pwd_all_sql,
+    #         params={
+    #             "old_master_pwd": old_master_pwd,
+    #             "new_master_pwd": new_master_pwd,
+    #             "user_id": user_id,
+    #         },
+    #     )
+
+    #     return res
 
 
 password = CRUDPassword(PasswordBase)
