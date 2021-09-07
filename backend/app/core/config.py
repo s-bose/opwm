@@ -1,4 +1,4 @@
-from starlette.config import Config, environ
+from starlette.config import Config
 from starlette.datastructures import Secret
 
 config = Config(".env")
@@ -16,7 +16,6 @@ DATABASE_URL = config(
     default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",
 )
 
-DATABASE_URL = f"{DATABASE_URL}_test" if environ.get("TEST") else DATABASE_URL
 SECRET_KEY = config("SECRET_KEY", cast=str)
 ALGORITHM = config("ALGORITHM", cast=str)
 ACCESS_TOKEN_EXPIRE_MINUTES = config(
