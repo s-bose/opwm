@@ -54,6 +54,7 @@
           }
         "
         :key="index"
+        :pid="entry.pid"
         :site="entry.site"
         :link="entry.link"
         :username="entry.username"
@@ -103,6 +104,7 @@
         v-model:showModal="showModal"
         @newPassword="addNewPassword"
         :isEditorMode="isEdit"
+        :pid="current.pid"
         :site="current.site"
         :link="current.link"
         :username="current.username"
@@ -116,10 +118,12 @@
 
 <script>
 import { ref } from "vue";
+import { mapGetters, mapActions } from "vuex";
 
 import Password from "../components/PasswordComponent.vue";
 import PasswordModal from "../components/PasswordModalComponent.vue";
 import DeleteModal from "../components/DeleteModalComponent.vue";
+
 export default {
   name: "Home",
   components: { Password, PasswordModal, DeleteModal },
@@ -134,46 +138,9 @@ export default {
       showModal: false,
       showDelModal: false,
       isEdit: false,
-      entries: [
-        {
-          site: "Google",
-          link: "http://www.google.com",
-          username: "joe",
-          password: "mamma",
-        },
-        {
-          site: "Youtube",
-          link: "http://www.youtube.com",
-          username: "david32",
-          password: "cumbucket69",
-        },
-        {
-          site: "Facebook",
-          link: "http://www.facebook.com",
-          username: "nigga69420",
-          password: "urmomEatsAss69",
-        },
-        {
-          site: "Mega",
-          link: "http://www.mega.nz",
-          username: "dude_the_legend",
-          password: "xxx_tentacion_xxx",
-        },
-        {
-          site: "Twitter",
-          link: "http://www.twitter.com",
-          username: "donald_drump",
-          password: "tronald_dump",
-        },
-        {
-          site: "Reddit",
-          link: "http://www.reddit.com",
-          username: "cummy_bot",
-          password: "real_cummy_bot_65",
-        },
-      ],
 
       current: {
+        pid: "",
         site: "",
         link: "",
         username: "",
@@ -183,21 +150,27 @@ export default {
   },
 
   methods: {
+    ...mapActions(["createPassword", "updatePassword"]),
     toggleCard(index) {
       this.isActive = index;
     },
-    addNewPassword(e) {
+    async addNewPassword(e) {
       const passwordObj = Object.assign({}, e);
-      passwordObj["update"] = this.isEdit ? true : false;
-      console.log(passwordObj);
-
-      this.entries.push(e);
+      if (!this.isEdit) {
+        // create new password & exclude the blank pid
+        delete passwordObj["pid"];
+        await this.createPassword(passwordObj);
+      } else {
+        await this.updatePassword(passwordObj);
+      }
+      // console.log(passwordObj);
+      // call store method for adding/updating
+      // this.entries.push(e);
     },
 
     showEditModal(e) {
       this.isEdit = true;
-      this.current = (({ site, link, username, password }) => ({ site, link, username, password }))(e);
-
+      this.current = (({ pid, site, link, username, password }) => ({ pid, site, link, username, password }))(e);
       this.showModal = !this.showModal;
     },
 
@@ -215,6 +188,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters({ entries: "statePasswords" }),
     matchSearchItem() {
       if (this.searchItem === "") {
         return this.entries;
@@ -222,15 +196,9 @@ export default {
         return this.entries.filter((entry) => entry.site.toLowerCase().includes(this.searchItem.toLowerCase()));
       }
     },
-
-    isLoggedIn() {
-      return this.$store.getters.isAuthenticated;
-    },
   },
   created() {
-    if (!this.$store.getters.isAuthenticated) {
-      this.$router.push("/login");
-    }
+    return this.$store.dispatch("getPasswords");
   },
   mounted() {
     document.addEventListener("click", (e) => {

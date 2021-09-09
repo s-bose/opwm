@@ -310,7 +310,10 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    pid: {
+      type: String,
+      default: "",
+    },
     site: {
       type: String,
       default: "",
@@ -334,6 +337,7 @@ export default {
     return {
       v$: useVuelidate(),
       form: {
+        pid: this.pid,
         site: this.site,
         link: this.link,
         username: this.username,
@@ -359,7 +363,7 @@ export default {
     async submitForm() {
       await this.v$.$validate();
       if (!this.v$.$invalid) {
-        this.$emit("newPassword", { ...this.form });
+        this.$emit("newPassword", this.form);
 
         this.form = {};
         this.$emit("update:showModal", !this.showModal);
@@ -378,6 +382,7 @@ export default {
     },
   },
   updated() {
+    this.form.pid = this.pid
     this.form.site = this.site;
     this.form.link = this.link;
     this.form.username = this.username;

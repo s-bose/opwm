@@ -64,8 +64,9 @@ def post_password(
     return post_item.dict(exclude_unset=True)
 
 
-@router.put("/")
+@router.put("/{pid}")
 def update_password(
+    pid: str,
     cred: PasswordUpdate,
     user: User = Depends(auth_user),
     db: Session = Depends(get_db),
@@ -75,20 +76,20 @@ def update_password(
     (authenticated)
     """
 
-    if (update_item := password.update_pwd(db, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict())) is None:
+    if (update_item := password.update_pwd(db, pid=pid, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict())) is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password not found")
 
     return update_item.dict(exclude_unset=True)
 
 
-@router.delete("/")
+@router.delete("/{pid}")
 def delete_password(
-    password_id: str, 
+    pid: str, 
     user: User = Depends(auth_user), 
     db: Session = Depends(get_db)
 )-> PasswordBase:
 
-    if (del_item := password.delete_pwd(db, user_id=user.uid, pwd_id=password_id)) is None:
+    if (del_item := password.delete_pwd(db, user_id=user.uid, pid=pid)) is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password not found")
 
     return { "deleted": True, **del_item.dict(exclude_unset=True) }

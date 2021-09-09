@@ -5,6 +5,9 @@ import Signup from "../views/Signup.vue";
 import Home from "../views/Home.vue";
 import Test from "../views/Test.vue";
 import Root from "../views/Root.vue";
+
+import store from "@/store"; // NEW
+
 const routes = [
   {
     path: "/",
@@ -25,6 +28,7 @@ const routes = [
     path: "/home",
     name: "Home",
     component: Home,
+    meta: { requiresAuth: true },
   },
   {
     path: "/about",
@@ -44,6 +48,18 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (store.getters.isAuthenticated) {
+      next();
+      return;
+    }
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;

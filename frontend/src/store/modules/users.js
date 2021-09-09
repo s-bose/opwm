@@ -15,8 +15,14 @@ const actions = {
     await dispatch("viewMe");
   },
   async viewMe({ commit }) {
-    let { data } = await axios.get("user");
-    await commit("setUser", data);
+    try {
+      // let { data } = await axios.get("user");
+      // await commit("setUser", data);
+      let obj = await axios.get("user");
+      await commit("setUser", obj?.data);
+    } catch (error) {
+      console.error(error);
+    }
   },
   //   // eslint-disable-next-line no-empty-pattern
   //   async deleteUser({}, id) {

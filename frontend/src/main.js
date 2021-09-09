@@ -18,3 +18,14 @@ app.use(router).mount("#app");
 
 window.user = user;
 window.store = store;
+
+axios.interceptors.response.use(undefined, function (error) {
+  if (error) {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      store.dispatch("logOut");
+      router.push("/login");
+    }
+  }
+});

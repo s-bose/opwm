@@ -138,7 +138,6 @@ export default {
           this.$router.push("/home");
         } catch (error) {
           this.serverError = error.response.data.detail;
-          console.log(error.response.data);
         }
       }
     },

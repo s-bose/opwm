@@ -168,6 +168,7 @@ export default {
 
   props: {
     show: Boolean,
+    pid: String,
     site: String,
     link: String,
     username: String,
