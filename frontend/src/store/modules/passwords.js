@@ -13,6 +13,7 @@ const actions = {
     await axios.post("passwords/", { site, link, username, password });
     await dispatch("getPasswords");
   },
+
   async getPasswords({ commit }) {
     let obj = await axios.get("passwords/all");
     commit("setPasswords", obj?.data);
@@ -22,11 +23,11 @@ const actions = {
     await axios.put(`passwords/${pid}`, { site, link, username, password });
     await dispatch("getPasswords");
   },
-  // eslint-disable-next-line no-empty-pattern
-  // async deleteNote({ dispatch }, pid) {
-  //   await axios.delete(`passwords/${pid}`);
-  //   await dispatch("getPasswords");
-  // },
+
+  async deletePassword({ dispatch }, pid) {
+    await axios.delete(`passwords/${pid}`);
+    await dispatch("getPasswords");
+  },
 };
 
 const mutations = {

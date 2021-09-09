@@ -293,6 +293,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 import useVuelidate from "@vuelidate/core";
 import { required, url } from "@vuelidate/validators";
 import { parse } from "tldts";
@@ -331,7 +333,7 @@ export default {
       default: "",
     },
   },
-  emits: ["update:showModal", "newPassword"],
+  emits: ["update:showModal"],
 
   data() {
     return {
@@ -360,11 +362,20 @@ export default {
   },
 
   methods: {
+    ...mapActions(["createPassword", "updatePassword"]),
+
     async submitForm() {
       await this.v$.$validate();
       if (!this.v$.$invalid) {
-        this.$emit("newPassword", this.form);
-
+        const passwordObj = Object.assign({}, this.form);
+        // this.$emit("newPassword", this.form);
+        if (this.isEditorMode) {
+          // edit mode --> update
+          await this.updatePassword(passwordObj);
+        } else {
+          delete passwordObj["pid"];
+          await this.createPassword(passwordObj);
+        }
         this.form = {};
         this.$emit("update:showModal", !this.showModal);
         this.v$.$reset();
@@ -382,7 +393,7 @@ export default {
     },
   },
   updated() {
-    this.form.pid = this.pid
+    this.form.pid = this.pid;
     this.form.site = this.site;
     this.form.link = this.link;
     this.form.username = this.username;

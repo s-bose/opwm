@@ -102,7 +102,6 @@
 
       <password-modal
         v-model:showModal="showModal"
-        @newPassword="addNewPassword"
         :isEditorMode="isEdit"
         :pid="current.pid"
         :site="current.site"
@@ -111,14 +110,21 @@
         :password="current.password"
       />
 
-      <delete-modal v-model:showDelModal="showDelModal" :site="current.site" :link="current.link" :username="current.username" :password="current.password" />
+      <delete-modal
+        v-model:showDelModal="showDelModal"
+        :pid="current.pid"
+        :site="current.site"
+        :link="current.link"
+        :username="current.username"
+        :password="current.password"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 import Password from "../components/PasswordComponent.vue";
 import PasswordModal from "../components/PasswordModalComponent.vue";
@@ -150,22 +156,8 @@ export default {
   },
 
   methods: {
-    ...mapActions(["createPassword", "updatePassword"]),
     toggleCard(index) {
       this.isActive = index;
-    },
-    async addNewPassword(e) {
-      const passwordObj = Object.assign({}, e);
-      if (!this.isEdit) {
-        // create new password & exclude the blank pid
-        delete passwordObj["pid"];
-        await this.createPassword(passwordObj);
-      } else {
-        await this.updatePassword(passwordObj);
-      }
-      // console.log(passwordObj);
-      // call store method for adding/updating
-      // this.entries.push(e);
     },
 
     showEditModal(e) {
@@ -181,7 +173,7 @@ export default {
     },
 
     showDeleteModal(e) {
-      this.current = (({ site, link, username, password }) => ({ site, link, username, password }))(e);
+      this.current = (({ pid, site, link, username, password }) => ({ pid, site, link, username, password }))(e);
 
       this.showDelModal = !this.showDelModal;
     },
