@@ -18,31 +18,40 @@ router = APIRouter()
 
 @router.get("/")
 def get_password(
-    site: str, 
-    user: UserBase = Depends(auth_user), 
-    db: Session = Depends(get_db)
+    site: str, user: UserBase = Depends(auth_user), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     """
     retrieves the stored pwd for site for a given user
     (authenticated)
     """
-    if (item := password.get_pwd(db, site=site, user_id=user.uid, master_pwd=user.master_pwd)) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Password not found")
+    if (
+        item := password.get_pwd(
+            db, site=site, user_id=user.uid, master_pwd=user.master_pwd
+        )
+    ) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Password not found"
+        )
 
     return item.dict(exclude_unset=True)
 
 
 @router.get("/all")
 def get_all_password(
-    user: UserBase = Depends(auth_user), 
-    db: Session = Depends(get_db)
+    user: UserBase = Depends(auth_user), db: Session = Depends(get_db)
 ) -> List[Dict[str, Any]]:
     """
     retrieves all pwd for the logged in user
     """
-    if (res_list := password.get_pwd_all(db, user_id=user.uid, master_pwd=user.master_pwd)) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Password not found")
-    
+    if (
+        res_list := password.get_pwd_all(
+            db, user_id=user.uid, master_pwd=user.master_pwd
+        )
+    ) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Password not found"
+        )
+
     return [item.dict(exclude_unset=True) for item in res_list]
 
 
@@ -57,15 +66,22 @@ def post_password(
     (authenticated)
     """
     try:
-        post_item = password.post_pwd(db, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict())
+        post_item = password.post_pwd(
+            db, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict()
+        )
     except IntegrityError as e:
-        if (isinstance(e.orig, UniqueViolation)):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error: entry already exists")
+        print(e.orig)
+        if isinstance(e.orig, UniqueViolation):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Error: entry already exists",
+            )
     return post_item.dict(exclude_unset=True)
 
 
-@router.put("/")
+@router.put("/{pid}")
 def update_password(
+    pid: str,
     cred: PasswordUpdate,
     user: User = Depends(auth_user),
     db: Session = Depends(get_db),
@@ -75,23 +91,29 @@ def update_password(
     (authenticated)
     """
 
-    if (update_item := password.update_pwd(db, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict())) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password not found")
+    if (
+        update_item := password.update_pwd(
+            db, pid=pid, user_id=user.uid, master_pwd=user.master_pwd, **cred.dict()
+        )
+    ) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="password not found"
+        )
 
     return update_item.dict(exclude_unset=True)
 
 
-@router.delete("/")
+@router.delete("/{pid}")
 def delete_password(
-    password_id: str, 
-    user: User = Depends(auth_user), 
-    db: Session = Depends(get_db)
-)-> PasswordBase:
+    pid: str, user: User = Depends(auth_user), db: Session = Depends(get_db)
+) -> PasswordBase:
 
-    if (del_item := password.delete_pwd(db, user_id=user.uid, pwd_id=password_id)) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password not found")
+    if (del_item := password.delete_pwd(db, user_id=user.uid, pid=pid)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="password not found"
+        )
 
-    return { "deleted": True, **del_item.dict(exclude_unset=True) }
+    return {"deleted": True, **del_item.dict(exclude_unset=True)}
 
 
 # @router.post("/")

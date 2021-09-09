@@ -25,17 +25,11 @@ class PasswordInsert(BaseModel):
 
 
 class PasswordUpdate(BaseModel):
-    pid: UUID
-    new_site: Optional[str]
-    new_link: Optional[str]
-    new_username: Optional[str]
-    new_password: Optional[str]
+    site: Optional[str]
+    link: Optional[str]
+    username: Optional[str]
+    password: Optional[str]
 
-    @validator("pid")
-    def uuid_validator_pk(cls, v):
-        if v.version is None:
-            raise ValueError("Invalid UUID")
-        return str(v)
 
 
 if __name__ == "__main__":

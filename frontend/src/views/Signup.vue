@@ -130,20 +130,23 @@
       </div>
     </div>
   </div>
+
+  <toast v-model:showToast="showToast" :info="serverError" :danger="true" />
 </template>
 
 
 <script>
 // @ is an alias to /src
-
+import axios from "axios";
 import zxcvbn from "zxcvbn";
 
 import useVuelidate from "@vuelidate/core";
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
 
+import Toast from "../components/ToastComponent.vue";
 export default {
   name: "Signup",
-  components: {},
+  components: { Toast },
   props: {
     isLogin: {
       type: Boolean,
@@ -162,6 +165,9 @@ export default {
       },
       showPass: false,
       passwordStrength: -1,
+
+      showToast: false,
+      serverError: "",
     };
   },
   validations() {
@@ -186,18 +192,23 @@ export default {
   },
 
   methods: {
-    // toggleSignup() {
-    //   // login / signup toogle
-    //   this.isLogin = !this.isLogin;
-    //   this.email = "";
-    //   this.password.password = "";
-    //   this.password.confirm = "";
-    //   this.v$.$reset(); // reset form entries on toggle
-    // },
     async submitSignup() {
       await this.v$.$validate();
       if (this.v$.$invalid) {
         console.log(this.v$.$errors);
+      } else {
+        try {
+          await axios.post("register", { email: this.email, master_pwd: this.password.password });
+          this.$router.push("/login");
+        } catch (error) {
+          console.log(error.response.data.detail);
+          this.serverError = error.response.data.detail;
+
+          this.showToast = !this.showToast;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 1000);
+        }
       }
     },
   },

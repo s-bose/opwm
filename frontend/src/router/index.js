@@ -1,14 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login.vue";
-import Signup from "../views/Signup.vue";
 
-import Home from "../views/Home.vue";
-import Test from "../views/Test.vue";
+import Login from "../views/Login.vue"; // login
+import Signup from "../views/Signup.vue"; // signup
+
+import Home from "../views/Home.vue"; // home / dashboard
+import Root from "../views/Root.vue"; // root ("/")
+
+import store from "@/store"; // store
 
 const routes = [
   {
+    path: "/",
+    name: "root",
+    component: Root,
+  },
+  {
     path: "/login",
-    name: "Login",
+    name: "login",
     component: Login,
   },
   {
@@ -20,6 +28,7 @@ const routes = [
     path: "/home",
     name: "Home",
     component: Home,
+    meta: { requiresAuth: true },
   },
   {
     path: "/about",
@@ -28,17 +37,25 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
-  {
-    path: "/test",
-    name: "Test",
-    component: Test,
+    meta: { requiresAuth: true },
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (store.getters.isAuthenticated) {
+      next();
+      return;
+    }
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;

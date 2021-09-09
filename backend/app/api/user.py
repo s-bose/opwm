@@ -1,6 +1,6 @@
 from typing import Any, Dict
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.responses import JSONResponse
 from psycopg2.errors import UniqueViolation
 from sqlalchemy.exc import IntegrityError
@@ -70,7 +70,7 @@ def register(
 
 
 @router.post("/login")
-def login(cred: UserLogin, db: Session = Depends(get_db)):
+def login(cred: UserLogin, response: Response, db: Session = Depends(get_db)):
 
     """
     ## API Login
@@ -103,15 +103,18 @@ def login(cred: UserLogin, db: Session = Depends(get_db)):
 
     access_token = create_access_token(data=payload, expires_delta=time_expires)
 
-    response = JSONResponse(content=payload)
+    # response = JSONResponse(content=payload)
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
         max_age=time_expires.total_seconds(),
+        expires=time_expires.total_seconds(),
+        samesite='lax',
+        secure=False
     )
-
-    return response
+    
+    return payload
 
 
 @router.get("/user")

@@ -132,10 +132,10 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         user_id: str,
         pid: str,
         master_pwd: str,
-        new_site: str,
-        new_link: str,
-        new_username: str,
-        new_password: str,
+        site: str,
+        link: str,
+        username: str,
+        password: str,
     ) -> PasswordBase:
 
         """
@@ -149,19 +149,19 @@ class CRUDPassword(CRUDBase[PasswordBase]):
                 "user_id": user_id,
                 "pid": pid,
                 "master_pwd": master_pwd,
-                "new_site": new_site,
-                "new_link": new_link,
-                "new_username": new_username,
-                "new_password": new_password,
+                "new_site": site,
+                "new_link": link,
+                "new_username": username,
+                "new_password": password,
             },
         )
 
         return res
 
-    def delete_pwd(self, db: Session, user_id: str, pwd_id: str):
+    def delete_pwd(self, db: Session, user_id: str, pid: str):
 
         res = self.query_execute(
-            db, query=sql.delete_pwd_sql, params={"user_id": user_id, "pid": pwd_id}
+            db, query=sql.delete_pwd_sql, params={"user_id": user_id, "pid": pid}
         )
 
         return res

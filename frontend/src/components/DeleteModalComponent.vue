@@ -79,6 +79,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "DeleteModal",
   components: {},
@@ -87,7 +89,10 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    pid: {
+      type: String,
+      default: "",
+    },
     site: {
       type: String,
       default: "",
@@ -105,24 +110,23 @@ export default {
       default: "",
     },
   },
-  emits: ["update:showDelModal"],
+  emits: ["update:showDelModal", "deletePassword"],
 
   data() {
     return {};
   },
 
   methods: {
+    ...mapActions(["deletePassword"]),
+
     emitCloseInternal() {
       this.$emit("update:showDelModal", !this.showDelModal);
     },
 
     submitDelete() {
       const delObj = Object.assign({}, this.$props);
-      delete delObj.showDelModal;
-
-      console.log(delObj);
-
-      // send axios post containing the delObj to delete api
+      this.deletePassword(delObj["pid"]);
+      this.$emit("update:showDelModal", !this.showDelModal);
     },
   },
 };

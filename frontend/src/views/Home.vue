@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid relative h-full">
-    <div class="p-8">
-      <div class="bg-dark-secondary flex items-center rounded-full shadow-xl">
+    <div class="p-8 grid grid-cols-3 gap-4">
+      <div class="bg-dark-secondary flex items-center rounded-full shadow-xl col-span-2">
         <input
           class="rounded-l-full w-full bg-dark-secondary py-6 px-6 text-white leading-tight focus:outline-none"
           id="search"
@@ -25,6 +25,10 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
+      </div>
+      <div class="col-span-1 grid grid-cols-2 gap-4 text-white">
+        <button class="nav-button" @click.prevent="logoutHandler">Logout</button>
+        <button class="nav-button" @click.prevent="">About</button>
       </div>
     </div>
 
@@ -54,6 +58,7 @@
           }
         "
         :key="index"
+        :pid="entry.pid"
         :site="entry.site"
         :link="entry.link"
         :username="entry.username"
@@ -101,32 +106,44 @@
 
       <password-modal
         v-model:showModal="showModal"
-        @newPassword="addNewPassword"
         :isEditorMode="isEdit"
+        :pid="current.pid"
         :site="current.site"
         :link="current.link"
         :username="current.username"
         :password="current.password"
       />
 
-      <delete-modal v-model:showDelModal="showDelModal" :site="current.site" :link="current.link" :username="current.username" :password="current.password" />
+      <delete-modal
+        v-model:showDelModal="showDelModal"
+        :pid="current.pid"
+        :site="current.site"
+        :link="current.link"
+        :username="current.username"
+        :password="current.password"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import { mapGetters, mapActions } from "vuex";
 
 import Password from "../components/PasswordComponent.vue";
 import PasswordModal from "../components/PasswordModalComponent.vue";
 import DeleteModal from "../components/DeleteModalComponent.vue";
+
 export default {
   name: "Home",
+
   components: { Password, PasswordModal, DeleteModal },
+
   setup() {
     const pwds = ref([]);
     return { pwds };
   },
+
   data() {
     return {
       isActive: null,
@@ -134,46 +151,9 @@ export default {
       showModal: false,
       showDelModal: false,
       isEdit: false,
-      entries: [
-        {
-          site: "Google",
-          link: "http://www.google.com",
-          username: "joe",
-          password: "mamma",
-        },
-        {
-          site: "Youtube",
-          link: "http://www.youtube.com",
-          username: "david32",
-          password: "cumbucket69",
-        },
-        {
-          site: "Facebook",
-          link: "http://www.facebook.com",
-          username: "nigga69420",
-          password: "urmomEatsAss69",
-        },
-        {
-          site: "Mega",
-          link: "http://www.mega.nz",
-          username: "dude_the_legend",
-          password: "xxx_tentacion_xxx",
-        },
-        {
-          site: "Twitter",
-          link: "http://www.twitter.com",
-          username: "donald_drump",
-          password: "tronald_dump",
-        },
-        {
-          site: "Reddit",
-          link: "http://www.reddit.com",
-          username: "cummy_bot",
-          password: "real_cummy_bot_65",
-        },
-      ],
 
       current: {
+        pid: "",
         site: "",
         link: "",
         username: "",
@@ -182,22 +162,31 @@ export default {
     };
   },
 
+  /* lifecycle hooks */
+  created() {
+    return this.$store.dispatch("getPasswords");
+  },
+
+  mounted() {
+    document.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (this.isActive !== null && !this.pwds[this.isActive].$el.contains(e.target)) {
+        this.isActive = null;
+      }
+    });
+  },
+
+  /* methods */
   methods: {
+    ...mapActions(["logOut"]),
+
     toggleCard(index) {
       this.isActive = index;
-    },
-    addNewPassword(e) {
-      const passwordObj = Object.assign({}, e);
-      passwordObj["update"] = this.isEdit ? true : false;
-      console.log(passwordObj);
-
-      this.entries.push(e);
     },
 
     showEditModal(e) {
       this.isEdit = true;
-      this.current = (({ site, link, username, password }) => ({ site, link, username, password }))(e);
-
+      this.current = (({ pid, site, link, username, password }) => ({ pid, site, link, username, password }))(e);
       this.showModal = !this.showModal;
     },
 
@@ -208,13 +197,19 @@ export default {
     },
 
     showDeleteModal(e) {
-      this.current = (({ site, link, username, password }) => ({ site, link, username, password }))(e);
+      this.current = (({ pid, site, link, username, password }) => ({ pid, site, link, username, password }))(e);
 
       this.showDelModal = !this.showDelModal;
+    },
+
+    async logoutHandler() {
+      await this.logOut();
+      await this.$router.push("/login");
     },
   },
 
   computed: {
+    ...mapGetters({ entries: "statePasswords" }),
     matchSearchItem() {
       if (this.searchItem === "") {
         return this.entries;
@@ -223,18 +218,10 @@ export default {
       }
     },
   },
-  mounted() {
-    document.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (this.isActive !== null && !this.pwds[this.isActive].$el.contains(e.target)) {
-        this.isActive = null;
-      }
-    });
-  },
 };
 </script>
 
-<style>
+<style scoped lang="postcss">
 .fade-modal-enter-active,
 .fade-modal-leave-active {
   transition: opacity 0.4s ease-in-out;
@@ -243,5 +230,20 @@ export default {
 .fade-modal-enter-from,
 .fade-modal-leave-to {
   opacity: 0;
+}
+
+.nav-button {
+  @apply bg-dark-secondary
+          flex
+          items-center
+          justify-center
+          rounded-full
+          shadow-xl
+          col-span-1
+          transition
+          duration-300
+          ease-in-out
+          transform
+          hover:-translate-y-1;
 }
 </style>
