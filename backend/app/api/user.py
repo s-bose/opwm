@@ -109,8 +109,11 @@ def login(cred: UserLogin, response: Response, db: Session = Depends(get_db)):
         value=access_token,
         httponly=True,
         max_age=time_expires.total_seconds(),
+        expires=time_expires.total_seconds(),
+        samesite='lax',
+        secure=False
     )
-
+    
     return payload
 
 
