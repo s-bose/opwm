@@ -17,7 +17,6 @@
           >
             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
           </svg>
-          <span class="m-auto p-auto text-lg text-red-500">{{ serverError }}</span>
         </h1>
         <form action="" class="mt-6">
           <div class="my-7 text-sm">
@@ -94,6 +93,8 @@
       </div>
     </div>
   </div>
+
+  <toast v-model:showToast="showToast" :info="serverError" :danger="true" />
 </template>
 
 <script>
@@ -102,9 +103,10 @@ import { mapActions } from "vuex";
 import useVuelidate from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
 
+import Toast from "../components/ToastComponent.vue";
 export default {
   name: "Login",
-  components: {},
+  components: { Toast },
 
   data() {
     return {
@@ -114,6 +116,7 @@ export default {
       password: "",
       showPass: false,
 
+      showToast: false,
       serverError: "",
     };
   },
@@ -138,6 +141,10 @@ export default {
           this.$router.push("/home");
         } catch (error) {
           this.serverError = error.response.data.detail;
+          this.showToast = !this.showToast;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 1000);
         }
       }
     },

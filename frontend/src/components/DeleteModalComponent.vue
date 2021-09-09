@@ -126,10 +126,7 @@ export default {
     submitDelete() {
       const delObj = Object.assign({}, this.$props);
       this.deletePassword(delObj["pid"]);
-      // console.log(delObj);
       this.$emit("update:showDelModal", !this.showDelModal);
-
-      // send axios post containing the delObj to delete api
     },
   },
 };

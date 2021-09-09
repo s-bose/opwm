@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login.vue";
-import Signup from "../views/Signup.vue";
 
-import Home from "../views/Home.vue";
-import Test from "../views/Test.vue";
-import Root from "../views/Root.vue";
+import Login from "../views/Login.vue"; // login
+import Signup from "../views/Signup.vue"; // signup
 
-import store from "@/store"; // NEW
+import Home from "../views/Home.vue"; // home / dashboard
+import Root from "../views/Root.vue"; // root ("/")
+
+import store from "@/store"; // store
 
 const routes = [
   {
@@ -37,11 +37,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
-  {
-    path: "/test",
-    name: "Test",
-    component: Test,
+    meta: { requiresAuth: true },
   },
 ];
 

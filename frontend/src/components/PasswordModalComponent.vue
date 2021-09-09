@@ -290,18 +290,24 @@
       </div>
     </div>
   </transition>
+
+  <toast v-model:showToast="showToast" :info="serverError" :danger="true" />
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
 import useVuelidate from "@vuelidate/core";
+
+import { mapActions } from "vuex";
 import { required, url } from "@vuelidate/validators";
 import { parse } from "tldts";
 
+import Toast from "../components/ToastComponent.vue";
+
 export default {
   name: "PasswordModal",
-  components: {},
+  components: { Toast },
+  emits: ["update:showModal"],
+
   props: {
     showModal: {
       type: Boolean,
@@ -333,7 +339,6 @@ export default {
       default: "",
     },
   },
-  emits: ["update:showModal"],
 
   data() {
     return {
@@ -347,6 +352,8 @@ export default {
       },
 
       showPass: false,
+      showToast: false,
+      serverError: "",
     };
   },
 
@@ -365,17 +372,26 @@ export default {
     ...mapActions(["createPassword", "updatePassword"]),
 
     async submitForm() {
-      await this.v$.$validate();
-      if (!this.v$.$invalid) {
-        const passwordObj = Object.assign({}, this.form);
-        // this.$emit("newPassword", this.form);
-        if (this.isEditorMode) {
-          // edit mode --> update
-          await this.updatePassword(passwordObj);
-        } else {
-          delete passwordObj["pid"];
-          await this.createPassword(passwordObj);
+      try {
+        await this.v$.$validate();
+        if (!this.v$.$invalid) {
+          const passwordObj = Object.assign({}, this.form);
+          if (this.isEditorMode) {
+            // edit mode --> update
+            await this.updatePassword(passwordObj);
+          } else {
+            delete passwordObj["pid"];
+            await this.createPassword(passwordObj);
+          }
         }
+      } catch (err) {
+        console.error(err.response.data.detail);
+        this.serverError = err.response.data.detail;
+        this.showToast = !this.showToast;
+        setTimeout(() => {
+          this.showToast = false;
+        }, 1000);
+      } finally {
         this.form = {};
         this.$emit("update:showModal", !this.showModal);
         this.v$.$reset();

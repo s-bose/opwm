@@ -20,7 +20,6 @@
             <line x1="20" y1="8" x2="20" y2="14"></line>
             <line x1="23" y1="11" x2="17" y2="11"></line>
           </svg>
-          <span class="m-auto p-auto text-lg text-red-500">{{ serverError }}</span>
         </h1>
         <form action="" class="mt-6">
           <div class="my-7 text-sm">
@@ -131,6 +130,8 @@
       </div>
     </div>
   </div>
+
+  <toast v-model:showToast="showToast" :info="serverError" :danger="true" />
 </template>
 
 
@@ -142,9 +143,10 @@ import zxcvbn from "zxcvbn";
 import useVuelidate from "@vuelidate/core";
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
 
+import Toast from "../components/ToastComponent.vue";
 export default {
   name: "Signup",
-  components: {},
+  components: { Toast },
   props: {
     isLogin: {
       type: Boolean,
@@ -164,6 +166,7 @@ export default {
       showPass: false,
       passwordStrength: -1,
 
+      showToast: false,
       serverError: "",
     };
   },
@@ -200,6 +203,11 @@ export default {
         } catch (error) {
           console.log(error.response.data.detail);
           this.serverError = error.response.data.detail;
+
+          this.showToast = !this.showToast;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 1000);
         }
       }
     },

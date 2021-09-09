@@ -19,7 +19,7 @@ DATABASE_URL = config(
 SECRET_KEY = config("SECRET_KEY", cast=str)
 ALGORITHM = config("ALGORITHM", cast=str)
 ACCESS_TOKEN_EXPIRE_MINUTES = config(
-    "ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=1
+    "ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30
 )
 
 PWD_RESET_TOKEN_EXPIRE_MINUTES = config(

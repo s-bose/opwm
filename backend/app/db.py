@@ -6,7 +6,7 @@ from app.core.config import DATABASE_URL
 
 if not database_exists(DATABASE_URL):
     create_database(DATABASE_URL)
-engine = create_engine(DATABASE_URL, echo=True)  # database engine
+engine = create_engine(DATABASE_URL)  # database engine
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()  # sqlalchemy Base class

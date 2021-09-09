@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid relative h-full">
-    <div class="p-8">
-      <div class="bg-dark-secondary flex items-center rounded-full shadow-xl">
+    <div class="p-8 grid grid-cols-3 gap-4">
+      <div class="bg-dark-secondary flex items-center rounded-full shadow-xl col-span-2">
         <input
           class="rounded-l-full w-full bg-dark-secondary py-6 px-6 text-white leading-tight focus:outline-none"
           id="search"
@@ -25,6 +25,10 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
+      </div>
+      <div class="col-span-1 grid grid-cols-2 gap-4 text-white">
+        <button class="nav-button" @click.prevent="logoutHandler">Logout</button>
+        <button class="nav-button" @click.prevent="">About</button>
       </div>
     </div>
 
@@ -124,7 +128,7 @@
 
 <script>
 import { ref } from "vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 import Password from "../components/PasswordComponent.vue";
 import PasswordModal from "../components/PasswordModalComponent.vue";
@@ -132,11 +136,14 @@ import DeleteModal from "../components/DeleteModalComponent.vue";
 
 export default {
   name: "Home",
+
   components: { Password, PasswordModal, DeleteModal },
+
   setup() {
     const pwds = ref([]);
     return { pwds };
   },
+
   data() {
     return {
       isActive: null,
@@ -155,7 +162,24 @@ export default {
     };
   },
 
+  /* lifecycle hooks */
+  created() {
+    return this.$store.dispatch("getPasswords");
+  },
+
+  mounted() {
+    document.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (this.isActive !== null && !this.pwds[this.isActive].$el.contains(e.target)) {
+        this.isActive = null;
+      }
+    });
+  },
+
+  /* methods */
   methods: {
+    ...mapActions(["logOut"]),
+
     toggleCard(index) {
       this.isActive = index;
     },
@@ -177,6 +201,11 @@ export default {
 
       this.showDelModal = !this.showDelModal;
     },
+
+    async logoutHandler() {
+      await this.logOut();
+      await this.$router.push("/login");
+    },
   },
 
   computed: {
@@ -189,21 +218,10 @@ export default {
       }
     },
   },
-  created() {
-    return this.$store.dispatch("getPasswords");
-  },
-  mounted() {
-    document.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (this.isActive !== null && !this.pwds[this.isActive].$el.contains(e.target)) {
-        this.isActive = null;
-      }
-    });
-  },
 };
 </script>
 
-<style>
+<style scoped lang="postcss">
 .fade-modal-enter-active,
 .fade-modal-leave-active {
   transition: opacity 0.4s ease-in-out;
@@ -212,5 +230,20 @@ export default {
 .fade-modal-enter-from,
 .fade-modal-leave-to {
   opacity: 0;
+}
+
+.nav-button {
+  @apply bg-dark-secondary
+          flex
+          items-center
+          justify-center
+          rounded-full
+          shadow-xl
+          col-span-1
+          transition
+          duration-300
+          ease-in-out
+          transform
+          hover:-translate-y-1;
 }
 </style>

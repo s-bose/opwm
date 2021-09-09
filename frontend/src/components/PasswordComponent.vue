@@ -143,7 +143,7 @@
         </form>
       </div>
 
-      <toast v-model:showToast="displayToast" />
+      <toast v-model:showToast="displayToast" info="successfully copied to clipboard" :danger="false" />
     </div>
   </div>
 </template>
