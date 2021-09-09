@@ -17,6 +17,7 @@
           >
             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
           </svg>
+          <span class="m-auto p-auto text-lg text-red-500">{{ serverError }}</span>
         </h1>
         <form action="" class="mt-6">
           <div class="my-7 text-sm">
@@ -96,6 +97,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 import useVuelidate from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
 
@@ -110,6 +113,8 @@ export default {
       email: "",
       password: "",
       showPass: false,
+
+      serverError: "",
     };
   },
   validations() {
@@ -119,10 +124,22 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["logIn"]),
     async submitLogin() {
       await this.v$.$validate();
       if (this.v$.$invalid) {
         console.log(this.v$.$errors);
+      } else {
+        // submit the form
+
+        try {
+          let res = await this.logIn({ email: this.email, master_pwd: this.password });
+          console.log(res);
+          this.$router.push("/home");
+        } catch (error) {
+          this.serverError = error.response.data.detail;
+          console.log(error.response.data);
+        }
       }
     },
   },

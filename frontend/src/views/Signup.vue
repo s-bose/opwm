@@ -20,6 +20,7 @@
             <line x1="20" y1="8" x2="20" y2="14"></line>
             <line x1="23" y1="11" x2="17" y2="11"></line>
           </svg>
+          <span class="m-auto p-auto text-lg text-red-500">{{ serverError }}</span>
         </h1>
         <form action="" class="mt-6">
           <div class="my-7 text-sm">
@@ -135,7 +136,7 @@
 
 <script>
 // @ is an alias to /src
-
+import axios from "axios";
 import zxcvbn from "zxcvbn";
 
 import useVuelidate from "@vuelidate/core";
@@ -162,6 +163,8 @@ export default {
       },
       showPass: false,
       passwordStrength: -1,
+
+      serverError: "",
     };
   },
   validations() {
@@ -186,18 +189,18 @@ export default {
   },
 
   methods: {
-    // toggleSignup() {
-    //   // login / signup toogle
-    //   this.isLogin = !this.isLogin;
-    //   this.email = "";
-    //   this.password.password = "";
-    //   this.password.confirm = "";
-    //   this.v$.$reset(); // reset form entries on toggle
-    // },
     async submitSignup() {
       await this.v$.$validate();
       if (this.v$.$invalid) {
         console.log(this.v$.$errors);
+      } else {
+        try {
+          await axios.post("register", { email: this.email, master_pwd: this.password.password });
+          this.$router.push("/login");
+        } catch (error) {
+          console.log(error.response.data.detail);
+          this.serverError = error.response.data.detail;
+        }
       }
     },
   },

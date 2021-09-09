@@ -222,6 +222,15 @@ export default {
         return this.entries.filter((entry) => entry.site.toLowerCase().includes(this.searchItem.toLowerCase()));
       }
     },
+
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
+    },
+  },
+  created() {
+    if (!this.$store.getters.isAuthenticated) {
+      this.$router.push("/login");
+    }
   },
   mounted() {
     document.addEventListener("click", (e) => {

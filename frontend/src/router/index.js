@@ -4,11 +4,16 @@ import Signup from "../views/Signup.vue";
 
 import Home from "../views/Home.vue";
 import Test from "../views/Test.vue";
-
+import Root from "../views/Root.vue";
 const routes = [
   {
+    path: "/",
+    name: "root",
+    component: Root,
+  },
+  {
     path: "/login",
-    name: "Login",
+    name: "login",
     component: Login,
   },
   {
