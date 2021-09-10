@@ -12,24 +12,20 @@ class CRUDUsers(CRUDBase[UserBase]):
 
     def get_user_by_id(self, db: Session, id: str) -> UserBase:
         """
+        ### used internally via API dependencies
+
         Fetches user information from the `User` table by
         querying by their id (uuid primary key)
 
-        ### Only used internally via API dependencies
-
         Parameters
         ----------
-
-        id  : uuid primary key, represented as str
+        id : UUID
 
         Returns
         -------
-
-        UserBase model
-
-        id         : uuid primary key, as str
-        email      : user email
-        master_pwd : master password (hash)
+        uid         : UUID
+        email       : EmailStr
+        master_pwd  : str (hash)
 
         """
         return self.query_execute(
@@ -41,23 +37,21 @@ class CRUDUsers(CRUDBase[UserBase]):
         )
    
 
-    def get_user_by_email(self, db: Session, email: EmailStr) -> str:
+    def get_user_by_email(self, db: Session, email: EmailStr) -> UserBase:
 
         """
+        ### Only used internally via API dependencies
+
         Fetches user information from the `User` table by querying
         by their registered email address.
 
-        ### Only used internally via API dependencies
-
         Parameters
         ----------
-
-        email   : email used when registering
-
+        email : EmailStr
+        
         Returns
         -------
-
-        id  : uuid primary key, as str
+        uid : UUID
 
         """
         return self.query_execute(
@@ -76,26 +70,18 @@ class CRUDUsers(CRUDBase[UserBase]):
         Fetches user information from the `User` table by querying
         against email address and verifying the password.
 
-        postgres `crypt()` function is used to verify the plaintext
-        password with the stored hash.
-        Returns a valid Row object only if the passwords match.
-        otherwise returns None.
-
-        ### Used for authenticating a user's account
-
+        postgres `crypt()` is used to verify the supplied password 
+        with the stored hash.
+        
         Parameters
         ----------
-
-        email    : email credentials
-        password : password credentials
+        email    : EmailStr
+        password : str 
 
         Returns
         -------
-
-        UserBase model
-
-        id    : uuid primary key, as str
-        email : user email
+        uid    : UUID
+        email  : EmailStr
 
         """
         return self.query_execute(
@@ -109,29 +95,31 @@ class CRUDUsers(CRUDBase[UserBase]):
   
 
 
-    def post_user(self, db: Session, email: str, password: str) -> str:
+    def post_user(
+        self, 
+        db: Session, 
+        email: str, 
+        password: str
+    ) -> UserBase:
 
         """
         Inserts a newly registered user's email and their hashed
         master password in the `Users` table.
 
-        Uses the postgres `crypt()` function with salt to generate
-        and store hashes of passwords.
-        `Blowfish (bf)` hashing algorithm with 8 iterations is used here.
-
-        ### Used for securely registering a new user's account
+        Uses `crypt()` function with salt to generate and store 
+        hashes of passwords.
+        `Blowfish (bf)` hashing with 8 iterations is used.
 
         Parameters
         ----------
-
-        email    : email credentials
-        password : password credentials
+        email    : EmailStr
+        password : str
 
         Returns
         -------
-
-        id : uuid primary key of inserted row, as str
+        uid : UUID
         """
+
         return self.query_execute(
             db,
             query=sql.post_user_sql,
@@ -142,30 +130,31 @@ class CRUDUsers(CRUDBase[UserBase]):
         )
 
 
-    def update_user(self, db: Session, id: str, email: str, new_password: str) -> UserBase:
+    def update_user(
+        self, 
+        db: Session, 
+        _id: str, 
+        email: str, 
+        new_password: str
+    ) -> UserBase:
 
         """
-        Updates an existing user's credentials by changing
+        Updates an existing user by changing
         the old master password hash with a new one.
-        ###
-        # This does not update the existing username/passwords
-        # stored in the `Passwords` table
-        # For that, an additional query on `Passwords` table
-        # needs to be applied.
+        
+        This does not update the existing username/passwords
+        stored in the `Passwords` table
+        For that, an additional query on `Passwords` table
+        needs to be applied.
 
         Parameters
         ----------
-
-        email        : user email
-        new_password : (plaintext) new master password
+        email        : EmailStr
+        new_password : str
 
         Returns
         -------
-
-        UserBase model
-
-        id    : uuid primary key of the updated row, as str
-        email : user email
+        uid : UUID
 
         """
         return self.query_execute(
@@ -174,7 +163,28 @@ class CRUDUsers(CRUDBase[UserBase]):
             params={
                 "email": email,
                 "new_password": new_password,
-                "id": id
+                "id": _id
+            }
+        )
+    
+
+    def delete_user(self, db: Session, _id: str)-> UserBase:
+
+        """
+        Deletes an existing user by `_id`
+        Cascade deletes all passwords associated with it.
+
+        Parameters
+        ----------
+        _id: UUID
+
+        Returns
+        -------
+        uid: UUID (deleted entry)
+        """
+        return self.query_execute(
+            db, query=sql.delete_user_sql, params={
+                "id": _id,
             }
         )
 

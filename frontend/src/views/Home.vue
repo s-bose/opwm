@@ -28,7 +28,7 @@
       </div>
       <div class="col-span-1 grid grid-cols-2 gap-4 text-white">
         <button class="nav-button" @click.prevent="logoutHandler">Logout</button>
-        <button class="nav-button" @click.prevent="">About</button>
+        <button class="nav-button" @click.prevent="aboutRouter">About</button>
       </div>
     </div>
 
@@ -205,6 +205,10 @@ export default {
     async logoutHandler() {
       await this.logOut();
       await this.$router.push("/login");
+    },
+
+    aboutRouter() {
+      this.$router.push("/about");
     },
   },
 

@@ -31,7 +31,7 @@ class Passwords(Base):
     )
     site = Column(String, nullable=False)
     link = Column(String, nullable=False)
-    user_id = Column(UUIDType, ForeignKey("users.uid"))
+    user_id = Column(UUIDType, ForeignKey("users.uid", ondelete="CASCADE"))
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
 
