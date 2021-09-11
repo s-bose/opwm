@@ -22,4 +22,5 @@ class UserLogin(BaseModel):
 
 class ResetPasswordForm(BaseModel):
     email: EmailStr
+    old_password: str
     new_password: str

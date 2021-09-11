@@ -172,44 +172,46 @@ def delete_user(
     --------
     user_id : UUID
     """
-    return crud_user.delete_user(user.uid).dict(exclude_unset=True)
+    return crud_user.delete_user(db, _id=user.uid).dict(exclude_unset=True)
 
-# # TODO - NOT DONE
-# @router.post("/reset_password")
-# def reset_master_password(
-#     credential: ResetPasswordForm,
-#     db: Session = Depends(get_db),
-# ):
-#     """
-#     Not authenticated.
+# TODO - NOT DONE
+@router.post("/reset_password")
+def reset_master_password(
+    credential: ResetPasswordForm,
+    db: Session = Depends(get_db),
+):
+    """
+    Not authenticated.
 
-#     The same function can be used for `forgot password` at Login
-#     or, after login for manually resetting password
+    The same function can be used for `forgot password` at Login
+    or, after login for manually resetting password
 
-#     """
-#     # TODO -implement this
-#     if (user := crud_user.get_user_by_email(db, credential.email)) is None:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND, 
-#             detail="email not found"
-#         )
+    """
+    if (user := crud_user.get_user_by_email(db, credential.email)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="email not found"
+        )
 
-#     # get the old password from the id
-#     user_info = crud_user.get_user_by_id(db, user.uid)
-#     old_master_pwd = user_info.master_pwd
+    # check if old password is valid
+    old_pwd = get_hash(credential.old_password)   # old pwd (db un-hashed)
+    if (entry := crud_user.get_user(db, email=credential.email, password=old_pwd)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="wrong password"
+        )
 
-#     # update the master password entry
-#     new_master_pwd = get_hash(credential.new_password)
-#     updated_user = crud_user.update_user(
-#         db, _id=user.uid, email=user.email, new_password=new_master_pwd
-#     )
+    # get the old password from the id
+    user_info = crud_user.get_user_by_id(db, user.uid)
+    old_master_pwd = user_info.master_pwd       # old master pass (db hashed)
 
-#     new_master_pwd = crud_user.get_user_by_id(db, user_id)
-
-#     # update all stored passwords with the new encryption
-#     return crud_password.reset_pwd_all(
-#         db,
-#         old_master_pwd=old_master_pwd,
-#         new_master_pwd=new_master_pwd,
-#         user_id=str(user.id),
-#     )
+    # update the master password entry
+    new_pwd = get_hash(credential.new_password)   # new pwd (db un-hashed)
+    
+    # update all stored passwords with the new encryption
+    return crud_password.reset_pwd_all(
+        db,
+        old_master_pwd=old_master_pwd,
+        new_pwd=new_pwd,
+        user_id=user_info.uid,
+    )

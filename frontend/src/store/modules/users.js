@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// export const namespaced = true;
+export const namespaced = true;
 
 const state = {
   user: null,
@@ -29,9 +29,15 @@ const actions = {
  
   async logOut({ commit }) {
     let user = null;
-    // commit("setPasswords", null, {root: true});
+    commit("setPasswords", null, {root: true});
     commit("logout", user);
   },
+
+  async deleteUser({ commit }) {
+    await axios.delete("user");
+    let user = null;
+    commit("logout", user);
+  }
   
 };
 

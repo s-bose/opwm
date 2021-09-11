@@ -199,7 +199,7 @@ class CRUDPassword(CRUDBase[PasswordBase]):
         self, 
         db: Session, 
         old_master_pwd: str, 
-        new_master_pwd: str, 
+        new_pwd: str, 
         user_id: str
     ):
 
@@ -208,7 +208,7 @@ class CRUDPassword(CRUDBase[PasswordBase]):
             query=sql.reset_pwd_all_sql,
             params={
                 "old_master_pwd": old_master_pwd,
-                "new_master_pwd": new_master_pwd,
+                "new_pwd": new_pwd,
                 "user_id": user_id,
             },
         )

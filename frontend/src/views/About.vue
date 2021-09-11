@@ -64,7 +64,10 @@
             Reset Password
           </button>
 
-          <button class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full shadow-xl col-span-full xl:col-span-2">
+          <button
+            class="text-center border-0 p-3 duration-300 hover:bg-red-900 hover:text-white rounded-full shadow-xl col-span-full xl:col-span-2"
+            @click.prevent="handleDeleteUser"
+          >
             Delete Account
           </button>
         </div>
@@ -86,14 +89,19 @@
       </div>
     </div>
   </div>
+
+  <delete-user-modal v-model:showDelUser="showDelUser" />
 </template>
 
 <script>
+import DeleteUserModal from "../components/DeleteUserModalComponent.vue";
+
 export default {
-  components: {},
+  components: { DeleteUserModal },
   name: "About",
   data() {
     return {
+      showDelUser: false,
       displayToast: false,
     };
   },
@@ -119,6 +127,10 @@ export default {
 
     goBack() {
       this.$router.push("/home");
+    },
+
+    handleDeleteUser() {
+      this.showDelUser = !this.showDelUser;
     },
   },
 };

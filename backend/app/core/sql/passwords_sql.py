@@ -74,35 +74,31 @@ RETURNING
 
 # bulk resets passwords 
 # first decrypts them using `old_master_pwd`
-# then re-encrypts them using `new_master_pwd`
+# then hashes the `new_pwd` in db
+# uses the hashed new_pwd as new master password
+# to encrypt the decrypted passwords
 # returning their `pid`s
-
 reset_pwd_all_sql = """
+WITH t AS (
+	UPDATE users 
+	SET
+		master_pwd = crypt(:new_pwd, gen_salt('bf', 8))
+	WHERE uid::text = :user_id
+	RETURNING *
+)
 UPDATE passwords
-SET
-password = pgp_sym_encrypt(t.password, :new_master_pwd)
-FROM
-(
-    SELECT
-        pgp_sym_decrypt(password::bytea, :old_master_pwd) as password
-    FROM passwords
+	SET password=PGP_SYM_ENCRYPT(old_passwords.password, updated_user.master_pwd)
+	FROM (SELECT * FROM t) updated_user, 
+	(
+		SELECT PGP_SYM_DECRYPT(password::bytea, :old_master_pwd) as password
+		FROM passwords
+		WHERE user_id::text = :user_id
+	) old_passwords
     WHERE user_id::text = :user_id
-) t
 RETURNING pid;
+
+-- params - user_id         (user id UUID string)
+-- params - new_pwd         (new password, hashed once)   
+-- params - old_master_pwd  (old password, hashed twice)
 """
 
-
-"""
-UPDATE passwords
-SET
-password = pgp_sym_encrypt(t.password, usr.new_master_pwd)
-FROM
-(
-    SELECT
-        pgp_sym_decrypt(password::bytea, :old_master_pwd) as password
-    FROM passwords
-    WHERE user_id::text = :user_id
-) t
-WHERE 
-RETURNING pid;
-"""
