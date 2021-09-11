@@ -28,6 +28,12 @@ const actions = {
     await axios.delete(`passwords/${pid}`);
     await dispatch("getPasswords");
   },
+
+  async resetPasswords({commit}, {email, old_password, new_password}) {
+    // pass
+    await axios.post("reset_password", {email, old_password, new_password});
+    commit("setPassowrds", null);
+  }
 };
 
 const mutations = {

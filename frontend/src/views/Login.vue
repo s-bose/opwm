@@ -76,7 +76,7 @@
             </span>
 
             <div class="flex justify-end mt-2 text-xs text-gray-600">
-              <a href="" class="hover:underline">Forgot Password?</a>
+              <a href="" class="hover:underline" @click.prevent="handleResetPwd">Forgot Password?</a>
             </div>
           </div>
 
@@ -128,6 +128,7 @@ export default {
   },
   methods: {
     ...mapActions(["logIn"]),
+
     async submitLogin() {
       await this.v$.$validate();
       if (this.v$.$invalid) {
@@ -147,6 +148,10 @@ export default {
           }, 1000);
         }
       }
+    },
+
+    handleResetPwd() {
+      this.$router.push("/reset");
     },
   },
 };

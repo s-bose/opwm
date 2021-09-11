@@ -60,7 +60,10 @@
 
           <!-- reset password and delete account -->
 
-          <button class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:text-white rounded-full shadow-xl col-span-full xl:col-span-2">
+          <button
+            class="text-center border-0 p-3 duration-300 hover:bg-green-900 hover:text-white rounded-full shadow-xl col-span-full xl:col-span-2"
+            @click.prevent="handleResetPwd"
+          >
             Reset Password
           </button>
 
@@ -132,6 +135,10 @@ export default {
     handleDeleteUser() {
       this.showDelUser = !this.showDelUser;
     },
+
+    handleResetPwd() {
+      this.$router.push('/reset');
+    }
   },
 };
 </script>

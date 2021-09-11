@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "../views/Login.vue"; // login
 import Signup from "../views/Signup.vue"; // signup
-
 import Home from "../views/Home.vue"; // home / dashboard
 import Root from "../views/Root.vue"; // root ("/")
 
@@ -38,6 +37,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
     meta: { requiresAuth: true },
+  },
+  {
+    path: "/reset",
+    name: "Reset password",
+    component: () => import( "../views/ResetPassword.vue"),
   },
 ];
 
