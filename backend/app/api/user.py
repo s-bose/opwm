@@ -43,7 +43,7 @@ def register(
     ----------
 
     email: EmailStr
-    master_pwd: tr
+    master_pwd: str
 
     Returns
     -------
@@ -86,7 +86,7 @@ def login(
     Parameters
     ----------
     email: EmailStr
-    master_pwd: tr
+    master_pwd: str
 
     Returns
     -------

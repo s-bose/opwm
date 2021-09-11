@@ -164,6 +164,7 @@ export default {
 
   /* lifecycle hooks */
   created() {
+    console.log("home created");
     return this.$store.dispatch("getPasswords");
   },
 

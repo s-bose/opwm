@@ -25,7 +25,7 @@ app.include_router(main_router, prefix="/api")
 
 @app.exception_handler(IntegrityError)
 def db_exc_handler(req: Request, exc: IntegrityError):
-    if (isinstance(exc.orig, UniqueViolation)):
+    if isinstance(exc.orig, UniqueViolation):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={"info": "Database Operation Error", "detail": str(exc).split(" ")[0]},

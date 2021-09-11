@@ -48,44 +48,14 @@
             <label for="name" class="block text-lg">Name</label>
           </div>
           <div class="col-start-2 col-span-3">
-            <input readonly type="text" id="name" autofocus class="form-input" placeholder="Name" :value="details.name" />
+            <input readonly type="text" id="name" autofocus class="form-input" placeholder="Name" :value="name" />
           </div>
 
           <div class="bg-dark-secondary flex items-center justify-center rounded-sm shadow-xl col-span-1">
             <label for="email" class="block text-lg">Email</label>
           </div>
           <div class="col-start-2 col-span-3">
-            <input readonly type="text" id="email" autofocus class="form-input" placeholder="Email" :value="details.email" />
-          </div>
-
-          <div class="bg-dark-secondary flex items-center justify-center rounded-sm shadow-xl col-span-1">
-            <label for="password" class="block text-lg">Password</label>
-          </div>
-          <div class="col-start-2 col-span-3 relative">
-            <div class="absolute inset-y-0 right-0 flex items-center p-2 mb-3">
-              <button
-                class="hover:bg-gray-500 rounded px-1 py-1 mt-3 text-sm hover:rounded-md cursor-pointer"
-                id="toggle"
-                type="button"
-                @mouseup="showPass = !showPass"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
-            </div>
-            <input readonly :type="[showPass ? 'text' : 'password']" id="password" autofocus class="form-input" :value="details.password" />
+            <input readonly type="text" id="email" autofocus class="form-input" placeholder="Email" :value="email" />
           </div>
 
           <!-- reset password and delete account -->
@@ -125,14 +95,18 @@ export default {
   data() {
     return {
       displayToast: false,
-      showPass: false,
-
-      details: {
-        name: "Jeff_bezos",
-        email: "jeffbezos@amazon.com",
-        password: "iamjeffbezos",
-      },
     };
+  },
+
+  computed: {
+    email() {
+      let { email } = this.$store.getters.stateUser;
+      return email;
+    },
+
+    name() {
+      return this.email.substring(0, this.email.lastIndexOf("@"));
+    },
   },
 
   methods: {
