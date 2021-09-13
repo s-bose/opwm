@@ -30,9 +30,13 @@ const actions = {
   },
 
   async resetPasswords({commit}, {email, old_password, new_password}) {
-    // pass
     await axios.post("reset_password", {email, old_password, new_password});
     commit("setPassowrds", null);
+  },
+
+  async clearPasswords({commit}) {
+    let passwords = null;
+    commit("setPasswords", passwords);
   }
 };
 

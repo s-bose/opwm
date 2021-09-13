@@ -6,9 +6,9 @@ config = Config(".env")
 
 POSTGRES_USER = config("POSTGRES_USER", cast=str)
 POSTGRES_PASSWORD = config("POSTGRES_PASSWORD", cast=Secret)
-POSTGRES_SERVER = config("POSTGRES_SERVER", cast=str, default="db")
+POSTGRES_SERVER = config("POSTGRES_SERVER", cast=str, default="opwm")
 POSTGRES_PORT = config("POSTGRES_PORT", cast=str, default="5432")
-POSTGRES_DB = config("POSTGRES_DB", cast=str)
+POSTGRES_DB = config("POSTGRES_DB", cast=str, default="db")
 
 DATABASE_URL = config(
     "DATABASE_URL",
@@ -18,10 +18,5 @@ DATABASE_URL = config(
 
 SECRET_KEY = config("SECRET_KEY", cast=str)
 ALGORITHM = config("ALGORITHM", cast=str)
-ACCESS_TOKEN_EXPIRE_MINUTES = config(
-    "ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30
-)
+ACCESS_TOKEN_EXPIRE_MINUTES = config("ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30)
 
-PWD_RESET_TOKEN_EXPIRE_MINUTES = config(
-    "PWD_RESET_TOKEN_EXPIRE_MINUTES", cast=int, default=10
-)

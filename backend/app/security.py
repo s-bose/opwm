@@ -4,7 +4,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
-from app.core.config import SECRET_KEY, ALGORITHM, PWD_RESET_TOKEN_EXPIRE_MINUTES
+from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = (
     CryptContext(  # a CryptContext instance using bcrypt function with 10 rounds

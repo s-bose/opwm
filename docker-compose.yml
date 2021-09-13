@@ -11,6 +11,7 @@ services:
       - 5400:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
     restart: always
 
   
@@ -22,11 +23,24 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./backend/:/backend/
-    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    command: sh ./start.sh
     env_file:
       - ./backend/.env
     ports:
       - 8000:8000
 
+  client:
+    depends_on:
+      - server
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes: 
+      - ./frontend/:/frontend/
+      - '/frontend/node_modules'
+      - '/frontend/dist'
+    ports:
+      - 3333:3333
+    command: serve -s /frontend/dist -l 3333 
 volumes: 
   postgres_data:

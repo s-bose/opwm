@@ -179,7 +179,7 @@ export default {
 
   /* methods */
   methods: {
-    ...mapActions(["logOut"]),
+    ...mapActions(["logOut", "clearPasswords"]),
 
     toggleCard(index) {
       this.isActive = index;
@@ -205,6 +205,7 @@ export default {
 
     async logoutHandler() {
       await this.logOut();
+      await this.clearPasswords();
       await this.$router.push("/login");
     },
 
