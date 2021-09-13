@@ -187,8 +187,6 @@ export default {
   updated() {
     // hook to validate on every form update
     this.passwordStrength = this.v$.password.password.$model !== "" ? zxcvbn(this.v$.password.password.$model).score : -1;
-
-    // this.v$.$validate;   // NOTE: vuelidate model binding already does live validation, no need for this
   },
 
   methods: {

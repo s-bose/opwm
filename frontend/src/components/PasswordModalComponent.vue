@@ -385,6 +385,7 @@ export default {
           }
         }
       } catch (err) {
+        console.error(err);
         console.error(err.response.data.detail);
         this.serverError = err.response.data.detail;
         this.showToast = !this.showToast;

@@ -9,12 +9,20 @@ from starlette.responses import Response
 
 from psycopg2.errors import UniqueViolation
 
-app = FastAPI()
+description="""
+Offline Password Manager is a fully-offline application for storing
+and managing passwords from various websites and applications.
+"""
+
+app = FastAPI(
+    title="OPWM",
+    description=description
+)
 
 # allow CORS requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3333"],
+    allow_origins=["http://localhost:3333", "http://localhost:8080"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

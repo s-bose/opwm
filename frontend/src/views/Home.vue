@@ -26,12 +26,14 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </div>
-      <div class="col-span-1 grid grid-cols-2 gap-4 text-white">
+      <div class="col-span-1 grid grid-cols-2 gap-4 text-white text-sm xl:text-2xl">
         <button class="nav-button" @click.prevent="logoutHandler">Logout</button>
         <button class="nav-button" @click.prevent="aboutRouter">About</button>
       </div>
     </div>
-
+    <div class="m-12 p-12" v-if="!matchSearchItem.length">
+      <h1 class="text-4xl lg:text-8xl leading-9 font-bold tracking-tight text-gray-600">You haven't created any password yet...</h1>
+    </div>
     <div
       class="
         container-fluid
@@ -164,7 +166,6 @@ export default {
 
   /* lifecycle hooks */
   created() {
-    console.log("home created");
     return this.$store.dispatch("getPasswords");
   },
 
