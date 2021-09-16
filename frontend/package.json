@@ -15,6 +15,7 @@
     "autoprefixer": "^9",
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
+    "generate-password": "^1.6.1",
     "postcss": "^7",
     "secure-ls": "^1.2.6",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",

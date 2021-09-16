@@ -51,10 +51,7 @@ def get_all_password(
                                          master_pwd=user.master_pwd
                                         ) 
     ) is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Password not found"
-        )
+        return []
 
     return [ item.dict(exclude_unset=True) for item in pwd_list ]
 
