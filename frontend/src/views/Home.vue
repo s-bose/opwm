@@ -31,7 +31,7 @@
         <button class="nav-button" @click.prevent="aboutRouter">About</button>
       </div>
     </div>
-    <div class="m-12 p-12" v-if="!matchSearchItem.length">
+    <div class="m-12 p-12" v-if="!matchSearchItem?.length">
       <h1 class="text-4xl lg:text-8xl leading-9 font-bold tracking-tight text-gray-600">You haven't created any password yet...</h1>
     </div>
     <div
@@ -172,7 +172,7 @@ export default {
   mounted() {
     document.addEventListener("click", (e) => {
       e.preventDefault();
-      if (this.isActive !== null && !this.pwds[this.isActive].$el.contains(e.target)) {
+      if (this.isActive !== null && !this.pwds[this.isActive]?.$el.contains(e.target)) {
         this.isActive = null;
       }
     });

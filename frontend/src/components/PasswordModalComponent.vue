@@ -209,12 +209,7 @@
 
                 <div class="relative w-full">
                   <div class="absolute inset-y-0 right-0 flex items-center px-1 py-3">
-                    <button
-                      class="rounded px-2 py-1 mt-11 text-sm hover:rounded-md cursor-pointer"
-                      type="button"
-                      @mouseup="showPass = !showPass"
-                      @mousedown="showPass = !showPass"
-                    >
+                    <button class="rounded px-2 py-1 mt-11 text-sm hover:rounded-md cursor-pointer" type="button" @mouseup="showPass = !showPass">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -240,9 +235,12 @@
                   v-model="v$.form.password.$model"
                   :class="{ 'border border-red-500': v$.form.password.$error }"
                 />
+
                 <span class="error-span text-red-500" v-for="error in v$.form.password.$errors" :key="error">
                   {{ error.$message }}
                 </span>
+
+                <button class="border-none underline text-gray-500 mt-2" @click.prevent="genPassword">Generate Password</button>
               </div>
             </form>
           </div>
@@ -291,15 +289,18 @@
     </div>
   </transition>
 
+  <!-- toast pop-up -->
   <toast v-model:showToast="showToast" :info="serverError" :danger="true" />
 </template>
 
 <script>
 import useVuelidate from "@vuelidate/core";
+import { required, url } from "@vuelidate/validators";
 
 import { mapActions } from "vuex";
-import { required, url } from "@vuelidate/validators";
+
 import { parse } from "tldts";
+import generatePassword from "generate-password";
 
 import Toast from "../components/ToastComponent.vue";
 
@@ -383,19 +384,17 @@ export default {
             delete passwordObj["pid"];
             await this.createPassword(passwordObj);
           }
+
+          this.form = {};
+          this.$emit("update:showModal", !this.showModal);
+          this.v$.$reset();
         }
       } catch (err) {
-        console.error(err);
-        console.error(err.response.data.detail);
         this.serverError = err.response.data.detail;
         this.showToast = !this.showToast;
         setTimeout(() => {
           this.showToast = false;
         }, 1000);
-      } finally {
-        this.form = {};
-        this.$emit("update:showModal", !this.showModal);
-        this.v$.$reset();
       }
     },
 
@@ -407,6 +406,15 @@ export default {
     emitCloseInternal() {
       this.v$.$reset();
       this.$emit("update:showModal", !this.showModal);
+    },
+
+    genPassword() {
+      var pass = generatePassword.generate({
+        length: 14,
+        numbers: true,
+        symbols: true,
+      });
+      this.form.password = pass;
     },
   },
   updated() {
