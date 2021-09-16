@@ -2,28 +2,32 @@
 version: '3.9'
 services:
   db:
+    image: postgres:latest
     env_file: 
       - ./backend/.env
-    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_SERVER: db
+      POSTGRES_DB: opwm
+      POSTGRES_PORT: 5432
     networks:
       - default
     ports:
       - 5400:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
     restart: always
-
+    
   
   server:
-    depends_on: 
+    depends_on:
       - db
     build:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/:/backend/
-    command: sh ./start.sh
     env_file:
       - ./backend/.env
     ports:

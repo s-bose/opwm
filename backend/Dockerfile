@@ -17,3 +17,5 @@ COPY . /backend
 
 COPY ./start.sh /backend/start.sh
 RUN chmod +x start.sh
+
+CMD ["sh", "start.sh"]
