@@ -14,3 +14,8 @@ COPY ./requirements.txt /backend/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /backend
+
+COPY ./start.sh /backend/start.sh
+RUN chmod +x start.sh
+
+CMD ["sh", "start.sh"]

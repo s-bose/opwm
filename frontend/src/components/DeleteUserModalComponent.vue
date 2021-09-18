@@ -19,7 +19,7 @@
         focus:outline-none
         bg-no-repeat bg-center bg-cover
       "
-      v-if="showDelModal"
+      v-if="showDelUser"
       id="modal-wrapper"
     >
       <div class="absolute bg-black opacity-80 inset-0 z-0" @click="emitCloseInternal"></div>
@@ -52,9 +52,7 @@
 
             <!-- body -->
             <div class="text-center gap-x-4">
-              <p class="font-large text-xl mt-2">Deleting entry for "{{ site }}"</p>
-
-              <p class="font-large text-xl mt-2">Are you sure?</p>
+              <p class="font-large text-xl mt-2">Are you sure you want to delete this account?</p>
             </div>
           </div>
           <!--footer-->
@@ -82,51 +80,32 @@
 import { mapActions } from "vuex";
 
 export default {
-  name: "DeleteModal",
+  name: "DeleteUserModal",
   components: {},
   props: {
-    showDelModal: {
+    showDelUser: {
       type: Boolean,
       default: false,
     },
-    pid: {
-      type: String,
-      default: "",
-    },
-    site: {
-      type: String,
-      default: "",
-    },
-    link: {
-      type: String,
-      default: "",
-    },
-    username: {
-      type: String,
-      default: "",
-    },
-    password: {
-      type: String,
-      default: "",
-    },
   },
-  emits: ["update:showDelModal"],
+  emits: ["update:showDelUser"],
 
   data() {
     return {};
   },
 
   methods: {
-    ...mapActions(["deletePassword"]),
+    ...mapActions(["deleteUser"]),
 
     emitCloseInternal() {
-      this.$emit("update:showDelModal", !this.showDelModal);
+      console.log("this");
+      this.$emit("update:showDelUser", !this.showDelUser);
     },
 
     submitDelete() {
-      const delObj = Object.assign({}, this.$props);
-      this.deletePassword(delObj["pid"]);
-      this.$emit("update:showDelModal", !this.showDelModal);
+      this.deleteUser();
+      this.$emit("update:showDelUser", !this.showDelUser);
+      this.$router.push("/login");
     },
   },
 };

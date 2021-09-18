@@ -1,3 +1,15 @@
 {
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5400,
+            "driver": "PostgreSQL",
+            "name": "opwm",
+            "database": "opwm",
+            "username": "postgres",
+            "password": "postgres"
+        }
+    ]
 }

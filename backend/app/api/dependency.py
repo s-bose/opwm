@@ -11,6 +11,13 @@ from app.schemas.user import UserBase
 from app.crud import user as crud_user
 
 def get_db() -> Generator:
+
+    """
+    ## Dependency
+
+    Generator for yielding db instances
+    """
+
     try:
         db = SessionLocal()
         yield db
@@ -23,9 +30,16 @@ def auth_user(
     db: Session = Depends(get_db),
 ) -> UserBase:
     """
-    Authenticates a user by verifying their access token
-
     ## Dependency
+
+    Authenticates a user by verifying their access token
+    and returns the authenticated user info
+
+    Returns
+    --------
+    user_id     : UUID
+    email       : EmailStr
+    master_pwd  : str
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -44,8 +58,10 @@ def auth_user(
     except JWTError:
         raise credentials_exception
     
+    # check if user exists
     if (user := crud_user.get_user_by_id(db, user_info["uid"])) is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="user does not exist"
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="user does not exist"
         )
     return user
