@@ -30,7 +30,7 @@ app.add_middleware(
 
 app.include_router(main_router, prefix="/api")
 
-
+# handle any uncaught DB-API exception (IntegrityError)
 @app.exception_handler(IntegrityError)
 def db_exc_handler(req: Request, exc: IntegrityError):
     if isinstance(exc.orig, UniqueViolation):
